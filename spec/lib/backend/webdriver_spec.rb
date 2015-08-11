@@ -5,7 +5,7 @@ describe 'Pincers::Backend::Webdriver' do
 
   before(:context) {
     @driver = Selenium::WebDriver.for :phantomjs
-    @driver.get "file://#{FIXTURE_PATH}/complex.html"
+    @driver.get "http://localhost:#{SERVER_PORT}/complex.html"
   }
 
   after(:context) { @driver.quit rescue nl }
