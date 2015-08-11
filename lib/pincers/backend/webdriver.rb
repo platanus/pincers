@@ -76,6 +76,10 @@ module Pincers::Backend
       _element.send_keys _value
     end
 
+    def click_on_element(_element)
+      _element.click
+    end
+
     def load_frame_element(_element)
       driver.switch_to.frame _element
       self

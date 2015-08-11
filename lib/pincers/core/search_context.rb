@@ -95,6 +95,12 @@ module Pincers::Core
       end
     end
 
+    def click
+      wrap_errors do
+        backend.click_on_element element!
+      end
+    end
+
     def select(_value)
       # TODO.
     end

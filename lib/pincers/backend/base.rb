@@ -72,6 +72,10 @@ module Pincers::Backend
       ensure_implementation :fill_input
     end
 
+    def click_on_element(_element)
+      ensure_implementation :click_on_element
+    end
+
     def load_frame_element(_element)
       ensure_implementation :load_frame_element
     end
