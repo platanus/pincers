@@ -6,7 +6,7 @@ module Pincers
 
   class MissingFeatureError < Error
 
-    attr_accessor :feature
+    attr_reader :feature
 
     def initialize(_feature)
       @feature = _feature
@@ -15,87 +15,46 @@ module Pincers
 
   end
 
-  class BackendError < Error
+  class ContextError < Error
 
-    def initialize(_backend, _msg)
-      # backend errors should be configurable to get source from backend
+    attr_reader :context
+
+    def initialize(_context, _msg)
       super _msg
+      @context = _context
     end
 
   end
 
-  class EmptySetError < BackendError
+  class EmptySetError < ContextError
 
-    def initialize(_node)
-      super _node.backend, "This set is empty"
+    def initialize(_context)
+      super _context, "This set is empty"
     end
 
   end
 
-  class ConditionTimeoutError < BackendError
+  class ConditionTimeoutError < ContextError
 
-    def initialize(_node, _condition)
-      super _node.backend, "Timed out waiting element to be #{_condition}"
+    def initialize(_context, _condition)
+      super _context, "Timed out waiting element to be #{_condition}"
     end
 
   end
 
+  class BackendError < ContextError
 
+    attr_reader :document
+    attr_reader :original
 
-
-
-  class
-
-  class BinaryMissingError < ConfigurationError
-
-    attr_accessor :binary
-    attr_accessor :path
-
-    def initialize(_binary, _path)
-      @binary = _binary
-      @path = _path
-      super "Could not find a suitable version of #{@binary}"
+    def initialize(_context, _exc)
+      super _context, "Backend error: #{_exc.message}"
+      @document = _context.document
+      @original = _exc
     end
 
-  end
+    # IDEA: join backtraces?
 
-  class def  < Error; end
-
-  class ArgumentError < Error; end
-
-  class ResourceNotFoundError < Crabfarm::Error; end
-
-  class ApiError < Error
-    def code; 500 end
-    def to_json; {} end
-  end
-
-  class StillWorkingError < ApiError
-    def code; 409 end
-  end
-
-  class TimeoutError < ApiError
-    def code; 408 end
-  end
-
-  class CrawlerBaseError < ApiError
-    def initialize(_msg, _trace)
-      @exc = _msg
-      @trace = _trace
-    end
-
-    def to_json
-      {
-        exception: @exc,
-        backtrace: @trace
-      }.to_json
-    end
-  end
-
-  class CrawlerError < CrawlerBaseError
-    def initialize(_exc)
-      super _exc.to_s, _exc.backtrace
-    end
   end
 
 end

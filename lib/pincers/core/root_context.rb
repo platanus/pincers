@@ -4,10 +4,16 @@ require 'pincers/core/search_context'
 module Pincers::Core
   class RootContext < SearchContext
 
-    def initialize(_backend, _options={})
+    attr_reader :config
+
+    def initialize(_backend, _config={})
       super _backend.document_root, nil
       @backend = _backend
-      @options = Pincers.config.values.merge _options
+      @config = Pincers.config.values.merge _config
+    end
+
+    def root
+      self
     end
 
     def backend
@@ -15,7 +21,7 @@ module Pincers::Core
     end
 
     def url
-      backend.document_url
+      wrap_errors { backend.document_url }
     end
 
     def uri
@@ -23,11 +29,11 @@ module Pincers::Core
     end
 
     def title
-      backend.document_title
+      wrap_errors { backend.document_title }
     end
 
     def source
-      backend.document_source
+      wrap_errors { backend.document_source }
     end
 
     def cookies
@@ -35,31 +41,31 @@ module Pincers::Core
     end
 
     def goto(_url)
-      backend.navigate_to _url
+      wrap_errors { backend.navigate_to _url }
       self
     end
 
     def forward(_steps=1)
-      backend.navigate_forward _steps
+      wrap_errors { backend.navigate_forward _steps }
       self
     end
 
     def back(_steps=1)
-      backend.navigate_back _steps
+      wrap_errors { backend.navigate_back _steps }
       self
     end
 
     def refresh
-      backend.refresh_document _steps
+      wrap_errors { backend.refresh_document _steps }
       self
     end
 
     def default_timeout
-      @options[:wait_timeout]
+      @config[:wait_timeout]
     end
 
     def default_interval
-      @options[:wait_interval]
+      @config[:wait_interval]
     end
 
   end

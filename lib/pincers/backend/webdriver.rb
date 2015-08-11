@@ -56,11 +56,12 @@ module Pincers::Backend
     end
 
     def extract_element_text(_element)
+
       _element.text
     end
 
     def extract_element_html(_element)
-      _element['outerHTML']
+      if _element == @driver then @driver.page_source else _element.attribute('outerHTML') end
     end
 
     def extract_element_attribute(_element, _name)
@@ -73,6 +74,11 @@ module Pincers::Backend
 
     def fill_input(_element, _value)
       _element.send_keys _value
+    end
+
+    def load_frame_element(_element)
+      driver.switch_to.frame _element
+      self
     end
 
     # wait contitions

@@ -3,18 +3,18 @@ module Pincers::Support
 
     class Option < Struct.new(:name, :type, :text); end
 
-    OPTIONS = [
+    FIELDS = [
       [:wait_timeout, 10.0],
       [:wait_interval, 0.2]
     ];
 
-    OPTIONS.each do |var|
-      define_method "#{var.name}=" do |val|
-        @values[var.name] = val
+    FIELDS.each do |field|
+      define_method "#{field[0]}=" do |val|
+        @values[field[0]] = val
       end
 
-      define_method "#{var.name}" do
-        @values[var.name]
+      define_method "#{field[0]}" do
+        @values[field[0]]
       end
     end
 
@@ -29,7 +29,7 @@ module Pincers::Support
     end
 
     def reset
-      @values = Hash[OPTIONS]
+      @values = Hash[FIELDS]
     end
   end
 end

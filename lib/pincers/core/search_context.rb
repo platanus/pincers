@@ -12,8 +12,12 @@ module Pincers::Core
       @parent = _parent
     end
 
+    def root
+      parent.root
+    end
+
     def backend
-      parent.backend
+      root.backend
     end
 
     def document
@@ -25,7 +29,7 @@ module Pincers::Core
     end
 
     def element!
-      raise EmptySetError.new if empty?
+      raise Pincers::EmptySetError.new self if empty?
       element
     end
 
@@ -36,7 +40,7 @@ module Pincers::Core
     def [](*args)
       if args[0].is_a? String or args[0].is_a? Symbol
         wrap_errors do
-          strategy.extract_element_attribute element!, args[0]
+          backend.extract_element_attribute element!, args[0]
         end
       else
         wrap_elements Array(elements.send(:[],*args))
@@ -53,13 +57,13 @@ module Pincers::Core
 
     def css(_selector, _options={})
       search_with_options _options do
-        explode_elements { |e| search_by_css e, _selector }
+        explode_elements { |e| backend.search_by_css e, _selector }
       end
     end
 
     def xpath(_selector, _options={})
       search_with_options _options do
-        explode_elements { |e| search_by_xpath e, _selector }
+        explode_elements { |e| backend.search_by_xpath e, _selector }
       end
     end
 
@@ -82,10 +86,7 @@ module Pincers::Core
       end
     end
 
-    def enter_frame
-      root.driver.switch_to.frame element!
-      root
-    end
+    # Input related
 
     def set(_value)
       wrap_errors do
@@ -96,6 +97,14 @@ module Pincers::Core
 
     def select(_value)
       # TODO.
+    end
+
+    # context related
+
+    def enter
+      wrap_errors do
+        RootContext.new backend.load_frame_element(element!), root.config
+      end
     end
 
     # Any methods missing are forwarded to the main element (first)
@@ -129,8 +138,10 @@ module Pincers::Core
     def wrap_errors
       begin
         yield
-      rescue Selenium::WebDriver::Error::WebDriverError => e
-        raise WebdriverError.new e, self
+      rescue Pincers::Error
+        raise
+      rescue Exception => exc
+        raise Pincers::BackendError.new self, exc
       end
     end
 
@@ -152,9 +163,9 @@ module Pincers::Core
       end
     end
 
-    def poll_until(_condition, _option, &_search)
+    def poll_until(_condition, _options, &_search)
       check_method = "check_#{_condition}"
-      raise InvalidOptionError.new check_method unless strategy.respond_to? check_method
+      raise Pincers::MissingFeatureError.new check_method unless backend.respond_to? check_method
 
       timeout = _options.fetch :timeout, root.default_timeout
       interval = _options.fetch :interval, root.default_interval
@@ -162,11 +173,11 @@ module Pincers::Core
 
       until Time.now > end_time
         new_elements = _search.call
-        return new_elements if strategy.send check_method, new_elements
+        return new_elements if backend.send check_method, new_elements
         sleep interval
       end
 
-      raise ConditionTimeoutError.new self, _condition
+      raise Pincers::ConditionTimeoutError.new self, _condition
     end
 
   end
