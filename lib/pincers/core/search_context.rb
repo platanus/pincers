@@ -88,7 +88,7 @@ module Pincers::Core
 
     # Input related
 
-    def set(_value)
+    def fill(_value)
       wrap_errors do
         backend.clear_input element!
         backend.fill_input element!
