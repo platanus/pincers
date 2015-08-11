@@ -22,6 +22,10 @@ module Macros
       describe "to_html" do
         it { expect(pincers.css('ul.bikes li').to_html).to eq('<li>GT</li><li>Mongoose</li><li>Kona</li>') }
       end
+
+      describe "selected" do
+        it { expect(pincers.css('#category').selected).to eq('private') }
+      end
     end
   end
 end

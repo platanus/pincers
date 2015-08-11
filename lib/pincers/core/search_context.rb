@@ -1,7 +1,10 @@
+require 'pincers/core/extended_actions'
+
 module Pincers::Core
   class SearchContext
     include Enumerable
     extend Forwardable
+    include ExtendedActions
 
     attr_accessor :parent, :elements
 
@@ -49,6 +52,10 @@ module Pincers::Core
 
     def first
       if elements.first.nil? then nil else wrap_elements [elements.first] end
+    end
+
+    def first!
+      first or raise Pincers::EmptySetError.new(self)
     end
 
     def last
