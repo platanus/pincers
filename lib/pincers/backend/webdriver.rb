@@ -23,10 +23,6 @@ module Pincers::Backend
       @driver.title
     end
 
-    def document_source
-      @driver.page_source
-    end
-
     def fetch_cookies
       @driver.manage.all_cookies
     end

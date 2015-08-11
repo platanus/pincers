@@ -20,10 +20,6 @@ module Pincers::Backend
       ensure_implementation :document_title
     end
 
-    def document_source
-      ensure_implementation :document_source
-    end
-
     def fetch_cookies
       ensure_implementation :fetch_cookies
     end
@@ -83,7 +79,7 @@ module Pincers::Backend
   private
 
     def ensure_implementation(_name)
-      raise MissingFeatureError.new _name
+      raise Pincers::MissingFeatureError.new _name
     end
 
   end

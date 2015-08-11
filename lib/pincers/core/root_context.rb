@@ -32,10 +32,6 @@ module Pincers::Core
       wrap_errors { backend.document_title }
     end
 
-    def source
-      wrap_errors { backend.document_source }
-    end
-
     def cookies
       @cookies ||= CookieJar.new backend
     end
