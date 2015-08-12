@@ -33,7 +33,19 @@ module Pincers::Backend
     end
 
     def extract_element_attribute(_element, _name)
-      _element[_name]
+      _name = _name.to_sym
+
+      value = _element[_name]
+      value = checkbox_value_fix _element, value if _name == :value
+      value
+    end
+
+  private
+
+    def checkbox_value_fix(_element, _value)
+      if _value.nil? and _element.name.downcase == 'input' and ['checkbox', 'radio'].include? _element[:type].downcase
+        'on'
+      else _value end
     end
 
   end
