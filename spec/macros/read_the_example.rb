@@ -32,7 +32,7 @@ module Macros
     end
 
     describe "selected" do
-      it { expect(pincers.css('#category').selected.value).to eq('private') }
+      it { expect(pincers.css('#category').selected.first.value).to eq('private') }
     end
 
     describe "selected?" do
@@ -41,7 +41,7 @@ module Macros
     end
 
     describe "checked" do
-      it { expect(pincers.css('#tags').checked.value).to eq('private') }
+      it { expect(pincers.css('#tags').checked.first.value).to eq('private') }
     end
 
     describe "checked?" do

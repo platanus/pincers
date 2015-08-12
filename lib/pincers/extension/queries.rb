@@ -25,16 +25,16 @@ module Pincers::Extension
     end
 
     def selected(_options={})
-      first!.css('option[selected]', _options)
+      first!.css('option', _options).select { |opt| opt.selected? }
     end
 
     def checked(_options={})
-      first!.css('input[checked]', _options)
+      first!.css('input', _options).select { |opt| opt.checked? }
     end
 
     def input_mode
       return :select if tag == 'select'
-      return :button if tag == 'button'
+      return :button if tag == 'button' # TODO: button types
       return :text if tag == 'textarea'
       return nil if tag != 'input'
 

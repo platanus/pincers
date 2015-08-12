@@ -41,5 +41,21 @@ module Macros
       end
     end
 
+    describe "selected" do
+
+      it "should return the selected value after changing it" do
+        expect { select_input.set('All') }.to change { select_input.selected.first.value }
+      end
+
+    end
+
+    describe "checked" do
+
+      it "should return the checked value after changing it" do
+        expect { checkbox_input.set true }.to change { pincers.checked.count }.by(1)
+      end
+
+    end
+
   end
 end
