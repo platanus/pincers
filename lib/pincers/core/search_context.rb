@@ -1,10 +1,10 @@
-require 'pincers/core/extended_actions'
+require 'pincers/extension/queries'
 
 module Pincers::Core
   class SearchContext
     include Enumerable
     extend Forwardable
-    include ExtendedActions
+    include Pincers::Extension::Queries
 
     attr_accessor :parent, :elements
 
@@ -80,13 +80,6 @@ module Pincers::Core
       end
     end
 
-    def classes
-      wrap_errors do
-        class_attr = backend.extract_element_attribute element!, 'class'
-        (class_attr || '').split(' ')
-      end
-    end
-
     def to_html
       wrap_errors do
         elements.map { |e| backend.extract_element_html e }.join
@@ -117,32 +110,6 @@ module Pincers::Core
     def enter
       wrap_errors do
         RootContext.new backend.load_frame_element(element!), root.config
-      end
-    end
-
-    # Any methods missing are forwarded to the main element (first)
-
-    def method_missing(_method, *_args, &_block)
-      wrap_errors do
-        m = /^(.*)_all$/.match _method.to_s
-        if m then
-          return [] if empty?
-          elements.map { |e| e.send(m[1], *_args, &_block) }
-        else
-          element!.send(_method, *_args, &_block)
-        end
-      end
-    end
-
-    def respond_to?(_method, _include_all=false)
-      return true if super
-      m = /^.*_all$/.match _method.to_s
-      if m then
-        return true if empty?
-        elements.first.respond_to? m[1], _include_all
-      else
-        return true if empty?
-        elements.first.respond_to? _method, _include_all
       end
     end
 

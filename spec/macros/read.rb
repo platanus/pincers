@@ -11,10 +11,6 @@ module Macros
         it { expect(pincers.css('p.description').classes).to eq(['history', 'description']) }
       end
 
-      describe "classes" do
-        it { expect(pincers.css('p.description').classes).to eq(['history', 'description']) }
-      end
-
       describe "text" do
         it { expect(pincers.css('ul.bikes li').text).to eq('GT') }
       end
@@ -23,8 +19,26 @@ module Macros
         it { expect(pincers.css('ul.bikes li').to_html).to eq('<li>GT</li><li>Mongoose</li><li>Kona</li>') }
       end
 
+      describe "classes" do
+        it { expect(pincers.css('p.description').classes).to eq(['history', 'description']) }
+      end
+
       describe "selected" do
-        it { expect(pincers.css('#category').selected).to eq('private') }
+        it { expect(pincers.css('#category').selected.value).to eq('private') }
+      end
+
+      describe "selected?" do
+        it { expect(pincers.css('#category option[value=private]').selected?).to be true }
+        it { expect(pincers.css('#category option[value=broadcast]').selected?).to be false }
+      end
+
+      describe "checked" do
+        it { expect(pincers.css('#tags').checked.value).to eq('private') }
+      end
+
+      describe "checked?" do
+        it { expect(pincers.css('#tags input[value=private]').checked?).to be true }
+        it { expect(pincers.css('#tags input[value=broadcast]').checked?).to be false }
       end
     end
   end
