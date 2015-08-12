@@ -11,6 +11,7 @@ module Macros
     end
 
     describe "text" do
+      it { expect(pincers.text).to include('Lorem ipsum dolor sit amet') }
       it { expect(pincers.css('ul.bikes li').text).to eq('GT') }
     end
 

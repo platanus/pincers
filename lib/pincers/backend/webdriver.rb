@@ -52,27 +52,33 @@ module Pincers::Backend
     end
 
     def extract_element_tag(_element)
+      _element = ensure_element _element
       _element.tag_name
     end
 
     def extract_element_text(_element)
+      _element = ensure_element _element
       _element.text
     end
 
     def extract_element_html(_element)
-      if _element == @driver then @driver.page_source else _element.attribute('outerHTML') end
+      return @driver.page_source if _element == @driver
+      _element.attribute 'outerHTML'
     end
 
     def extract_element_attribute(_element, _name)
+      _element = ensure_element _element
       _element[_name]
     end
 
     def set_element_text(_element, _value)
+      _element = ensure_element _element
       _element.clear
       _element.send_keys _value
     end
 
     def click_on_element(_element)
+      _element = ensure_element _element
       _element.click
     end
 
@@ -101,6 +107,13 @@ module Pincers::Backend
 
     def check_not_visible(_elements)
       not _elements.any? { |e| e.displayed? }
+    end
+
+  private
+
+    def ensure_element(_element)
+      return @driver.find_element tag_name: 'html' if _element == @driver
+      _element
     end
 
   end
