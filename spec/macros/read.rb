@@ -19,6 +19,10 @@ module Macros
         it { expect(pincers.css('ul.bikes li').to_html).to eq('<li>GT</li><li>Mongoose</li><li>Kona</li>') }
       end
 
+      describe "tag" do
+        it { expect(pincers.css('p.description').tag).to eq('p') }
+      end
+
       describe "classes" do
         it { expect(pincers.css('p.description').classes).to eq(['history', 'description']) }
       end

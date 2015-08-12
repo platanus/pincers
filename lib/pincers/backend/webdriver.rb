@@ -51,8 +51,11 @@ module Pincers::Backend
       _element.find_elements xpath: _selector
     end
 
-    def extract_element_text(_element)
+    def extract_element_tag(_element)
+      _element.tag_name
+    end
 
+    def extract_element_text(_element)
       _element.text
     end
 

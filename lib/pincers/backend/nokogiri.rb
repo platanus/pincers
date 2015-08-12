@@ -20,6 +20,10 @@ module Pincers::Backend
       _element.xpath _selector
     end
 
+    def extract_element_tag(_element)
+      _element.name
+    end
+
     def extract_element_text(_element)
       _element.content
     end
