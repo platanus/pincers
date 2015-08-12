@@ -12,12 +12,10 @@ module Pincers::Extension
       end
     end
 
-    def selected?
-      not self[:selected].nil?
-    end
-
-    def checked?
-      not self[:checked].nil?
+    [:selected, :checked, :disabled, :required].each do |attr_name|
+      define_method "#{attr_name}?" do
+        not self[attr_name].nil?
+      end
     end
 
     def classes
