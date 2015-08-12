@@ -67,11 +67,8 @@ module Pincers::Backend
       _element[_name]
     end
 
-    def clear_input(_element)
+    def set_element_text(_element, _value)
       _element.clear
-    end
-
-    def fill_input(_element, _value)
       _element.send_keys _value
     end
 

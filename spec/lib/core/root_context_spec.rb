@@ -19,8 +19,7 @@ describe Pincers::Core::RootContext do
     allow(be).to receive(:extract_element_text)       { |el| "#{el} text" }
     allow(be).to receive(:extract_element_html)       { |el| "<div>#{el} html</div>" }
     allow(be).to receive(:extract_element_attribute)  { |el, attribute| "#{el} #{attribute}" }
-    allow(be).to receive(:clear_input)
-    allow(be).to receive(:fill_input)
+    allow(be).to receive(:set_element_text)
     allow(be).to receive(:click_on_element)
     allow(be).to receive(:load_frame_element)
 
@@ -95,6 +94,20 @@ describe Pincers::Core::RootContext do
   describe "to_html" do
     it "should return the html representation of the matched elements" do
       expect(pincers.to_html).to eq('<div>root_element html</div>')
+    end
+  end
+
+  describe "set_text" do
+    it "should map to backend's set_element_text" do
+      pincers.set_text 'foo'
+      expect(backend).to have_received(:set_element_text).with('root_element', 'foo')
+    end
+  end
+
+  describe "click" do
+    it "should map to backend's click_on_element" do
+      pincers.click
+      expect(backend).to have_received(:click_on_element).with('root_element')
     end
   end
 

@@ -68,8 +68,8 @@ module Pincers::Backend
       ensure_implementation :clear_input
     end
 
-    def fill_input(_element, _value)
-      ensure_implementation :fill_input
+    def set_element_text(_element, _value)
+      ensure_implementation :set_element_text
     end
 
     def click_on_element(_element)
