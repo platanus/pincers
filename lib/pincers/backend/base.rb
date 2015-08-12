@@ -48,6 +48,10 @@ module Pincers::Backend
       ensure_implementation :search_by_xpath
     end
 
+    def extract_element_tag(_element)
+      ensure_implementation :extract_element_tag
+    end
+
     def extract_element_text(_element)
       ensure_implementation :extract_element_text
     end

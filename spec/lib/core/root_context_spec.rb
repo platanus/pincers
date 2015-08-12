@@ -15,6 +15,7 @@ describe Pincers::Core::RootContext do
     allow(be).to receive(:refresh_document)
     allow(be).to receive(:search_by_css)              { |el, sel| ['child_element_1', 'child_element_2'] }
     allow(be).to receive(:search_by_xpath)            { |el, sel| ['child_element_1', 'child_element_2'] }
+    allow(be).to receive(:extract_element_tag)        { |el| "#{el.upcase}-NAME" }
     allow(be).to receive(:extract_element_text)       { |el| "#{el} text" }
     allow(be).to receive(:extract_element_html)       { |el| "<div>#{el} html</div>" }
     allow(be).to receive(:extract_element_attribute)  { |el, attribute| "#{el} #{attribute}" }
@@ -64,6 +65,12 @@ describe Pincers::Core::RootContext do
   describe "classes" do
     it "should return every element class as an array" do
       expect(pincers.classes).to eq(['root_element', 'class'])
+    end
+  end
+
+  describe "tag" do
+    it "should return the downcased tag name from the first of matched elements" do
+      expect(pincers.tag).to eq('root_element-name')
     end
   end
 

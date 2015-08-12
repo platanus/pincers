@@ -74,6 +74,12 @@ module Pincers::Core
       end
     end
 
+    def tag
+      wrap_errors do
+        backend.extract_element_tag(element!).downcase
+      end
+    end
+
     def text
       wrap_errors do
         backend.extract_element_text element!
