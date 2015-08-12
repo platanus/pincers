@@ -1,10 +1,12 @@
 require 'pincers/extension/queries'
+require 'pincers/extension/actions'
 
 module Pincers::Core
   class SearchContext
     include Enumerable
     extend Forwardable
     include Pincers::Extension::Queries
+    include Pincers::Extension::Actions
 
     attr_accessor :parent, :elements
 
@@ -104,10 +106,6 @@ module Pincers::Core
       wrap_errors do
         backend.click_on_element element!
       end
-    end
-
-    def select(_value)
-      # TODO.
     end
 
     # context related

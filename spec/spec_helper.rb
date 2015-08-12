@@ -23,3 +23,4 @@ end
 sleep(1) # wait a sec for the server to be booted
 
 include Macros::Read
+include Macros::Input

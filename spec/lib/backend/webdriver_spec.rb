@@ -5,6 +5,9 @@ describe 'Pincers::Backend::Webdriver' do
 
   before(:context) {
     @driver = Selenium::WebDriver.for :phantomjs
+  }
+
+  before {
     @driver.get "http://localhost:#{SERVER_PORT}/complex.html"
   }
 
@@ -13,6 +16,7 @@ describe 'Pincers::Backend::Webdriver' do
   let(:pincers) { Pincers.for_webdriver @driver }
 
   it_should_properly_read_the_example
+  it_should_properly_handle_the_example_inputs
 
   describe :css do
     context "when wait :present option is used" do
