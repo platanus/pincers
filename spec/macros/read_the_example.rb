@@ -26,6 +26,11 @@ module Macros
       it { expect(pincers.css('p.description').classes).to eq(['history', 'description']) }
     end
 
+    describe "value" do
+      it { expect(pincers.css('#option').value).to be nil }
+      it { expect(pincers.css('#other-option').value).to eq 'on' }
+    end
+
     describe "selected" do
       it { expect(pincers.css('#category').selected.value).to eq('private') }
     end

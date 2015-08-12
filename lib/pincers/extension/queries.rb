@@ -4,7 +4,12 @@ module Pincers::Extension
     TEXT_INPUTS = ['text', 'email', 'number', 'email', 'color', 'password', 'search', 'tel', 'url']
 
     def value
-      self[:value]
+      case input_mode
+      when :checkbox, :radio
+        if checked? then self[:value] else nil end
+      else
+        self[:value]
+      end
     end
 
     def selected?
