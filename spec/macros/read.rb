@@ -44,6 +44,14 @@ module Macros
         it { expect(pincers.css('#tags input[value=private]').checked?).to be true }
         it { expect(pincers.css('#tags input[value=broadcast]').checked?).to be false }
       end
+
+      describe "input_mode" do
+        it { expect(pincers.css('#name').input_mode).to be :text }
+        it { expect(pincers.css('#email').input_mode).to be :text }
+        it { expect(pincers.css('#message').input_mode).to be :text }
+        it { expect(pincers.css('#category').input_mode).to be :select }
+        it { expect(pincers.css('#tags input').input_mode).to be :radio }
+      end
     end
   end
 end
