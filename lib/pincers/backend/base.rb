@@ -76,8 +76,16 @@ module Pincers::Backend
       ensure_implementation :click_on_element
     end
 
-    def load_frame_element(_element)
-      ensure_implementation :load_frame_element
+    def switch_to_frame(_element)
+      ensure_implementation :switch_to_frame
+    end
+
+    def switch_to_top_frame
+      ensure_implementation :switch_to_top_frame
+    end
+
+    def switch_to_parent_frame
+      ensure_implementation :switch_to_parent_frame
     end
 
   private

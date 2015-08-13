@@ -110,10 +110,8 @@ module Pincers::Core
 
     # context related
 
-    def enter
-      wrap_errors do
-        RootContext.new backend.load_frame_element(element!), root.config
-      end
+    def goto
+      root.goto frame: self
     end
 
   private

@@ -36,8 +36,20 @@ module Pincers::Core
       @cookies ||= CookieJar.new backend
     end
 
-    def goto(_url)
-      wrap_errors { backend.navigate_to _url }
+    def goto(_urlOrOptions)
+      wrap_errors do
+        if _urlOrOptions.is_a? String
+          _urlOrOptions = { url: _urlOrOptions }
+        end
+
+        if _urlOrOptions.key? :frame
+          goto_frame _urlOrOptions[:frame]
+        elsif _urlOrOptions.key? :url
+          backend.navigate_to _urlOrOptions[:url]
+        else
+          raise ArgumentError.new "Must provide a valid target when calling 'goto'"
+        end
+      end
       self
     end
 
@@ -62,6 +74,23 @@ module Pincers::Core
 
     def default_interval
       @config[:wait_interval]
+    end
+
+  private
+
+    def goto_frame(_frame)
+      case _frame
+      when :top
+        backend.switch_to_top_frame
+      when :parent
+        backend.switch_to_parent_frame
+      when String
+        backend.switch_to_frame css(_frame).element!
+      when SearchContext
+        backend.switch_to_frame _frame.element!
+      else
+        raise ArgumentError.new "Invalid :frame option #{_frame.inspect}"
+      end
     end
 
   end

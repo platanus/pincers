@@ -5,6 +5,7 @@ describe Pincers::Core::RootContext do
 
   let!(:backend) do
     be = double('Pincers::Backend::Base')
+    allow(be).to receive(:document)                   { 'not a real document' }
     allow(be).to receive(:document_root)              { ['root_element'] }
     allow(be).to receive(:document_url)               { 'the.page.url' }
     allow(be).to receive(:document_title)             { 'The page title' }
@@ -21,7 +22,9 @@ describe Pincers::Core::RootContext do
     allow(be).to receive(:extract_element_attribute)  { |el, attribute| "#{el} #{attribute}" }
     allow(be).to receive(:set_element_text)
     allow(be).to receive(:click_on_element)
-    allow(be).to receive(:load_frame_element)
+    allow(be).to receive(:switch_to_frame)
+    allow(be).to receive(:switch_to_top_frame)
+    allow(be).to receive(:switch_to_parent_frame)
 
     be
   end
@@ -44,6 +47,37 @@ describe Pincers::Core::RootContext do
     it "should call navigate_to and return self" do
       expect(pincers.goto 'foo.bar').to eq(pincers)
       expect(backend).to have_received(:navigate_to).with('foo.bar')
+    end
+
+    it "should call switch_to_frame with proper element if called with frame: context" do
+      pincers.goto frame: pincers.css('#frame')
+      expect(backend).to have_received(:switch_to_frame).with('child_element_1')
+    end
+
+    it "should call switch_to_frame with proper element if called with frame: selector" do
+      pincers.goto frame: '#foo.bar'
+      expect(backend).to have_received(:switch_to_frame).with('child_element_1')
+    end
+
+    it "should call switch_to_top_frame if called with frame: :top" do
+      pincers.goto frame: :top
+      expect(backend).to have_received(:switch_to_top_frame)
+    end
+
+    it "should call switch_to_parent_frame if called with frame: :parent" do
+      pincers.goto frame: :parent
+      expect(backend).to have_received(:switch_to_parent_frame)
+    end
+
+    it "should fail when called with invalid options" do
+      expect { pincers.goto }.to raise_error
+      expect { pincers.goto frame: :disneyland }.to raise_error
+      expect { pincers.goto cuadro: 'cangrejo' }.to raise_error
+    end
+
+    it "when called on a frame element context it should call goto frame: context on the root context" do
+      pincers.css('#frame').goto
+      expect(backend).to have_received(:switch_to_frame).with('child_element_1')
     end
   end
 

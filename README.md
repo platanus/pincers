@@ -162,6 +162,27 @@ pincers.document
 
 ### Advanced topics
 
+#### Navigating frames
+
+Pincers operations can only target one frame at a time. By default, the top frame is selected when location is changed. As with urls, to switch to a diferent frame use the `goto` method with the `frame:` option:
+
+```ruby
+pincers.goto frame: css('#my-frame')
+pincers.text # this will return the '#my-frame' frame contents
+```
+
+You can also use a selector directly
+
+```ruby
+pincers.goto frame: '#my-frame'
+```
+
+To navigate back to the top frame after working on a child frame use the special identifier `:top`:
+
+```ruby
+pincers.goto frame: :top
+```
+
 #### Waiting for a condition
 
 In javascript enabled backends like webdriver, sometimes it's necessary to wait for an element to appear before doing something with it:
