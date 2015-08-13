@@ -82,9 +82,12 @@ module Pincers::Backend
       _element.click
     end
 
-    def load_frame_element(_element)
-      driver.switch_to.frame _element
-      self
+    def switch_to_frame(_element)
+      @driver.switch_to.frame _element
+    end
+
+    def switch_to_top_frame
+      @driver.switch_to.default_content
     end
 
     # wait contitions
