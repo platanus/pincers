@@ -1,6 +1,6 @@
 # Pincers
 
-Pincers is jQuery inspired web automation framework with multiple backend support.
+Pincers is a jQuery inspired web automation framework with multiple backend support.
 
 ## Backend support:
 
@@ -16,7 +16,7 @@ Create a new pincers root **context** from a webdriver session:
 pincers = Pincers.for_webdriver driver
 ```
 
-Or for a nokogiri document
+Or from a nokogiri document
 
 ```
 pincers = Pincers.for_nokogiri document
@@ -61,7 +61,7 @@ pincers.css('.my-class').map do |div|
 end
 ```
 
-Pincers **contexts** also have a `first` and `last` methods that return the first and last element wrapped on a separate **context**.
+Pincers **contexts** also have `first` and `last` methods that return the first and last element wrapped on a separate **context**.
 
 ```ruby
 pincers.css('.my-class').first # first is also a context!
@@ -71,7 +71,7 @@ Searching over a **context** will search among all contained elements children:
 
 ```ruby
 parents = pincers.css('.my-class')
-parents.css('.my-child-class') # will select all childs except fourth-child
+parents.css('.child-class') # will select all childs except fourth-child
 ```
 
 ### Single element properties
@@ -104,7 +104,7 @@ pincers.css('.child-class').classes # = ['child-class', 'other-class']
 
 ### Element interaction
 
-The following methods change the element or document state and are only available in some backeds. Like the *Single Element Properties*, when called these methods only affect the first element in the **context**.
+The following methods change the element or document state and are only available in some backends. Like the *Single Element Properties*, when called, these methods only affect the first element in the **context**.
 
 To set the text on a text input
 
@@ -164,13 +164,13 @@ pincers.document
 
 #### Waiting for a condition
 
-In javascript enabled backends like webdriver, sometimes is necessary to wait for an element to appear before doing something with it:
+In javascript enabled backends like webdriver, sometimes it's necessary to wait for an element to appear before doing something with it:
 
 ```ruby
 pincers.css('#my-async-stuff', wait: :present)
 ```
 
-When using the webdriver backend, its posible to wait on the following states:
+When using the webdriver backend, it's posible to wait on the following states:
 
 * `:present`: wait for element to show up in the DOM
 * `:visible`: wait for element to be visible
@@ -178,7 +178,7 @@ When using the webdriver backend, its posible to wait on the following states:
 * `:not_present`: wait for element to be removed from DOM
 * `:not_visible`: wait for element to be hidden
 
-By default, the waiting process times out in 10 seconds if condition is not met, this can be changed by setting the `Pincers.config.wait_timeout` property or by calling the search function with the `timeout:` option:
+By default, the waiting process times out in 10 seconds. This can be changed by setting the `Pincers.config.wait_timeout` property or by calling the search function with the `timeout:` option:
 
 ```ruby
 pincers.css('#my-async-stuff', wait: :present, timeout: 5.0)
@@ -186,7 +186,7 @@ pincers.css('#my-async-stuff', wait: :present, timeout: 5.0)
 
 #### Accessing the underlying backend objects
 
-Sometimes (hopefully not too often) you will need to access the original webdriver or nokogiri api, pincers provides a couple of methods for you to do so.
+Sometimes (hopefully not too often) you will need to access the original webdriver or nokogiri api. Pincers provides a couple of methods for you to do so.
 
 To get the document handler itself call `document` on the root context.
 
