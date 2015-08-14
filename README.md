@@ -1,12 +1,10 @@
 # Pincers
 
-Pincers is a jQuery inspired web automation framework with multiple backend support.
+Pincers is a jQuery inspired DSL that wraps both webdriver and nokogiri.
 
-## Backend support:
+## Why
 
-* webdriver: full
-* nokogiri: search and properties only
-* nokogiri-on-line: TBA, this will be a nokogiri based implementation with support of some basic navigation features.
+The jQuery interface solves DOM element selection in a very practical way that most programmers feel comfortable with. When using webdriver or nokogiri we'd found ourselves missing jQuery's ease of use... Until now! :D
 
 ## Basic usage
 
@@ -32,7 +30,9 @@ pincers.goto 'www.crabfarm.io'
 
 ### Searching
 
-Consider the following HTML structure for the examples below
+If you have used jQuery before, all this will sound quite familiar to you.
+
+Consider the following HTML structure for the examples below:
 
 ```html
 <body>
@@ -50,10 +50,10 @@ Consider the following HTML structure for the examples below
 Search for elements matching a given selector using `css`:
 
 ```ruby
-pincers.css('.my-class') # will select first-parent and second-parent
+pincers.css('.my-class') # will select both first-parent and second-parent
 ```
 
-This will return another **context** contaning all elements matching the given selector. The **context** object is an enumarable that yields single element **contexts**, so you can use pincers methods on separate elements too:
+This call will return another **context** contaning all elements matching the given selector. The **context** object is an enumerable that yields single element **contexts**, so you can use pincers methods on separate elements too:
 
 ```ruby
 pincers.css('.my-class').map do |div|
@@ -164,14 +164,15 @@ pincers.document
 
 #### Navigating frames
 
-Pincers operations can only target one frame at a time. By default, the top frame is selected when location is changed. As with urls, to switch to a diferent frame use the `goto` method with the `frame:` option:
+Pincers operations can only target one frame at a time. By default, the top frame is selected when location is changed. To switch to a diferent frame use the `goto` method with the `frame:` option:
 
 ```ruby
-pincers.goto frame: css('#my-frame')
+pincers.goto 'http://www.someurlwithfram.es'
+pincers.goto frame: pincers.css('#my-frame')
 pincers.text # this will return the '#my-frame' frame contents
 ```
 
-You can also use a selector directly
+Tip: You can also use a selector directly
 
 ```ruby
 pincers.goto frame: '#my-frame'
