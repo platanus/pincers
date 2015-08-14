@@ -1,4 +1,6 @@
-# Pincers
+# Pincers ![Build Status][travis-badge]
+
+[travis-badge]: https://travis-ci.org/nicolasmery/pincers.svg?branch=master
 
 Pincers is a jQuery inspired web automation framework with multiple backend support.
 
