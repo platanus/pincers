@@ -42,10 +42,10 @@ module Pincers::Core
           _urlOrOptions = { url: _urlOrOptions }
         end
 
-        if _urlOrOptions.key? :frame
+        if _urlOrOptions.key? :url
+          goto_url _urlOrOptions[:url]
+        elsif _urlOrOptions.key? :frame
           goto_frame _urlOrOptions[:frame]
-        elsif _urlOrOptions.key? :url
-          backend.navigate_to _urlOrOptions[:url]
         else
           raise ArgumentError.new "Must provide a valid target when calling 'goto'"
         end
@@ -77,6 +77,11 @@ module Pincers::Core
     end
 
   private
+
+    def goto_url(_url)
+      _url = "http://#{_url}" unless /^(https?|file|ftp):\/\// === _url
+      backend.navigate_to _url
+    end
 
     def goto_frame(_frame)
       case _frame

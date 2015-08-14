@@ -45,8 +45,13 @@ describe Pincers::Core::RootContext do
 
   describe "goto" do
     it "should call navigate_to and return self" do
+      expect(pincers.goto 'http://foo.bar').to eq(pincers)
+      expect(backend).to have_received(:navigate_to).with('http://foo.bar')
+    end
+
+    it "should validate url and add protocoll information if missing" do
       expect(pincers.goto 'foo.bar').to eq(pincers)
-      expect(backend).to have_received(:navigate_to).with('foo.bar')
+      expect(backend).to have_received(:navigate_to).with('http://foo.bar')
     end
 
     it "should call switch_to_frame with proper element if called with frame: context" do
