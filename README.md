@@ -2,9 +2,9 @@
 
 Pincers is a jQuery inspired DSL that wraps both webdriver and nokogiri.
 
-## Why
+### Why?
 
-The jQuery interface solves DOM element selection in a very practical way that most programmers feel comfortable with. When using webdriver or nokogiri we'd found ourselves missing jQuery's ease of use... Until now! :D
+The jQuery interface solves DOM element selection in a very practical way that most programmers feel comfortable with. When using both webdriver and nokogiri directly, we find ourselves missing jQuery's ease of use.
 
 ## Basic usage
 
