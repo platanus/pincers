@@ -224,9 +224,23 @@ To get the contained nodes on a pincers **context** use `elements`
 ```ruby
 pincers.css('.foo').elements # array of webdriver elements or nokogiri nodes.
 ```
+
+## Contributing
+
+1. [Fork it](/#fork-destination-box)
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request
+
 ## Credits
 
+Thank you [contributors](https://github.com/platanus/pincers/graphs/contributors)!
 
 <img src="https://cloud.githubusercontent.com/assets/313750/9365675/3409359a-4689-11e5-86b0-3921819c51f8.png" alt="Crabfarm" width="250"/>
 
 Pincers is part of the [Crabfarm Framework](http://crabfarm.io/code).
+
+## License
+
+Pincers is © 2015 [Platanus, spa](http://platan.us). It is free software and may be redistributed under the MIT License terms specified in the [LICENSE](https://raw.githubusercontent.com/platanus/pincers/master/LICENSE.txt) file.
