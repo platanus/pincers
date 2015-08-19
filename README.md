@@ -9,17 +9,29 @@ Pincers is a jQuery inspired DSL that wraps both webdriver and nokogiri.
 
 The jQuery interface solves DOM element selection in a very practical way that most programmers feel comfortable with. When using any of the options listed above, we found ourselves missing jQuery's ease of use.
 
+## Install
+
+To install just run:
+```
+gem install pincers
+```
+
+Or add to your Gemfile and run `bundle install`:
+```ruby
+gem 'pincers'
+```
+
 ## Basic usage
 
 Create a new pincers root **context** from a webdriver session:
 
-```
+```ruby
 pincers = Pincers.for_webdriver driver
 ```
 
 Or from a nokogiri document
 
-```
+```ruby
 pincers = Pincers.for_nokogiri document
 ```
 
