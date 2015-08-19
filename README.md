@@ -224,3 +224,9 @@ To get the contained nodes on a pincers **context** use `elements`
 ```ruby
 pincers.css('.foo').elements # array of webdriver elements or nokogiri nodes.
 ```
+## Credits
+
+
+<img src="https://cloud.githubusercontent.com/assets/313750/9365675/3409359a-4689-11e5-86b0-3921819c51f8.png" alt="Crabfarm" width="250"/>
+
+Pincers is part of the [Crabfarm Framework](http://crabfarm.io/code).
