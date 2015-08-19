@@ -22,13 +22,13 @@ gem 'pincers'
 
 Create a new pincers root **context** from a webdriver session:
 
-```
+```ruby
 pincers = Pincers.for_webdriver driver
 ```
 
 Or from a nokogiri document
 
-```
+```ruby
 pincers = Pincers.for_nokogiri document
 ```
 
