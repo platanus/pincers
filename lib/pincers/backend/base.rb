@@ -72,8 +72,24 @@ module Pincers::Backend
       ensure_implementation :set_element_text
     end
 
-    def click_on_element(_element)
+    def click_on_element(_element, _modifiers)
       ensure_implementation :click_on_element
+    end
+
+    def right_click_on_element(_element)
+      ensure_implementation :right_click_on_element
+    end
+
+    def double_click_on_element(_element)
+      ensure_implementation :double_click_on_element
+    end
+
+    def hover_over_element(_element)
+      ensure_implementation :hover_over_element
+    end
+
+    def drag_and_drop(_element, _into)
+      ensure_implementation :drag_and_drop
     end
 
     def switch_to_frame(_element)

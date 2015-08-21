@@ -137,6 +137,12 @@ Click on a button (or any other element)
 pincers.css('a#some-link').click
 ```
 
+Hover over an element
+
+```ruby
+pincers.css('div#some-menu').hover
+```
+
 ### Root properties
 
 The root context has some special methods to access document properties.

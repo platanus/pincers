@@ -100,12 +100,42 @@ module Pincers::Core
       wrap_errors do
         backend.set_element_text element!, _value
       end
+      self
     end
 
-    def click
+    def click(*_modifiers)
       wrap_errors do
-        backend.click_on_element element!
+        backend.click_on_element element!, _modifiers
       end
+      self
+    end
+
+    def right_click
+      wrap_errors do
+        backend.right_click_on_element element!
+      end
+      self
+    end
+
+    def double_click
+      wrap_errors do
+        backend.double_click_on_element element!
+      end
+      self
+    end
+
+    def hover
+      wrap_errors do
+        backend.hover_over_element element!
+      end
+      self
+    end
+
+    def drag_to(_element)
+      wrap_errors do
+        backend.drag_and_drop element!, _element.element!
+      end
+      self
     end
 
     # context related

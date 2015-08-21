@@ -22,6 +22,10 @@ describe Pincers::Core::RootContext do
     allow(be).to receive(:extract_element_attribute)  { |el, attribute| "#{el} #{attribute}" }
     allow(be).to receive(:set_element_text)
     allow(be).to receive(:click_on_element)
+    allow(be).to receive(:double_click_on_element)
+    allow(be).to receive(:right_click_on_element)
+    allow(be).to receive(:hover_over_element)
+    allow(be).to receive(:drag_and_drop)
     allow(be).to receive(:switch_to_frame)
     allow(be).to receive(:switch_to_top_frame)
     allow(be).to receive(:switch_to_parent_frame)
@@ -136,17 +140,29 @@ describe Pincers::Core::RootContext do
     end
   end
 
-  describe "set_text" do
-    it "should map to backend's set_element_text" do
-      pincers.set_text 'foo'
-      expect(backend).to have_received(:set_element_text).with('root_element', 'foo')
+  # Test simple input methods
+
+  [
+    { name: :set_text, mapped_to: :set_element_text, args: ['foo'], expected_args: [ 'root_element', 'foo' ] },
+    { name: :click, mapped_to: :click_on_element, expected_args: [ 'root_element', [] ] },
+    { name: :click, mapped_to: :click_on_element, args: ['modifier'], expected_args: [ 'root_element', ['modifier'] ] },
+    { name: :right_click, mapped_to: :right_click_on_element },
+    { name: :double_click, mapped_to: :double_click_on_element },
+    { name: :hover, mapped_to: :hover_over_element }
+  ]
+  .each do |method|
+    describe method[:name] do
+      it "should map to backend.#{method[:mapped_to]}" do
+        expect(pincers.send *([method[:name]] + (method[:args] || []))).to eq pincers
+        expect(backend).to have_received(method[:mapped_to]).with(*(method[:expected_args] || ['root_element']))
+      end
     end
   end
 
-  describe "click" do
-    it "should map to backend's click_on_element" do
-      pincers.click
-      expect(backend).to have_received(:click_on_element).with('root_element')
+  describe "drag_to" do
+    it "should map to backend.drag_and_drop" do
+      pincers.css('sel').first.drag_to pincers.css('sel').last
+      expect(backend).to have_received(:drag_and_drop).with('child_element_1', 'child_element_2')
     end
   end
 
