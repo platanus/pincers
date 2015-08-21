@@ -1,6 +1,6 @@
 # Pincers
 
-Pincers is a jQuery inspired DSL that wraps both webdriver and nokogiri.
+Pincers is a jQuery inspired Ruby DSL on top of webdriver. In other words: an easy to use set of functions that allow you to scrape or automate navigation of a Javascript intensive webpage.
 
 ![pincers diagram](https://cloud.githubusercontent.com/assets/313750/9365154/5ec7213c-4686-11e5-9fbd-7e9b22dae25d.png)
 
