@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="text/javascript" src="/assets/jquery-2.1.4.min.js"></script>
+		<script type="text/javascript" >
+			$(function() {
+				$('button#hover').hover(function() {
+					$('#hover-container').html('hover content');
+				}, function() {
+					$('#hover-container').html('');
+				});
+
+				setTimeout(function() {
+					$('#timeout-experiment').append('<li id="half-second-content">slow content</li>');
+				}, 500);
+
+				setTimeout(function() {
+					$('#timeout-experiment').append('<li id="five-second-content">slow content</li>');
+				}, 5000);
+			})
+		</script>
+	</head>
+	<body>
+		<div id="hover-experiment">
+			<button id="hover">Hover over!</button>
+			<div id="hover-container">
+			</div>
+		</div>
+		<ul id="timeout-experiment">
+		</ul>
+	</body>
+</html>
