@@ -9,12 +9,13 @@ module Pincers::Core
     include Pincers::Extension::Queries
     include Pincers::Extension::Actions
 
-    attr_reader :parent, :elements, :query
+    attr_reader :parent, :query
 
     def_delegators :elements, :length, :count, :empty?
 
     def initialize(_elements, _parent, _query)
       @elements = _elements
+      @scope = if @elements.nil? then nil else :all end
       @parent = _parent
       @query = _query
     end
@@ -35,8 +36,14 @@ module Pincers::Core
       backend.document
     end
 
+    def elements
+      reload_elements :all
+      @elements
+    end
+
     def element
-      elements.first
+      reload_elements :single
+      @elements.first
     end
 
     def element!
@@ -67,7 +74,7 @@ module Pincers::Core
     end
 
     def first
-      if elements.first.nil? then nil else wrap_siblings [elements.first] end
+      if element.nil? then nil else wrap_siblings [element] end
     end
 
     def first!
@@ -179,14 +186,12 @@ module Pincers::Core
     end
 
     def ensure_present
-      if @elements.count == 0
-        reload
-        @elements.count > 0
-      else true end
+      reload if element.nil?
+      not element.nil?
     end
 
     def ensure_actionable
-      backend.element_is_actionable? @elements.first
+      backend.element_is_actionable? element
     end
 
     def wrap_errors
@@ -213,15 +218,30 @@ module Pincers::Core
     end
 
     def wrap_childs(_query)
-      SearchContext.new _query.execute(elements), self, _query
+      child_elements = if advanced_mode? then _query.execute(elements) else nil end
+      SearchContext.new child_elements, self, _query
     end
 
     def parent_needs_reload?
       !parent.frozen? && parent.elements.count == 0
     end
 
-    def reload_elements
-      @elements = @query.execute parent.elements
+    def reload_elements(_scope=nil)
+      case _scope
+      when :all
+        return if @scope == :all
+        @scope = :all
+      when :single
+        return unless @scope.nil?
+        @scope = :single
+      end
+
+      if @scope == :single
+        @elements = @query.execute parent.elements, 1 # force single record
+      else
+        @elements = @query.execute parent.elements
+        @scope = :all if @scope.nil?
+      end
     end
 
     def poll_until(_description, _options={})

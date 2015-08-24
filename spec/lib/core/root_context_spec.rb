@@ -125,25 +125,45 @@ describe Pincers::Core::RootContext do
   end
 
   describe "css" do
-    it "should invoke the search_by_css method with the given selector for every context element" do
+    it "should load a new child context that applies the given query" do
       childs = pincers.css('selector')
-      expect(backend).to have_received(:search_by_css).exactly(1).times
+      expect(childs.query.lang).to eq :css
+      expect(childs.query.query).to eq 'selector'
+      expect(childs.query.limit).to be nil
 
-      grandchilds = childs.css('selector')
-      expect(backend).to have_received(:search_by_css).exactly(3).times
+      childs = pincers.css('selector', limit: 1)
+      expect(childs.query.limit).to be 1
+    end
 
-      expect(grandchilds.count).to eq(4)
+    context "when in advanced mode" do
+
+      before { allow(pincers).to receive(:advanced_mode?) { true } }
+
+      it "should automatically invoke the backend.search_by_css method" do
+        childs = pincers.css('selector')
+        expect(backend).to have_received(:search_by_css).exactly(1).times
+      end
     end
   end
 
   describe "reload" do
     it "should repeat the search result's query" do
-      pincers.css('selector').reload
+      pincers.css('selector').reload.reload
       expect(backend).to have_received(:search_by_css).exactly(2).times
     end
 
     it "should fail for frozen sets" do
       expect { pincers.css('selector')[1].reload }.to raise_error Pincers::FrozenSetError
+    end
+
+    context "when parent hasnt been loaded yet" do
+
+      let!(:parents) { pincers.css('selector') }
+
+      it "should trigger reload on parent" do
+        parents.css('other').reload
+        expect(backend).to have_received(:search_by_css).exactly(3).times # 1 for parent and 1 for each of the 2 childs
+      end
     end
   end
 
@@ -179,9 +199,44 @@ describe Pincers::Core::RootContext do
     end
   end
 
-  context "given a search result" do
+  context "given an unloaded search result" do
 
     let(:search) { pincers.css('selector') }
+
+    describe "element" do
+      it "should trigger elements to be loaded with limit: 1 and return first element" do
+        search.element
+        expect(backend).to have_received(:search_by_css).with('root_element', 'selector', 1)
+      end
+
+      context "after calling elements" do
+
+        before { search.elements }
+
+        it "should not trigger an elements reloading" do
+          search.element
+          expect(backend).to have_received(:search_by_css).exactly(1).times
+        end
+      end
+    end
+
+    describe "elements" do
+      it "should trigger elements to be loaded with original limit and return all elements" do
+        search.elements
+        expect(backend).to have_received(:search_by_css).with('root_element', 'selector', nil)
+      end
+
+      context "after calling element" do
+
+        before { search.element }
+
+        it "should trigger element to be reloaded with origin limit" do
+          expect(backend).to have_received(:search_by_css).with('root_element', 'selector', 1)
+          search.elements
+          expect(backend).to have_received(:search_by_css).with('root_element', 'selector', nil)
+        end
+      end
+    end
 
     describe "is Enumerable" do
       it "should iterate over matching elements, wrapping each element in a new context" do
