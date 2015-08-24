@@ -45,9 +45,9 @@ module Pincers::Core
       element
     end
 
-    def reload(_full=false)
+    def reload
       raise Pincers::FrozenSetError.new self if frozen?
-      parent.reload _full if parent_needs_reload? _full
+      parent.reload if parent_needs_reload?
       wrap_errors { reload_elements }
       self
     end
@@ -216,8 +216,8 @@ module Pincers::Core
       SearchContext.new _query.execute(elements), self, _query
     end
 
-    def parent_needs_reload?(_full)
-      (parent.elements.count == 0) || (_full && !parent.frozen?)
+    def parent_needs_reload?
+      !parent.frozen? && parent.elements.count == 0
     end
 
     def reload_elements
