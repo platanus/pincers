@@ -72,6 +72,10 @@ module Pincers::Backend
       ensure_implementation :clear_input
     end
 
+    def element_is_actionable?(_element)
+      return true
+    end
+
     def set_element_text(_element, _value)
       ensure_implementation :set_element_text
     end

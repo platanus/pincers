@@ -40,6 +40,7 @@ module Pincers::Core
     end
 
     def element!
+      wait?(:present) unless frozen? or advanced_mode?
       raise Pincers::EmptySetError.new self if empty?
       element
     end
@@ -109,45 +110,35 @@ module Pincers::Core
       end
     end
 
-    # Input related
+    # input related
 
     def set_text(_value)
-      wrap_errors do
-        backend.set_element_text element!, _value
-      end
-      self
+      perform_action { |el| backend.set_element_text el, _value }
     end
 
     def click(*_modifiers)
-      wrap_errors do
-        backend.click_on_element element!, _modifiers
-      end
-      self
+      perform_action { |el| backend.click_on_element el, _modifiers }
     end
 
     def right_click
-      wrap_errors do
-        backend.right_click_on_element element!
-      end
-      self
+      perform_action { |el| backend.right_click_on_element el }
     end
 
     def double_click
-      wrap_errors do
-        backend.double_click_on_element element!
-      end
-      self
+      perform_action { |el| backend.double_click_on_element el }
     end
 
     def hover
-      wrap_errors do
-        backend.hover_over_element element!
-      end
-      self
+      perform_action { |el| backend.hover_over_element el }
     end
 
     def drag_to(_element)
       wrap_errors do
+        if advanced_mode?
+          wait_actionable
+          _element.wait_actionable
+        end
+
         backend.drag_and_drop element!, _element.element!
       end
       self
@@ -159,10 +150,43 @@ module Pincers::Core
       root.goto frame: self
     end
 
+    # waiting
+
+    def wait?(_condition, _options={}, &_block)
+      poll_until(_condition, _options) do
+        case _condition
+        when :present
+          ensure_present
+        when :actionable
+          ensure_present and ensure_actionable
+        else
+          check_method = "check_#{_condition}"
+          raise Pincers::MissingFeatureError.new check_method unless backend.respond_to? check_method
+          ensure_present and check_method.call(elements)
+        end
+      end
+    end
+
+    def wait(_condition, _options)
+      raise Pincers::ConditionTimeoutError.new self, _condition unless wait?(_condition, _options)
+      return self
+    end
+
   private
 
     def advanced_mode?
       root.advanced_mode?
+    end
+
+    def ensure_present
+      if @elements.count == 0
+        reload
+        @elements.count > 0
+      else true end
+    end
+
+    def ensure_actionable
+      backend.element_is_actionable? @elements.first
     end
 
     def wrap_errors
@@ -173,6 +197,15 @@ module Pincers::Core
       rescue Exception => exc
         raise Pincers::BackendError.new self, exc
       end
+    end
+
+    def perform_action
+      wrap_errors do
+        wait?(:actionable) unless advanced_mode?
+        raise Pincers::EmptySetError.new self if empty?
+        yield elements.first
+      end
+      self
     end
 
     def wrap_siblings(_elements)
@@ -189,6 +222,19 @@ module Pincers::Core
 
     def reload_elements
       @elements = @query.execute parent.elements
+    end
+
+    def poll_until(_description, _options={})
+      timeout = _options.fetch :timeout, root.default_timeout
+      interval = _options.fetch :interval, root.default_interval
+      end_time = Time.now + timeout
+
+      while Time.now <= end_time
+        return true if !!yield
+        sleep interval
+      end
+
+      return false
     end
 
   end

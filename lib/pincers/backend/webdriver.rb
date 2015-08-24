@@ -75,6 +75,12 @@ module Pincers::Backend
       _element[_name]
     end
 
+    def element_is_actionable?(_element)
+      # this is the base requisite in webdriver for actionable elements:
+      # non displayed items will always error on action
+      _element.displayed?
+    end
+
     def set_element_text(_element, _value)
       _element = ensure_ready_for_input _element
       _element.clear
@@ -122,18 +128,8 @@ module Pincers::Backend
       @driver.switch_to.default_content
     end
 
-    # wait contitions
-
-    def check_present(_elements)
-      _elements.length > 0
-    end
-
-    def check_not_present(_elements)
-      _elements.length == 0
-    end
-
     def check_visible(_elements)
-      check_present(_elements) and _elements.first.displayed?
+      _elements.first.displayed?
     end
 
     def check_enabled(_elements)

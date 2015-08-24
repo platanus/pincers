@@ -21,6 +21,7 @@ describe Pincers::Core::RootContext do
     allow(be).to receive(:extract_element_text)       { |el| "#{el} text" }
     allow(be).to receive(:extract_element_html)       { |el| "<div>#{el} html</div>" }
     allow(be).to receive(:extract_element_attribute)  { |el, attribute| "#{el} #{attribute}" }
+    allow(be).to receive(:element_is_actionable?)     { true }
     allow(be).to receive(:set_element_text)
     allow(be).to receive(:click_on_element)
     allow(be).to receive(:double_click_on_element)
