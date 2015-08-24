@@ -5,7 +5,8 @@ module Pincers::Support
 
     FIELDS = [
       [:wait_timeout, 10.0],
-      [:wait_interval, 0.2]
+      [:wait_interval, 0.2],
+      [:advanced_mode, false]
     ];
 
     FIELDS.each do |field|

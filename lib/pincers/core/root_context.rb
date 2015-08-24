@@ -76,6 +76,10 @@ module Pincers::Core
       @config[:wait_interval]
     end
 
+    def advanced_mode?
+      @config[:advanced_mode]
+    end
+
   private
 
     def wrap_siblings(_elements)

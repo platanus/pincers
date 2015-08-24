@@ -161,6 +161,10 @@ module Pincers::Core
 
   private
 
+    def advanced_mode?
+      root.advanced_mode?
+    end
+
     def wrap_errors
       begin
         yield
