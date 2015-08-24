@@ -11,6 +11,10 @@ module Pincers::Backend
       @driver = _driver
     end
 
+    def javascript_enabled?
+      true
+    end
+
     def document_root
       [@driver]
     end
@@ -43,11 +47,11 @@ module Pincers::Backend
       @driver.navigate.refresh
     end
 
-    def search_by_css(_element, _selector)
+    def search_by_css(_element, _selector, _limit)
       _element.find_elements css: _selector
     end
 
-    def search_by_xpath(_element, _selector)
+    def search_by_xpath(_element, _selector, _limit)
       _element.find_elements xpath: _selector
     end
 
@@ -72,14 +76,42 @@ module Pincers::Backend
     end
 
     def set_element_text(_element, _value)
-      _element = ensure_element _element
+      _element = ensure_ready_for_input _element
       _element.clear
       _element.send_keys _value
     end
 
-    def click_on_element(_element)
-      _element = ensure_element _element
-      _element.click
+    def click_on_element(_element, _modifiers)
+      _element = ensure_ready_for_input _element
+      if _modifiers.length == 0
+        _element.click
+      else
+        click_with_modifiers(_element, _modifiers)
+      end
+    end
+
+    def right_click_on_element(_element)
+      assert_has_input_devices_for :right_click_on_element
+      _element = ensure_ready_for_input _element
+      actions.context_click(_element).perform
+    end
+
+    def double_click_on_element(_element)
+      assert_has_input_devices_for :double_click_on_element
+      _element = ensure_ready_for_input _element
+      actions.double_click(_element).perform
+    end
+
+    def hover_over_element(_element)
+      assert_has_input_devices_for :hover_over_element
+      _element = ensure_ready_for_input _element
+      actions.move_to(_element).perform
+    end
+
+    def drag_and_drop(_element, _on)
+      assert_has_input_devices_for :drag_and_drop
+      _element = ensure_input_element _element
+      actions.drag_and_drop(_element, _on).perform
     end
 
     def switch_to_frame(_element)
@@ -114,8 +146,32 @@ module Pincers::Backend
 
   private
 
+    def actions
+      @driver.action
+    end
+
+    def click_with_modifiers(_element, _modifiers)
+      assert_has_input_devices_for :click_with_modifiers
+      _modifiers.each { |m| actions.key_down m }
+      actions.click _element
+      _modifiers.each { |m| actions.key_up m }
+      actions.perform
+    end
+
+    def assert_has_input_devices_for(_name)
+      unless @driver.kind_of? Selenium::WebDriver::DriverExtensions::HasInputDevices
+        raise MissingFeatureError, _name
+      end
+    end
+
     def ensure_element(_element)
       return @driver.find_element tag_name: 'html' if _element == @driver
+      _element
+    end
+
+    def ensure_ready_for_input(_element)
+      _element = ensure_element _element
+      Selenium::WebDriver::Wait.new.until { _element.displayed? }
       _element
     end
 

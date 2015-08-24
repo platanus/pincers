@@ -5,6 +5,7 @@ describe Pincers::Core::RootContext do
 
   let!(:backend) do
     be = double('Pincers::Backend::Base')
+    allow(be).to receive(:javascript_enabled?)        { true }
     allow(be).to receive(:document)                   { 'not a real document' }
     allow(be).to receive(:document_root)              { ['root_element'] }
     allow(be).to receive(:document_url)               { 'the.page.url' }
@@ -131,6 +132,17 @@ describe Pincers::Core::RootContext do
       expect(backend).to have_received(:search_by_css).exactly(3).times
 
       expect(grandchilds.count).to eq(4)
+    end
+  end
+
+  describe "reload" do
+    it "should repeat the search result's query" do
+      pincers.css('selector').reload
+      expect(backend).to have_received(:search_by_css).exactly(2).times
+    end
+
+    it "should fail for frozen sets" do
+      expect { pincers.css('selector')[1].reload }.to raise_error Pincers::FrozenSetError
     end
   end
 

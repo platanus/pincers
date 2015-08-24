@@ -12,11 +12,11 @@ module Pincers::Backend
       document.title
     end
 
-    def search_by_css(_element, _selector)
+    def search_by_css(_element, _selector, _limit)
       _element.css _selector
     end
 
-    def search_by_xpath(_element, _selector)
+    def search_by_xpath(_element, _selector, _limit)
       _element.xpath _selector
     end
 

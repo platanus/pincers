@@ -1,5 +1,6 @@
 require 'pincers/extension/queries'
 require 'pincers/extension/actions'
+require 'pincers/support/query'
 
 module Pincers::Core
   class SearchContext
@@ -8,13 +9,18 @@ module Pincers::Core
     include Pincers::Extension::Queries
     include Pincers::Extension::Actions
 
-    attr_accessor :parent, :elements
+    attr_reader :parent, :elements, :query
 
     def_delegators :elements, :length, :count, :empty?
 
-    def initialize(_elements, _parent)
+    def initialize(_elements, _parent, _query)
       @elements = _elements
       @parent = _parent
+      @query = _query
+    end
+
+    def frozen?
+      !backend.javascript_enabled? || @query.nil?
     end
 
     def root
@@ -38,8 +44,15 @@ module Pincers::Core
       element
     end
 
+    def reload(_full=false)
+      raise Pincers::FrozenSetError.new self if frozen?
+      parent.reload _full if parent_needs_reload? _full
+      wrap_errors { reload_elements }
+      self
+    end
+
     def each
-      elements.each { |el| yield wrap_elements [el] }
+      elements.each { |el| yield wrap_siblings [el] }
     end
 
     def [](*args)
@@ -48,31 +61,33 @@ module Pincers::Core
           backend.extract_element_attribute element!, args[0]
         end
       else
-        wrap_elements Array(elements.send(:[],*args))
+        wrap_siblings Array(elements.send(:[],*args))
       end
     end
 
     def first
-      if elements.first.nil? then nil else wrap_elements [elements.first] end
+      if elements.first.nil? then nil else wrap_siblings [elements.first] end
     end
 
     def first!
-      first or raise Pincers::EmptySetError.new(self)
+      wrap_siblings [element!]
     end
 
     def last
-      if elements.last.nil? then nil else wrap_elements [elements.last] end
+      if elements.last.nil? then nil else wrap_siblings [elements.last] end
     end
 
     def css(_selector, _options={})
-      search_with_options _options do
-        explode_elements { |e| backend.search_by_css e, _selector }
+      wrap_errors do
+        query = Pincers::Support::Query.new backend, :css, _selector, _options[:limit]
+        wrap_childs query
       end
     end
 
     def xpath(_selector, _options={})
-      search_with_options _options do
-        explode_elements { |e| backend.search_by_xpath e, _selector }
+      wrap_errors do
+        query = Pincers::Support::Query.new backend, :xpath, _selector, _options[:limit]
+        wrap_childs query
       end
     end
 
@@ -156,39 +171,20 @@ module Pincers::Core
       end
     end
 
-    def wrap_elements(_elements)
-      SearchContext.new _elements, self
+    def wrap_siblings(_elements)
+      SearchContext.new _elements, parent, nil
     end
 
-    def search_with_options(_options, &_block)
-      wrap_errors do
-        wait_for = _options.delete(:wait)
-        return wrap_elements _block.call unless wait_for
-        wrap_elements poll_until(wait_for, _options, &_block)
-      end
+    def wrap_childs(_query)
+      SearchContext.new _query.execute(elements), self, _query
     end
 
-    def explode_elements
-      elements.inject([]) do |r, element|
-        r + yield(element)
-      end
+    def parent_needs_reload?(_full)
+      (parent.elements.count == 0) || (_full && !parent.frozen?)
     end
 
-    def poll_until(_condition, _options, &_search)
-      check_method = "check_#{_condition}"
-      raise Pincers::MissingFeatureError.new check_method unless backend.respond_to? check_method
-
-      timeout = _options.fetch :timeout, root.default_timeout
-      interval = _options.fetch :interval, root.default_interval
-      end_time = Time.now + timeout
-
-      until Time.now > end_time
-        new_elements = _search.call
-        return new_elements if backend.send check_method, new_elements
-        sleep interval
-      end
-
-      raise Pincers::ConditionTimeoutError.new self, _condition
+    def reload_elements
+      @elements = @query.execute parent.elements
     end
 
   end

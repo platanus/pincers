@@ -8,6 +8,10 @@ module Pincers::Backend
       @document = _document
     end
 
+    def javascript_enabled?
+      false
+    end
+
     def document_root
       ensure_implementation :document_root
     end
@@ -40,11 +44,11 @@ module Pincers::Backend
       ensure_implementation :refresh_document
     end
 
-    def search_by_css(_element, _selector)
+    def search_by_css(_element, _selector, _limit)
       ensure_implementation :search_by_css
     end
 
-    def search_by_xpath(_element, _selector)
+    def search_by_xpath(_element, _selector, _limit)
       ensure_implementation :search_by_xpath
     end
 
