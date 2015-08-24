@@ -48,11 +48,11 @@ module Pincers::Backend
     end
 
     def search_by_css(_element, _selector, _limit)
-      _element.find_elements css: _selector
+      search _element, { css: _selector }, _limit
     end
 
     def search_by_xpath(_element, _selector, _limit)
-      _element.find_elements xpath: _selector
+      search _element, { xpath: _selector }, _limit
     end
 
     def extract_element_tag(_element)
@@ -141,6 +141,18 @@ module Pincers::Backend
     end
 
   private
+
+    def search(_element, _query, _limit)
+      if _limit == 1
+        begin
+          [_element.find_element(_query)]
+        rescue Selenium::WebDriver::Error::NoSuchElementError
+          []
+        end
+      else
+        _element.find_elements _query
+      end
+    end
 
     def actions
       @driver.action
