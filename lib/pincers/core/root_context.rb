@@ -7,7 +7,7 @@ module Pincers::Core
     attr_reader :config
 
     def initialize(_backend, _config={})
-      super _backend.document_root, nil
+      super _backend.document_root, nil, nil
       @backend = _backend
       @config = Pincers.config.values.merge _config
     end
@@ -76,7 +76,16 @@ module Pincers::Core
       @config[:wait_interval]
     end
 
+    def advanced_mode?
+      @config[:advanced_mode]
+    end
+
   private
+
+    def wrap_siblings(_elements)
+      # root node siblings behave like childs
+      SearchContext.new _elements, self, nil
+    end
 
     def goto_url(_url)
       _url = "http://#{_url}" unless /^(https?|file|ftp):\/\// === _url

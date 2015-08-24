@@ -8,6 +8,7 @@ describe 'Pincers::Backend::Webdriver' do
   }
 
   before {
+    @driver.switch_to.default_content
     @driver.get "http://localhost:#{SERVER_PORT}/index.html"
   }
 
@@ -19,13 +20,14 @@ describe 'Pincers::Backend::Webdriver' do
   it_should_properly_read_the_example
   it_should_properly_enter_data_in_example
   it_should_properly_handle_frames_in_example
+  it_should_properly_handle_dynamic_markup
 
   describe :css do
     context "when wait :present option is used" do
       pending "should wait a given condition if required"
 
       it "should fail with timeout error if wait times out" do
-        expect { pincers.css('.non-existant', wait: :present, timeout: 0.1) }.to raise_error(Pincers::ConditionTimeoutError)
+        expect { pincers.css('.non-existant').wait(:present, timeout: 0.1) }.to raise_error(Pincers::ConditionTimeoutError)
       end
     end
   end

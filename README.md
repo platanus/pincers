@@ -152,6 +152,12 @@ Click on a button (or any other element)
 pincers.css('a#some-link').click
 ```
 
+Hover over an element
+
+```ruby
+pincers.css('div#some-menu').hover
+```
+
 ### Root properties
 
 The root context has some special methods to access document properties.
@@ -204,7 +210,7 @@ pincers.goto frame: :top
 In javascript enabled backends like webdriver, sometimes it's necessary to wait for an element to appear before doing something with it:
 
 ```ruby
-pincers.css('#my-async-stuff', wait: :present)
+pincers.css('#my-async-stuff').wait(:enabled)
 ```
 
 When using the webdriver backend, it's posible to wait on the following states:
@@ -212,13 +218,11 @@ When using the webdriver backend, it's posible to wait on the following states:
 * `:present`: wait for element to show up in the DOM
 * `:visible`: wait for element to be visible
 * `:enabled`: wait for input to be enabled
-* `:not_present`: wait for element to be removed from DOM
-* `:not_visible`: wait for element to be hidden
 
 By default, the waiting process times out in 10 seconds. This can be changed by setting the `Pincers.config.wait_timeout` property or by calling the search function with the `timeout:` option:
 
 ```ruby
-pincers.css('#my-async-stuff', wait: :present, timeout: 5.0)
+pincers.css('#my-async-stuff').wait(:enabled, timeout: 5.0)
 ```
 
 #### Accessing the underlying backend objects

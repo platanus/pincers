@@ -26,6 +26,14 @@ module Pincers
 
   end
 
+  class FrozenSetError < ContextError
+
+    def initialize(_context)
+      super _context, "The set is frozen and cant be modified"
+    end
+
+  end
+
   class EmptySetError < ContextError
 
     def initialize(_context)
