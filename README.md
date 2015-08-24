@@ -89,15 +89,23 @@ parents = pincers.css('.my-class')
 parents.css('.child-class') # will select all childs except fourth-child
 ```
 
-### Single element properties
+### Context properties
 
-There are several methods that when called on a **context** will only apply to the first element contained by that context:
-
-Retrieve the text contents from the first matching element.
+Retrieve the concatenated text contents for all matched elements.
 
 ```ruby
-pincers.css('.child-class').text # = 'Foo'
+pincers.css('#first-parent').css('.child-class').text # = 'FooBar'
 ```
+
+Retrieve the concatenated html contents for all matched elements.
+
+```ruby
+pincers.css('.child-class').to_html # will dump all p elements in our example.
+```
+
+#### First element properties
+
+There are several methods that when called on a **context** will only apply to the first element contained by that context:
 
 Retrieve an attribute from the first matching element:
 
@@ -207,7 +215,8 @@ pincers.goto frame: :top
 
 #### Waiting for a condition
 
-In javascript enabled backends like webdriver, sometimes it's necessary to wait for an element to appear before doing something with it:
+In javascript enabled backends like webdriver, even though pincers will do it's best to do most of the waiting, it is sometimes necessary to wait for an
+special condition before interacting with an element:
 
 ```ruby
 pincers.css('#my-async-stuff').wait(:enabled)
@@ -215,9 +224,9 @@ pincers.css('#my-async-stuff').wait(:enabled)
 
 When using the webdriver backend, it's posible to wait on the following states:
 
-* `:present`: wait for element to show up in the DOM
 * `:visible`: wait for element to be visible
 * `:enabled`: wait for input to be enabled
+* `:present`: wait for element to show up in the DOM (should not be necessary)
 
 By default, the waiting process times out in 10 seconds. This can be changed by setting the `Pincers.config.wait_timeout` property or by calling the search function with the `timeout:` option:
 

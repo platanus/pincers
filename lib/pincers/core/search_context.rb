@@ -107,7 +107,7 @@ module Pincers::Core
 
     def text
       wrap_errors do
-        backend.extract_element_text element!
+        elements.map { |e| backend.extract_element_text e }.join
       end
     end
 

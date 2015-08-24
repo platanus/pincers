@@ -12,7 +12,7 @@ module Macros
 
     describe "text" do
       it { expect(pincers.text).to include('Lorem ipsum dolor sit amet') }
-      it { expect(pincers.css('ul.bikes li').text).to eq('GT') }
+      it { expect(pincers.css('ul.bikes li').text).to eq('GTMongooseKona') }
     end
 
     describe "to_html" do
