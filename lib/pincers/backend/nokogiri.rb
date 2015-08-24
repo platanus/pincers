@@ -13,10 +13,12 @@ module Pincers::Backend
     end
 
     def search_by_css(_element, _selector, _limit)
+      # nokogiri does not do any query level optimization when searching just one node
       _element.css _selector
     end
 
     def search_by_xpath(_element, _selector, _limit)
+      # nokogiri does not do any query level optimization when searching just one node
       _element.xpath _selector
     end
 
