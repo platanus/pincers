@@ -1,3 +1,4 @@
+require 'selenium-webdriver'
 require 'pincers/backend/base'
 
 module Pincers::Backend
