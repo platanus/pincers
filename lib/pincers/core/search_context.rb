@@ -1,5 +1,6 @@
 require 'pincers/extension/queries'
 require 'pincers/extension/actions'
+require 'pincers/extension/labs'
 require 'pincers/support/query'
 
 module Pincers::Core
@@ -8,6 +9,7 @@ module Pincers::Core
     extend Forwardable
     include Pincers::Extension::Queries
     include Pincers::Extension::Actions
+    include Pincers::Extension::Labs
 
     attr_reader :parent, :query
 
@@ -26,6 +28,10 @@ module Pincers::Core
 
     def root
       parent.root
+    end
+
+    def root?
+      false
     end
 
     def backend

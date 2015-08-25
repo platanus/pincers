@@ -16,6 +16,10 @@ module Pincers::Core
       self
     end
 
+    def root?
+      true
+    end
+
     def backend
       @backend
     end
