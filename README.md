@@ -113,6 +113,7 @@ Retrieve an attribute from the first matching element:
 
 ```ruby
 pincers.css('.child-class')[:id] # = 'first-child'
+pincers.css('.child-class').attribute('id') # same as above
 ```
 
 Retrieve the tag name from an element:

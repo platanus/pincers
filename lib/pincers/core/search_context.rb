@@ -71,9 +71,7 @@ module Pincers::Core
 
     def [](*args)
       if args[0].is_a? String or args[0].is_a? Symbol
-        wrap_errors do
-          backend.extract_element_attribute element!, args[0]
-        end
+        attribute args[0]
       else
         wrap_siblings Array(elements.send(:[],*args))
       end
@@ -102,6 +100,12 @@ module Pincers::Core
       wrap_errors do
         query = Pincers::Support::Query.new backend, :xpath, _selector, _options[:limit]
         wrap_childs query
+      end
+    end
+
+    def attribute(_name)
+      wrap_errors do
+        backend.extract_element_attribute element!, _name
       end
     end
 

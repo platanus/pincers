@@ -257,6 +257,14 @@ describe Pincers::Core::RootContext do
       end
     end
 
+    describe "attribute" do
+
+      it "should return the required attribute for the first element" do
+        expect(search.attribute(:type)).to eq('child_element_1 type')
+      end
+
+    end
+
     describe "[]" do
 
       it "should return the element in position N wrapped in search context if numeric index is given" do
