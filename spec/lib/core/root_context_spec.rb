@@ -173,6 +173,18 @@ describe Pincers::Core::RootContext do
     end
   end
 
+  describe "readonly" do
+    it "should return a new context with access to the provided elements" do
+      original = pincers.css('selector')
+      original.readonly do |context|
+        expect(context.count).to eq original.count
+        expect(context.tag).to eq 'div'
+        expect(context.first.text).to eq 'child_element_1 html'
+        expect(context.last.text).to eq 'child_element_2 html'
+      end
+    end
+  end
+
   # Test simple input methods
 
   [

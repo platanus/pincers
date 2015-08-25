@@ -1,3 +1,4 @@
+require 'nokogiri'
 require 'pincers/backend/base'
 
 module Pincers::Backend

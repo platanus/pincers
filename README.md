@@ -11,6 +11,8 @@ Pincers is a jQuery inspired Ruby DSL on top of webdriver. In other words: an ea
 
 The jQuery interface solves DOM element selection in a very practical way that most programmers feel comfortable with. When using any of the options listed above, we found ourselves missing jQuery's ease of use.
 
+Also, by harnessing the power of nokogiri, pincers lets you extract complex data like tables or lists in a fraction of the time required by using pure webdriver. Take a look at [Read-only Results](#read-only-results).
+
 ## Install
 
 To install just run:
@@ -192,6 +194,17 @@ pincers.document
 ```
 
 ### Advanced topics
+
+#### Read-only results
+
+Using webdriver to extract data that requires iterating over **big lists or lots of table rows** can be painfully slow. To process big datasets pincers provides the `readonly` method, that transforms the webdriver backed result into a nokogiri backed one.
+
+```ruby
+list_contents = pincers.css('#long-list').readonly do |list|
+  # operating over list is very fast
+  list.css('li').map &:text
+end
+```
 
 #### Navigating frames
 
