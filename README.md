@@ -1,4 +1,6 @@
-# Pincers
+# Pincers ![Build Status][travis-badge]
+
+[travis-badge]: https://travis-ci.org/platanus/pincers.svg?branch=master
 
 Pincers is a jQuery inspired Ruby DSL on top of webdriver. In other words: an easy to use set of functions that allow you to scrape or automate navigation of a Javascript intensive webpage.
 
