@@ -20,6 +20,10 @@ module Pincers::Core
       true
     end
 
+    def document
+      @backend.document
+    end
+
     def backend
       @backend
     end

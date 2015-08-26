@@ -38,10 +38,6 @@ module Pincers::Core
       root.backend
     end
 
-    def document
-      backend.document
-    end
-
     def elements
       reload_elements :all
       @elements
