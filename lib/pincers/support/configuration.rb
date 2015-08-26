@@ -6,7 +6,11 @@ module Pincers::Support
     FIELDS = [
       [:wait_timeout, 10.0],
       [:wait_interval, 0.2],
-      [:advanced_mode, false]
+      [:advanced_mode, false],
+
+      # webdriver defaults
+      [:webdriver_bridge, :firefox],
+      [:webdriver_options, {}]
     ];
 
     FIELDS.each do |field|

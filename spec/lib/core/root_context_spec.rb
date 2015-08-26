@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'pincers/backend/base'
+require 'pincers/core/root_context'
 
 describe Pincers::Core::RootContext do
 

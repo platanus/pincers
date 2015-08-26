@@ -1,32 +1,25 @@
-require 'pincers/core/root_context'
-
 module Pincers
   module Factory
 
-    def for_webdriver(_driver, _options={})
-      require 'pincers/backend/webdriver'
+    def for_webdriver(_driver=nil, _options={})
+      require 'pincers/factories/webdriver'
 
-      unless _driver.is_a? Selenium::WebDriver::Driver
-        _driver = Selenium::WebDriver::Driver.for _driver, _options
+      if _driver.is_a? Hash
+        _options = _driver
+        _driver = nil
       end
 
-      context Backend::Webdriver.new _driver
+      _options[:driver] = _driver || config.webdriver_bridge
+
+      Factories::Webdriver.new_context _options
     end
 
     def for_nokogiri(_document, _options={})
-      require 'pincers/backend/nokogiri'
+      require 'pincers/factories/nokogiri'
 
-      unless _document.is_a? ::Nokogiri::HTML::Document
-        _document = ::Nokogiri::HTML _document, _options[:url], _options[:encoding], _options[:flags]
-      end
+      _options[:document] = _document
 
-      context Backend::Nokogiri.new _document
-    end
-
-  private
-
-    def context(_backend)
-      Core::RootContext.new _backend
+      Factories::Nokogiri.new_context _options
     end
 
   end

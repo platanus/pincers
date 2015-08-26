@@ -4,7 +4,7 @@ require 'selenium-webdriver'
 describe 'Pincers::Backend::Webdriver' do
 
   before(:context) {
-    @driver = Selenium::WebDriver.for :phantomjs
+    @driver = Pincers.for_webdriver(:phantomjs).document
   }
 
   before {
@@ -12,7 +12,7 @@ describe 'Pincers::Backend::Webdriver' do
     @driver.get "http://localhost:#{SERVER_PORT}/index.html"
   }
 
-  after(:context) { @driver.quit rescue nl }
+  after(:context) { @driver.quit rescue nil }
 
   let(:pincers) { Pincers.for_webdriver @driver }
 
