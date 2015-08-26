@@ -49,7 +49,7 @@ module Pincers::Core
     end
 
     def element!
-      wait?(:present) unless frozen? or advanced_mode?
+      wait(:present) unless frozen? or advanced_mode?
       raise Pincers::EmptySetError.new self if empty?
       element
     end
@@ -180,7 +180,7 @@ module Pincers::Core
       end
     end
 
-    def wait(_condition, _options)
+    def wait(_condition, _options={})
       raise Pincers::ConditionTimeoutError.new self, _condition unless wait?(_condition, _options)
       return self
     end
@@ -206,14 +206,13 @@ module Pincers::Core
       rescue Pincers::Error
         raise
       rescue Exception => exc
-        raise Pincers::BackendError.new self, exc
+        raise Pincers::BackendError.new(self, exc)
       end
     end
 
     def perform_action
       wrap_errors do
-        wait?(:actionable) unless advanced_mode?
-        raise Pincers::EmptySetError.new self if empty?
+        wait(:actionable) unless advanced_mode?
         yield elements.first
       end
       self
