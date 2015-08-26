@@ -199,6 +199,10 @@ To get the document driver itself (webdriver driver or nokogiri root node)
 pincers.document
 ```
 
+### Cleaning up
+
+Remember to call `close` when you are done using the pincers object.
+
 ### Advanced topics
 
 #### Read-only results
@@ -257,11 +261,11 @@ pincers.css('#my-async-stuff').wait(:enabled, timeout: 5.0)
 
 #### Driver options
 
-Pincers tries its best to configure the webdriver object in a way it will fit with most use cases. If you need further configure the driver for a special situation the following options are available when using the `for_webdriver` method:
+Pincers tries its best to configure the webdriver bridge in a way it will fit most use cases. If you need to further configure the driver for a special situation the following options are available when using the `for_webdriver` method:
 
-* proxy: either an url like `www.myproxy.com:40` or a selenium `Proxy` object.
-* wait_timeout: default wait timeout for element lookup and any call to `context.wait`
-* page_timeout: page load timeout, in ms, defaults to 60 seconds.
+* `:proxy`: either an url like `www.myproxy.com:40` or a selenium `Proxy` object.
+* `:wait_timeout`: default wait timeout for element lookup and any call to `context.wait`
+* `:page_timeout`: page load timeout, in ms, defaults to 60 seconds.
 * any valid webdriver configuration key
 
 Its also posible to call `for_webdriver` with an already created webdriver object:

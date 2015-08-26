@@ -13,6 +13,10 @@ module Pincers::Backend
       document.title
     end
 
+    def close_document
+      # no closing needed
+    end
+
     def search_by_css(_element, _selector, _limit)
       # nokogiri does not do any query level optimization when searching just one node
       _element.css _selector

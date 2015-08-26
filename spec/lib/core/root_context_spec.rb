@@ -15,6 +15,7 @@ describe Pincers::Core::RootContext do
     allow(be).to receive(:navigate_forward)
     allow(be).to receive(:navigate_back)
     allow(be).to receive(:refresh_document)
+    allow(be).to receive(:close_document)
     allow(be).to receive(:search_by_css)              { |el, sel| ['child_element_1', 'child_element_2'] }
     allow(be).to receive(:search_by_xpath)            { |el, sel| ['child_element_1', 'child_element_2'] }
     allow(be).to receive(:extract_element_tag)        { |el| "#{el.upcase}-NAME" }
@@ -103,6 +104,13 @@ describe Pincers::Core::RootContext do
     it "should call navigate_forward and return self" do
       expect(pincers.forward 'foo.bar').to eq(pincers)
       expect(backend).to have_received(:navigate_forward).with('foo.bar')
+    end
+  end
+
+  describe "close" do
+    it "should call close_document and return self" do
+      expect(pincers.close).to eq(pincers)
+      expect(backend).to have_received(:close_document)
     end
   end
 

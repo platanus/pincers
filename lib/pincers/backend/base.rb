@@ -44,6 +44,10 @@ module Pincers::Backend
       ensure_implementation :refresh_document
     end
 
+    def close_document
+      ensure_implementation :close_document
+    end
+
     def search_by_css(_element, _selector, _limit)
       ensure_implementation :search_by_css
     end

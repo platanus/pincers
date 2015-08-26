@@ -76,6 +76,11 @@ module Pincers::Core
       self
     end
 
+    def close
+      wrap_errors { backend.close_document }
+      self
+    end
+
     def default_timeout
       @config[:wait_timeout]
     end

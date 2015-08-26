@@ -22,10 +22,17 @@ describe 'Pincers::Backend::Webdriver' do
   it_should_properly_handle_frames_in_example
   it_should_properly_handle_dynamic_markup
 
-  describe :css do
-    context "when wait :present option is used" do
-      pending "should wait a given condition if required"
+  describe 'close' do
+    it "should properly close the driver connection" do
+      pincers = Pincers.for_webdriver(:phantomjs)
+      expect { pincers.document.current_url }.not_to raise_error
+      pincers.close
+      expect { pincers.document.current_url }.to raise_error(Errno::ECONNREFUSED)
+    end
+  end
 
+  describe 'wait' do
+    context "when wait :present option is used" do
       it "should fail with timeout error if wait times out" do
         expect { pincers.css('.non-existant').wait(:present, timeout: 0.1) }.to raise_error(Pincers::ConditionTimeoutError)
       end

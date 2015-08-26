@@ -47,6 +47,10 @@ module Pincers::Backend
       driver.navigate.refresh
     end
 
+    def close_document
+      driver.quit rescue nil
+    end
+
     def search_by_css(_element, _selector, _limit)
       search _element, { css: _selector }, _limit
     end
