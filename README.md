@@ -1,11 +1,27 @@
 # Pincers [![Build Status](https://travis-ci.org/platanus/pincers.svg)](https://travis-ci.org/platanus/pincers)
 
-Pincers is a jQuery inspired Ruby DSL on top of webdriver. In other words: an easy to use set of functions that allow you to scrape or automate navigation of a Javascript intensive webpage.
+Pincers is a jQuery inspired Ruby DSL on top of webdriver. In other words: an easy to use set of functions that allow you to scrape, automate navigation or test a Javascript intensive webpage.
 
 ![pincers diagram](https://cloud.githubusercontent.com/assets/313750/9365154/5ec7213c-4686-11e5-9fbd-7e9b22dae25d.png)
 
+### Example
 
-### I already know ( selenium | watir | mechanize | nokogiri ) ... why do I need this?
+```bash
+$gem install pincers
+$irb
+```
+
+```ruby
+require 'pincers'
+
+pincers = Pincers.for_webdriver :firefox
+pincers.goto "google.com"
+pincers.css('input[title=Search]').set("Crabfarm rocks!")
+pincers.css('button[type=submit]').click
+puts pincers.url
+```
+
+##### Great! But I already know ( selenium | watir | mechanize | nokogiri ) ... why do I need this?
 
 The jQuery interface solves DOM element selection in a very practical way that most programmers feel comfortable with. When using any of the options listed above, we found ourselves missing jQuery's ease of use.
 
@@ -25,17 +41,12 @@ gem 'pincers'
 
 ## Basic usage
 
-Create a new pincers root **context** from a webdriver session:
+Create a new pincers root **context** using your favorite browser:
 
 ```ruby
-pincers = Pincers.for_webdriver driver
+pincers = Pincers.for_webdriver :chrome
 ```
-
-Or from a nokogiri document
-
-```ruby
-pincers = Pincers.for_nokogiri document
-```
+You can also pass a webdriver object, or another symbol like :firefox or :phantomjs
 
 ### Basic Navigation
 
