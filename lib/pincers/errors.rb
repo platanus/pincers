@@ -56,7 +56,7 @@ module Pincers
     attr_reader :original
 
     def initialize(_context, _exc)
-      super _context, "Backend error: #{_exc.message}"
+      super _context, "#{_exc.class.to_s}: #{_exc.message}"
       @document = _context.document
       @original = _exc
     end
