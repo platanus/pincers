@@ -5,11 +5,10 @@ module Pincers::Backend
 
   class Webdriver < Base
 
-    attr_reader :driver
+    alias :driver :document
 
     def initialize(_driver)
       super _driver
-      @driver = _driver
     end
 
     def javascript_enabled?
@@ -17,35 +16,35 @@ module Pincers::Backend
     end
 
     def document_root
-      [@driver]
+      [driver]
     end
 
     def document_url
-      @driver.current_url
+      driver.current_url
     end
 
     def document_title
-      @driver.title
+      driver.title
     end
 
     def fetch_cookies
-      @driver.manage.all_cookies
+      driver.manage.all_cookies
     end
 
     def navigate_to(_url)
-      @driver.get _url
+      driver.get _url
     end
 
     def navigate_forward(_steps)
-      _steps.times { @driver.navigate.forward }
+      _steps.times { driver.navigate.forward }
     end
 
     def navigate_back(_steps)
-      _steps.times { @driver.navigate.back }
+      _steps.times { driver.navigate.back }
     end
 
     def refresh_document
-      @driver.navigate.refresh
+      driver.navigate.refresh
     end
 
     def search_by_css(_element, _selector, _limit)
@@ -67,7 +66,7 @@ module Pincers::Backend
     end
 
     def extract_element_html(_element)
-      return @driver.page_source if _element == @driver
+      return driver.page_source if _element == driver
       _element.attribute 'outerHTML'
     end
 
@@ -122,11 +121,11 @@ module Pincers::Backend
     end
 
     def switch_to_frame(_element)
-      @driver.switch_to.frame _element
+      driver.switch_to.frame _element
     end
 
     def switch_to_top_frame
-      @driver.switch_to.default_content
+      driver.switch_to.default_content
     end
 
     def check_visible(_elements)
@@ -156,7 +155,7 @@ module Pincers::Backend
     end
 
     def actions
-      @driver.action
+      driver.action
     end
 
     def click_with_modifiers(_element, _modifiers)
@@ -168,13 +167,13 @@ module Pincers::Backend
     end
 
     def assert_has_input_devices_for(_name)
-      unless @driver.kind_of? Selenium::WebDriver::DriverExtensions::HasInputDevices
+      unless driver.kind_of? Selenium::WebDriver::DriverExtensions::HasInputDevices
         raise MissingFeatureError, _name
       end
     end
 
     def ensure_element(_element)
-      return @driver.find_element tag_name: 'html' if _element == @driver
+      return driver.find_element tag_name: 'html' if _element == driver
       _element
     end
 
