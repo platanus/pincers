@@ -1,7 +1,6 @@
 require 'spec_helper'
-require 'pincers/core/root_context'
 
-describe Pincers::Core::RootContext do
+describe 'Pincers::Core::RootContext' do
 
   let!(:backend) do
     be = double('Pincers::Backend::Base')

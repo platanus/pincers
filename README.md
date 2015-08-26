@@ -9,11 +9,12 @@ Pincers is a jQuery inspired Ruby DSL on top of webdriver. In other words: an ea
 ```ruby
 require 'pincers'
 
-pincers = Pincers.for_webdriver :firefox
-pincers.goto "google.com"
-pincers.css('input[title=Search]').set("Crabfarm rocks!")
-pincers.css('button[type=submit]').click
-puts pincers.url
+Pincers.for_webdriver :firefox do |pincers|
+  pincers.goto "google.com"
+  pincers.css('input[title=Search]').set("Crabfarm rocks!")
+  pincers.css('button[type=submit]').click
+  puts pincers.url
+end
 ```
 
 ##### Great! But I already know ( selenium | watir | mechanize | nokogiri ) ... why do I need this?
@@ -39,10 +40,22 @@ gem 'pincers'
 Create a new pincers root **context** using your favorite browser:
 
 ```ruby
-pincers = Pincers.for_webdriver :chrome
+Pincers.for_webdriver :chrome do |pincers|
+  # do something, driver object will be discarded at the end of the block.
+end
 ```
 
 You can also pass a webdriver object, or another symbol like `:firefox` or `:phantomjs`.
+
+#### Cleaning up
+
+It is posible to use the `Pincers.for_webdriver` factory method without a block, you will need to manually release the associated resources by calling `close` after you are done:
+
+```ruby
+pincers = Pincers.for_webdriver :chrome
+# do something
+pincers.close # release webdriver resources
+```
 
 ### Basic Navigation
 
@@ -198,10 +211,6 @@ To get the document driver itself (webdriver driver or nokogiri root node)
 ```ruby
 pincers.document
 ```
-
-### Cleaning up
-
-Remember to call `close` when you are done using the pincers object.
 
 ### Advanced topics
 
