@@ -6,11 +6,6 @@ Pincers is a jQuery inspired Ruby DSL on top of webdriver. In other words: an ea
 
 ### Example
 
-```bash
-$gem install pincers
-$irb
-```
-
 ```ruby
 require 'pincers'
 
