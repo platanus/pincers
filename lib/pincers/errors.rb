@@ -57,7 +57,7 @@ module Pincers
 
     def initialize(_context, _exc)
       super _context, "#{_exc.class.to_s}: #{_exc.message}"
-      @document = _context.document
+      @document = _context.root.document
       @original = _exc
     end
 
