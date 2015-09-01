@@ -2,6 +2,7 @@ require 'pincers/extension/queries'
 require 'pincers/extension/actions'
 require 'pincers/extension/labs'
 require 'pincers/support/query'
+require 'pincers/support/xpath_builder'
 
 module Pincers::Core
   class SearchContext
@@ -74,6 +75,7 @@ module Pincers::Core
     end
 
     def first
+      wait?(:present) unless frozen? or advanced_mode?
       if element.nil? then nil else wrap_siblings [element] end
     end
 
@@ -92,7 +94,15 @@ module Pincers::Core
       end
     end
 
-    def xpath(_selector, _options={})
+    def xpath(_selector=nil, _options={}, &_block)
+      _options = _selector if _selector.is_a? Hash
+
+      unless _block.nil?
+        builder = Pincers::Support::XPathBuilder.new
+        _block.call builder
+        _selector = builder.expression
+      end
+
       wrap_errors do
         query = Pincers::Support::Query.new backend, :xpath, _selector, _options[:limit]
         wrap_childs query

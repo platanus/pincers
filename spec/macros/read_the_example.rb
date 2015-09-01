@@ -6,6 +6,36 @@ module Macros
       it { expect(pincers.css('ul.empty').css('li').count).to eq(0) }
     end
 
+    describe "xpath" do
+      it do
+        result = pincers.xpath do |b|
+          b.by_tag 'input'
+          b.by_attribute :placeholder, contains: 'email address'
+        end
+        expect(result[:id]).to eq 'email'
+      end
+
+      describe "by_tag" do
+        it { expect(pincers.xpath { |b| b.by_tag('label') }.first.text).to eq 'Name:' }
+      end
+
+      describe "by_contents" do
+        it { expect(pincers.xpath { |b| b.by_contents('Email') }.first.tag).to eq 'label' }
+        it { expect(pincers.xpath { |b| b.by_contents('fo') }.first[:id]).to eq 'option' }
+      end
+
+      describe "by_class" do
+        it { expect(pincers.xpath { |b| b.by_class('empty') }.first.tag).to eq 'ul' }
+      end
+
+      describe "by_attribute" do
+        it { expect(pincers.xpath { |b| b.by_attribute(:for, equals: 'option') }.first.tag).to eq 'label' }
+        it { expect(pincers.xpath { |b| b.by_attribute(:placeholder, contains: 'your') }.last.tag).to eq 'textarea' }
+        it { expect(pincers.xpath { |b| b.by_attribute(:value, starts_with: 'Send') }.first.value).to eq 'Send message' }
+        it { expect(pincers.xpath { |b| b.by_attribute(:value, ends_with: 'message') }.first.value).to eq 'Send message' }
+      end
+    end
+
     describe "[]" do
       it { expect(pincers.css('p.description').classes).to eq(['history', 'description']) }
     end

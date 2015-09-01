@@ -111,6 +111,10 @@ parents = pincers.css('.my-class')
 parents.css('.child-class') # will select all childs except fourth-child
 ```
 
+You can also use the `xpath` method to search using xpath, it will behave the same as `css`.
+
+Take a look at [Search builders](#search-builders) if you wish to use more idiomatic approach to searching.
+
 ### Context properties
 
 Retrieve the concatenated text contents for all matched elements.
@@ -222,6 +226,18 @@ Using webdriver to extract data that requires iterating over **big lists or lots
 list_contents = pincers.css('#long-list').readonly do |list|
   # operating over list is very fast
   list.css('li').map &:text
+end
+```
+
+#### Search builders
+
+Both `xpath` and `css` methods provides a builder mode:
+
+```ruby
+contents = pincers.xpath do |builder|
+  builder.by_tag('li')
+  builder.by_attribute(:enabled)
+  builder.by_contents(:enabled)
 end
 ```
 
