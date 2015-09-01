@@ -1,7 +1,20 @@
+require 'pincers/support/xpath_builder'
+
 module Pincers::Extension
   module Queries
 
     TEXT_INPUTS = ['text', 'email', 'number', 'email', 'color', 'password', 'search', 'tel', 'url']
+
+    def search(_options={}, &_block)
+      query_options = {
+        limit: _options.delete(:limit)
+      }
+
+      builder = Pincers::Support::XPathBuilder.new _options
+      _block.call builder unless _block.nil?
+
+      xpath builder.expression, query_options
+    end
 
     def value
       case input_mode

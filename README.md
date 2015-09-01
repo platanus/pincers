@@ -11,8 +11,8 @@ require 'pincers'
 
 Pincers.for_webdriver :firefox do |pincers|
   pincers.goto "google.com"
-  pincers.css('input[title=Search]').set("Crabfarm rocks!")
-  pincers.css('button[type=submit]').click
+  pincers.search(tag: 'input', title: 'Search').set("Crabfarm rocks!")
+  pincers.search(tag: 'button', type: 'submit').click
   puts pincers.url
 end
 ```
@@ -109,11 +109,27 @@ Searching over a **context** will search among all contained elements children:
 ```ruby
 parents = pincers.css('.my-class')
 parents.css('.child-class') # will select all childs except fourth-child
+parents.search name: content: 'crabfarm'
 ```
 
-You can also use the `xpath` method to search using xpath, it will behave the same as `css`.
+If you don't feel confortable using **css**, pincers also provides a more idiomatic `search` method, it allows you to search by `tag`, `contents`, `class` or any attribute:
 
-Take a look at [Search builders](#search-builders) if you wish to use more idiomatic approach to searching.
+```ruby
+pincers.search(tag: 'p', class: 'some-class other-class')
+pincers.search(tag: 'input', value: 'email@crabfarm.io')
+pincers.search(content: 'Title')
+```
+
+For more complex situations, you can call `search` with a block and invoke the builder methods directly:
+
+```ruby
+pincers.search do |builder|
+  builder.by_tag 'p'
+  builder.by_class 'some-class other-class'
+  builder.by_content 'Some content'
+  builder.by_attribute :value, ends_with: 'suffix'
+end
+```
 
 ### Context properties
 
@@ -226,18 +242,6 @@ Using webdriver to extract data that requires iterating over **big lists or lots
 list_contents = pincers.css('#long-list').readonly do |list|
   # operating over list is very fast
   list.css('li').map &:text
-end
-```
-
-#### Search builders
-
-Both `xpath` and `css` methods provides a builder mode:
-
-```ruby
-contents = pincers.xpath do |builder|
-  builder.by_tag('li')
-  builder.by_attribute(:enabled)
-  builder.by_contents(:enabled)
 end
 ```
 

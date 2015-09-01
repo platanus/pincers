@@ -1,12 +1,22 @@
 module Pincers::Support
   class XPathBuilder
 
-    def initialize
+    def initialize(_options={})
       @parts = []
+      by_tag _options.delete(:tag) if _options.key? :tag
+      by_content _options.delete(:content) if _options.key? :content
+
+      if _options.key? :class
+        _options.delete(:class).split(' ').each { |c| by_class c }
+      end
+
+      _options.each do |key, value|
+        by_attribute key, contains: value
+      end
     end
 
     def expression
-      "//*[#{@parts.join(' and ')}]"
+      ".//*[#{@parts.join(' and ')}]"
     end
 
     def by_tag(_name)
@@ -14,7 +24,7 @@ module Pincers::Support
       self
     end
 
-    def by_contents(_contents, _options={})
+    def by_content(_contents, _options={})
       # TODO: more options, lowercase support?
       # xpath("//*[text()='#{_contents}'] | //*[@value='#{_contents}']", _options)
       add "(contains(text(), '#{_contents}') or contains(@value, '#{_contents}'))"
