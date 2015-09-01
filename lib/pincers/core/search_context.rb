@@ -73,6 +73,10 @@ module Pincers::Core
       end
     end
 
+    def []=(key, value)
+      attribute key, value
+    end
+
     def first
       wait?(:present) unless frozen? or advanced_mode?
       if element.nil? then nil else wrap_siblings [element] end
@@ -100,9 +104,13 @@ module Pincers::Core
       end
     end
 
-    def attribute(_name)
+    def attribute(_name, _value=nil)
       wrap_errors do
-        backend.extract_element_attribute element!, _name
+        if _value.nil?
+          backend.extract_element_attribute element!, _name
+        else
+          backend.set_element_attribute element!, _name, _value
+        end
       end
     end
 

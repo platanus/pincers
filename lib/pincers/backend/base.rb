@@ -72,6 +72,10 @@ module Pincers::Backend
       ensure_implementation :extract_element_attribute
     end
 
+    def set_element_attribute(_element, _name, _value)
+      ensure_implementation :set_element_attribute
+    end
+
     def clear_input(_element)
       ensure_implementation :clear_input
     end

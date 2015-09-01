@@ -41,6 +41,16 @@ module Macros
       end
     end
 
+    describe "attribute" do
+
+      it "should set the attribute if a value is given" do
+        expect(select_input.attribute('disabled')).to eq nil
+        select_input['disabled'] = true
+        expect(select_input.attribute('disabled')).to eq 'true'
+      end
+
+    end
+
     describe "selected" do
 
       it "should return the selected value after changing it" do

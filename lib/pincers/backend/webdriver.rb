@@ -79,6 +79,10 @@ module Pincers::Backend
       _element[_name]
     end
 
+    def set_element_attribute(_element, _name, _value)
+      driver.execute_script("arguments[0].setAttribute('#{_name}', #{_value.to_json})", _element)
+    end
+
     def element_is_actionable?(_element)
       # this is the base requisite in webdriver for actionable elements:
       # non displayed items will always error on action
