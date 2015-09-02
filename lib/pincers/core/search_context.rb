@@ -183,17 +183,17 @@ module Pincers::Core
       end
 
       poll_until(_options) do
+        next ensure_block _block if _block
+
         case _condition
-        when nil
-          ensure_block _block
         when :present
           ensure_present
         when :actionable
           ensure_present and ensure_actionable
+        when :enabled
+          ensure_present and !attribute(:disabled)
         else
-          check_method = "check_#{_condition}"
-          raise Pincers::MissingFeatureError.new check_method unless backend.respond_to? check_method
-          ensure_present and check_method.call(elements)
+          ensure_present and !!attribute(_condition)
         end
       end
     end

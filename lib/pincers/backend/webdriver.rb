@@ -5,6 +5,8 @@ module Pincers::Backend
 
   class Webdriver < Base
 
+    DOM_PROPERTIES = [:selected, :disabled, :checked, :value, :required]
+
     alias :driver :document
 
     def initialize(_driver)
@@ -76,11 +78,22 @@ module Pincers::Backend
 
     def extract_element_attribute(_element, _name)
       _element = ensure_element _element
-      _element[_name]
+      if DOM_PROPERTIES.include? _name.to_sym
+        driver.execute_script("return arguments[0]['#{_name}'];", _element)
+      else
+        _element[_name]
+      end
     end
 
     def set_element_attribute(_element, _name, _value)
-      driver.execute_script("arguments[0].setAttribute('#{_name}', #{_value.to_json})", _element)
+      _element = ensure_element _element
+      if DOM_PROPERTIES.include? _name.to_sym
+        driver.execute_script("arguments[0]['#{_name}'] = #{_value.to_json};", _element)
+      elsif _value == ''
+        driver.execute_script("arguments[0].removeAttribute('#{_name}')", _element)
+      else
+        driver.execute_script("arguments[0].setAttribute('#{_name}', #{_value.to_json})", _element)
+      end
     end
 
     def element_is_actionable?(_element)
@@ -134,18 +147,6 @@ module Pincers::Backend
 
     def switch_to_top_frame
       driver.switch_to.default_content
-    end
-
-    def check_visible(_elements)
-      _elements.first.displayed?
-    end
-
-    def check_enabled(_elements)
-      check_visible(_elements) and _elements.first.enabled?
-    end
-
-    def check_not_visible(_elements)
-      not _elements.any? { |e| e.displayed? }
     end
 
   private

@@ -5,6 +5,8 @@ module Pincers::Backend
 
   class Nokogiri < Base
 
+    BOOL_PROPERTIES = [:selected, :disabled, :checked, :required]
+
     def document_root
       [document]
     end
@@ -41,9 +43,14 @@ module Pincers::Backend
 
     def extract_element_attribute(_element, _name)
       _name = _name.to_sym
-
       value = _element[_name]
-      value = checkbox_value_fix _element, value if _name == :value
+
+      if BOOL_PROPERTIES.include? _name
+        value = !value.nil?
+      elsif _name == :value
+        value = checkbox_value_fix _element, value
+      end
+
       value
     end
 

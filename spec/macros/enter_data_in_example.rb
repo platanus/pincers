@@ -44,9 +44,11 @@ module Macros
     describe "attribute" do
 
       it "should set the attribute if a value is given" do
-        expect(select_input.attribute('disabled')).to eq nil
+        expect(select_input.attribute('disabled')).to eq false
         select_input['disabled'] = true
-        expect(select_input.attribute('disabled')).to eq 'true'
+        expect(select_input.attribute('disabled')).to be true
+
+        expect { select_input.set(by_value: 'default') }.to raise_error Pincers::ConditionTimeoutError
       end
 
     end

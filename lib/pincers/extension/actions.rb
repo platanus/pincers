@@ -10,12 +10,16 @@ module Pincers::Extension
 
       case input_mode
       when :text
+        wait :enabled
         set_text _value.to_s
       when :select
+        wait :enabled
         return set_selected _value, _options
       when :checkbox, :radio
+        wait :enabled
         return set_checked _value
       when :button
+        wait :enabled
         click if _value
       else
         return false

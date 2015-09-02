@@ -16,6 +16,10 @@ module Pincers::Extension
       xpath builder.expression, query_options
     end
 
+    def id
+      self[:id]
+    end
+
     def value
       case input_mode
       when :checkbox, :radio
@@ -27,7 +31,7 @@ module Pincers::Extension
 
     [:selected, :checked, :disabled, :required].each do |attr_name|
       define_method "#{attr_name}?" do
-        not self[attr_name].nil?
+        self[attr_name]
       end
     end
 

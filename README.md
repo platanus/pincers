@@ -282,11 +282,12 @@ special condition before interacting with an element:
 pincers.css('#my-async-stuff').wait(:enabled)
 ```
 
-When using the webdriver backend, it's posible to wait on the following states:
+It's posible to wait on the following states:
 
-* `:visible`: wait for element to be visible
+* `:present`: wait for element to be visible
+* `:actionable`: wait for element to be able to receive input
 * `:enabled`: wait for input to be enabled
-* `:present`: wait for element to show up in the DOM (should not be necessary)
+* Any valid DOM property, like `:disabled` or `:value`
 
 Its also possible to wait for custom conditions by passing a block, the process will wait until the block stops returning `false` (only `false`, not `nil`).
 

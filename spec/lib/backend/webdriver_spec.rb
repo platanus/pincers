@@ -4,7 +4,7 @@ require 'selenium-webdriver'
 describe 'Pincers::Backend::Webdriver' do
 
   before(:context) {
-    @driver = Pincers.for_webdriver(:phantomjs).document
+    @driver = Pincers.for_webdriver(:phantomjs, wait_timeout: 2.0).document
   }
 
   before {
