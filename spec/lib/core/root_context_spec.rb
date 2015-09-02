@@ -180,6 +180,22 @@ describe 'Pincers::Core::RootContext' do
     end
   end
 
+  describe "wait" do
+    it "should wait for block to return true" do
+      start = Time.now
+      expect { pincers.wait(timeout: 1.0) { Time.now - start > 5 } }.to raise_error Pincers::ConditionTimeoutError
+      expect { pincers.wait(timeout: 1.0) { Time.now - start > 0 } }.not_to raise_error
+    end
+
+    it "should wait for block not to raise NavigationErrors" do
+      expect { pincers.wait(timeout: 1.0) { raise ArgumentError.new }.to raise_error ArgumentError }
+      start = Time.now
+      expect { pincers.wait(timeout: 1.0) { raise Pincers::NavigationError.new(nil, nil) if Time.now - start < 5 } }.to raise_error Pincers::ConditionTimeoutError
+      start = Time.now
+      expect { pincers.wait(timeout: 2.0) { raise Pincers::NavigationError.new(nil, nil) if Time.now - start < 1 } }.not_to raise_error
+    end
+  end
+
   describe "readonly" do
     it "should return a new context with access to the provided elements" do
       original = pincers.css('selector')

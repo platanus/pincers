@@ -34,7 +34,23 @@ module Pincers
 
   end
 
-  class EmptySetError < ContextError
+  class NavigationError < ContextError; end
+
+  class ConditionTimeoutError < NavigationError
+
+    def initialize(_context, _condition)
+      message = if _condition
+        "Timed out waiting element to be #{_condition}"
+      else
+        "Timed out waiting for element match custom condition"
+      end
+
+      super _context, message
+    end
+
+  end
+
+  class EmptySetError < NavigationError
 
     def initialize(_context)
       super _context, "This set is empty"
@@ -42,15 +58,7 @@ module Pincers
 
   end
 
-  class ConditionTimeoutError < ContextError
-
-    def initialize(_context, _condition)
-      super _context, "Timed out waiting element to be #{_condition}"
-    end
-
-  end
-
-  class BackendError < ContextError
+  class BackendError < NavigationError
 
     attr_reader :document
     attr_reader :original

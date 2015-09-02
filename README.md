@@ -288,6 +288,18 @@ When using the webdriver backend, it's posible to wait on the following states:
 * `:enabled`: wait for input to be enabled
 * `:present`: wait for element to show up in the DOM (should not be necessary)
 
+Its also possible to wait for custom conditions by passing a block, the process will wait until the block stops returning `false` (only `false`, not `nil`).
+
+```ruby
+pincers.css('#my-async-stuff').wait { |r| r.count > 10 }
+```
+
+When using a custom condition, you can also wait for the block not to raise a navigation error.
+
+```ruby
+pincers.css('#async-button').wait { |r| r.click } # wait until click succeeds
+```
+
 By default, the waiting process times out in 10 seconds. This can be changed by setting the `Pincers.config.wait_timeout` property or by calling the search function with the `timeout:` option:
 
 ```ruby

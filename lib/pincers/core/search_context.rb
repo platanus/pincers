@@ -20,6 +20,7 @@ module Pincers::Core
       @scope = if @elements.nil? then nil else :all end
       @parent = _parent
       @query = _query
+      @waiting = false
     end
 
     def frozen?
@@ -49,7 +50,7 @@ module Pincers::Core
     end
 
     def element!
-      wait(:present) unless frozen? or advanced_mode?
+      wait(:present) if should_wait?
       raise Pincers::EmptySetError.new self if empty?
       element
     end
@@ -78,7 +79,7 @@ module Pincers::Core
     end
 
     def first
-      wait?(:present) unless frozen? or advanced_mode?
+      wait?(:present) if should_wait?
       if element.nil? then nil else wrap_siblings [element] end
     end
 
@@ -174,9 +175,17 @@ module Pincers::Core
 
     # waiting
 
-    def wait?(_condition, _options={}, &_block)
-      poll_until(_condition, _options) do
+    def wait?(_condition=nil, _options={}, &_block)
+
+      if _condition.is_a? Hash
+        _options = _condition
+        _condition = nil
+      end
+
+      poll_until(_options) do
         case _condition
+        when nil
+          ensure_block _block
         when :present
           ensure_present
         when :actionable
@@ -189,12 +198,22 @@ module Pincers::Core
       end
     end
 
-    def wait(_condition, _options={})
-      raise Pincers::ConditionTimeoutError.new self, _condition unless wait?(_condition, _options)
+    def wait(_condition=nil, _options={}, &_block)
+
+      if _condition.is_a? Hash
+        _options = _condition
+        _condition = nil
+      end
+
+      raise Pincers::ConditionTimeoutError.new(self, _condition) unless wait?(_condition, _options, &_block)
       return self
     end
 
   private
+
+    def should_wait?
+      !frozen? && !advanced_mode? && !@waiting
+    end
 
     def advanced_mode?
       root.advanced_mode?
@@ -209,6 +228,17 @@ module Pincers::Core
       backend.element_is_actionable? element
     end
 
+    def ensure_block(_block)
+      begin
+        @waiting = true
+        _block.call(self) != false
+      rescue Pincers::NavigationError
+        return false
+      ensure
+        @waiting = false
+      end
+    end
+
     def wrap_errors
       begin
         yield
@@ -221,7 +251,7 @@ module Pincers::Core
 
     def perform_action
       wrap_errors do
-        wait(:actionable) unless advanced_mode?
+        wait(:actionable) if should_wait?
         yield elements.first
       end
       self
@@ -258,7 +288,7 @@ module Pincers::Core
       end
     end
 
-    def poll_until(_description, _options={})
+    def poll_until(_options={})
       timeout = _options.fetch :timeout, root.default_timeout
       interval = _options.fetch :interval, root.default_interval
       end_time = Time.now + timeout
