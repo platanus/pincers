@@ -184,10 +184,16 @@ Choose a select box option by it's label
 pincers.css('select#some-select').set 'Some Label'
 ```
 
-Choose a select box option by it's value
+Choose a select box option by the option text
 
 ```ruby
-pincers.css('select#some-select').set 'some-value'
+pincers.css('select#some-select').set 'Option text'
+```
+
+Or by the option value
+
+```ruby
+pincers.css('select#some-select').set by_value: 'option-value'
 ```
 
 Change a checkbox or radio button state
