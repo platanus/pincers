@@ -1,6 +1,7 @@
 require "forwardable"
 require "pincers/version"
 require "pincers/errors"
+require 'pincers/core/root_context'
 require "pincers/factory"
 require "pincers/support/configuration"
 

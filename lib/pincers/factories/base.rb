@@ -1,5 +1,3 @@
-require 'pincers/core/root_context'
-
 module Pincers::Factories
 
   class Base
