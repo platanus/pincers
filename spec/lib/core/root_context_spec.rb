@@ -255,6 +255,14 @@ describe 'Pincers::Core::RootContext' do
       end
     end
 
+    describe "element!" do
+      it "should trigger elements to be loaded with limit: 1 and return first element" do
+        search.element!
+        expect(backend).to have_received(:search_by_css).exactly(1).times
+        expect(backend).to have_received(:search_by_css).with('root_element', 'selector', 1)
+      end
+    end
+
     describe "elements" do
       it "should trigger elements to be loaded with original limit and return all elements" do
         search.elements

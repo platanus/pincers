@@ -51,7 +51,7 @@ module Pincers::Core
 
     def element!
       wait(:present) if should_wait?
-      raise Pincers::EmptySetError.new self if empty?
+      raise Pincers::EmptySetError.new self if element.nil?
       element
     end
 
