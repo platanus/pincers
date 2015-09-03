@@ -21,15 +21,15 @@ Gem::Specification.new do |spec|
   spec.add_dependency "selenium-webdriver", "~> 2.45"
 
   spec.add_development_dependency "bundler", "~> 1.6"
-  spec.add_development_dependency "rake", '~> 0'
-  spec.add_development_dependency "rspec", '~> 0'
-  spec.add_development_dependency "rspec-nc", '~> 0'
-  spec.add_development_dependency "guard", '~> 0'
-  spec.add_development_dependency "guard-rspec", '~> 0'
+  spec.add_development_dependency "rake", '~> 10.4'
+  spec.add_development_dependency "rspec", '~> 3.1'
+  spec.add_development_dependency "rspec-nc", '~> 0.2'
+  spec.add_development_dependency "guard", '~> 2.11'
+  spec.add_development_dependency "guard-rspec", '~> 4.5'
   spec.add_development_dependency "terminal-notifier-guard", '~> 1.6'
-  spec.add_development_dependency "pry", '~> 0'
-  spec.add_development_dependency "pry-remote", '~> 0'
-  spec.add_development_dependency "pry-nav", '~> 0'
-  spec.add_development_dependency "rack", '~> 0'
-  spec.add_development_dependency "thin", '~> 0'
+  spec.add_development_dependency "pry", '~> 0.10'
+  spec.add_development_dependency "pry-remote", '~> 0.1'
+  spec.add_development_dependency "pry-nav", '~> 0.2'
+  spec.add_development_dependency "rack", '~> 1.6'
+  spec.add_development_dependency "thin", '~> 1.6'
 end
