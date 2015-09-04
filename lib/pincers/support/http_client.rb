@@ -26,11 +26,11 @@ module Pincers::Support
     attr_reader :proxy_addr, :proxy_port, :cookies
 
     def initialize(_options={})
-      if _options.key? :proxy
+      if _options[:proxy]
         @proxy_addr, @proxy_port = _options[:proxy].split ':'
       end
 
-      @cookies = if _options.key? :cookies
+      @cookies = if _options[:cookies]
         _options[:cookies].copy
       else
         CookieJar.new
