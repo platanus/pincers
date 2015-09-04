@@ -8,5 +8,15 @@ module Macros
       end
     end
 
+    describe 'download' do
+      it "should retrieve the resouce pointed by the element" do
+        expect(pincers.css('#download').download.data).to eq 'Some text'
+      end
+
+      it "should fail if element does not point to a resource" do
+        expect { pincers.css('label').download }.to raise_error Pincers::NavigationError
+      end
+    end
+
   end
 end

@@ -307,6 +307,17 @@ By default, the waiting process times out in 10 seconds. This can be changed by 
 pincers.css('#my-async-stuff').wait(:enabled, timeout: 5.0)
 ```
 
+#### Downloading a resource
+
+You can download resources from the currently loaded document using the `download` method on a **link**, **image** or any other element that has a `src` attribute. **Javascript triggered downloads are not supported by this method**
+
+```ruby
+dl = pincers.css('#a-download-link').download
+dl.data # the resource data as string
+dl.mime # the resource content type
+dl.store('/some-file.txt') # store resource in file
+```
+
 #### Driver options
 
 Pincers tries its best to configure the webdriver bridge in a way it will fit most use cases. If you need to further configure the driver for a special situation the following options are available when using the `for_webdriver` method:

@@ -120,6 +120,10 @@ module Pincers::Backend
       ensure_implementation :switch_to_parent_frame
     end
 
+    def fetch_resource
+      ensure_implementation :fetch_resource
+    end
+
   private
 
     def ensure_implementation(_name)

@@ -1,4 +1,4 @@
-require 'pincers/support/cookie_jar'
+require 'pincers/core/cookies'
 require 'pincers/core/search_context'
 
 module Pincers::Core
@@ -41,7 +41,7 @@ module Pincers::Core
     end
 
     def cookies
-      @cookies ||= CookieJar.new backend
+      @cookies ||= Cookies.new backend
     end
 
     def goto(_urlOrOptions)
@@ -59,6 +59,10 @@ module Pincers::Core
         end
       end
       self
+    end
+
+    def download(_url)
+      wrap_errors { backend.fetch_resource _url }
     end
 
     def forward(_steps=1)
