@@ -20,9 +20,9 @@ module Pincers::Support
     end
 
     def set(_parts)
-      raise ArgumentError, "domain is required" unless _parts[:domain]
-      raise ArgumentError, "name is required" unless _parts[:name]
-      raise ArgumentError, "value is required" unless _parts[:value]
+      return nil unless _parts[:domain]
+      return nil unless _parts[:name]
+      return nil unless _parts[:value]
 
       cookie = Cookie.new(
         _parts[:name],
@@ -34,7 +34,7 @@ module Pincers::Support
       )
 
       replace_cookie cookie
-      self
+      cookie
     end
 
     def set_raw(_uri, _raw)
