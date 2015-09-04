@@ -10,12 +10,42 @@ module Pincers
         path += 'index.html' if path == '/'
         file = File.join(@root, path)
 
-        params = Rack::Utils.parse_nested_query(env['QUERY_STRING'])
-
         if File.exists?(file)
           [ 200, {"Content-Type" => "text/html"}, File.read(file) ]
-        else
+        elsif !respond_to? path[1..-1]
           [ 404, {'Content-Type' => 'text/plain'}, 'file not found' ]
+        else
+          req = Rack::Request.new(env)
+          send(path[1..-1], req, req.params)
+        end
+      end
+
+      # Some testing endpoints
+
+      def echo(_req, _params)
+        [
+          200, {
+            "Content-Type" => "text/plain"
+          },
+          _params['text']
+        ]
+      end
+
+      def setcookie(_req, _params)
+        [
+          200, {
+            "Content-Type" => "text/plain",
+            "Set-Cookie" => "#{_params['name']}=#{_params['value']}"
+          },
+          'Logged in!'
+        ]
+      end
+
+      def checkcookie(_req, _params)
+        if _req.cookies[_params['name']] == _params['value']
+          [ 200, {"Content-Type" => "text/plain"}, 'Authorized!' ]
+        else
+          [ 401, {"Content-Type" => "text/plain"}, 'Unauthorized!' ]
         end
       end
     end
