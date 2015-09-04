@@ -58,5 +58,11 @@ module Pincers::Extension
       type.to_sym
     end
 
+    def download
+      url = attribute(:href) || attribute(:src)
+      raise Pincers::NavigationError.new(self, 'No resource url was found') if url.nil?
+      root.download(attribute(:href) || attribute(:src))
+    end
+
   end
 end
