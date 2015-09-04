@@ -61,6 +61,10 @@ module Pincers::Core
       self
     end
 
+    def download(_url)
+      wrap_errors { backend.fetch_resource _url }
+    end
+
     def forward(_steps=1)
       wrap_errors { backend.navigate_forward _steps }
       self
