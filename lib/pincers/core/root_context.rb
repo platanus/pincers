@@ -28,12 +28,19 @@ module Pincers::Core
       @backend
     end
 
-    def url
-      wrap_errors { backend.document_url }
+    def url(_partial=nil)
+      wrap_errors {
+        current_url = backend.document_url
+        if _partial
+          current_url ? URI.join(current_url, _partial).to_s : _partial
+        else
+          current_url
+        end
+      }
     end
 
-    def uri
-      URI.parse url
+    def uri(_partial=nil)
+      URI.parse url(_partial)
     end
 
     def title
