@@ -34,6 +34,10 @@ module Pincers::Chenso
       set_document history.refresh
     end
 
+    def as_http_client
+      @client.copy
+    end
+
   private
 
     def prepare_page_request(_url)
