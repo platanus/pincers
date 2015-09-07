@@ -23,20 +23,22 @@ module Pincers::Support
       end
     end
 
-    attr_reader :proxy_addr, :proxy_port, :cookies
+    attr_reader :proxy, :proxy_addr, :proxy_port, :cookies, :default_headers
 
     def initialize(_options={})
-      if _options[:proxy]
-        @proxy_addr, @proxy_port = _options[:proxy].split ':'
-      end
+      @proxy = _options[:proxy]
+      @proxy_addr, @proxy_port = _options[:proxy].split ':' if @proxy
 
-      @cookies = if _options[:cookies]
-        _options[:cookies].copy
-      else
-        CookieJar.new
-      end
-
+      @cookies = _options[:cookies] || CookieJar.new
       @default_headers = _options[:headers]
+    end
+
+    def copy
+      self.class.new({
+        proxy: @proxy,
+        cookies: @cookies.copy,
+        headers: @default_headers
+      })
     end
 
     def get(_url, _query={}, _headers={})
