@@ -60,6 +60,10 @@ module Pincers::Nokogiri
 
   private
 
+    def set_document(_document)
+      @document = _document unless _document.nil?
+    end
+
     def checkbox_value_fix(_element, _value)
       if _value.nil? and _element.name.downcase == 'input' and ['checkbox', 'radio'].include? _element[:type].downcase
         'on'

@@ -30,5 +30,10 @@ module Pincers
       Nokogiri::Factory.new_context _options
     end
 
+    def for_chenso(_options={})
+      require 'pincers/chenso/factory'
+      Chenso::Factory.new_context _options
+    end
+
   end
 end
