@@ -62,14 +62,14 @@ module Pincers::Support
 
   private
 
-    def perform_request(_req_type, _uri, _headers, _limit=10)
+    def perform_request(_req_type, _uri, _headers, _limit=10, &_block)
 
       raise MaximumRedirectsError.new if _limit == 0
 
       request = _req_type.new(_uri.request_uri.empty? ? '/' : _uri.request_uri)
       build_headers(request, _headers)
       set_cookies(request, _uri)
-      yield request if block_given?
+      _block.call(request) if _block
 
       response = build_client(_uri).request request
 
@@ -79,7 +79,7 @@ module Pincers::Support
         response
       when Net::HTTPRedirection then
         location = response['location']
-        perform_request(_req_type, URI.parse(location), _headers, _limit - 1)
+        perform_request(_req_type, URI.parse(location), _headers, _limit - 1, &_block)
       else
         handle_error_response response
       end
