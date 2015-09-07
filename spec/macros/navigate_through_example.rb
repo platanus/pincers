@@ -8,6 +8,15 @@ module Macros
       end
     end
 
+    describe 'click' do
+
+      it "should navigate to the desired page if applied to a link" do
+        pincers.css('#reference').click
+        expect(pincers.text).to include('This page is referenced from index')
+      end
+
+    end
+
     describe 'download' do
       it "should retrieve the resouce pointed by the element" do
         expect(pincers.search('#download').download.data).to eq 'Some text'
