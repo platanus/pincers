@@ -118,6 +118,10 @@ module Pincers::Core
       ensure_implementation :switch_to_parent_frame
     end
 
+    def as_http_client
+      ensure_implementation :as_http_client
+    end
+
     def fetch_resource
       ensure_implementation :fetch_resource
     end

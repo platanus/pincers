@@ -1,5 +1,6 @@
-require 'pincers/core/cookies'
-require 'pincers/core/search_context'
+require "pincers/core/cookies"
+require "pincers/core/download"
+require "pincers/core/search_context"
 
 module Pincers::Core
   class RootContext < SearchContext
@@ -68,10 +69,6 @@ module Pincers::Core
       self
     end
 
-    def download(_url)
-      wrap_errors { backend.fetch_resource _url }
-    end
-
     def forward(_steps=1)
       wrap_errors { backend.navigate_forward _steps }
       self
@@ -102,6 +99,14 @@ module Pincers::Core
 
     def advanced_mode?
       @config[:advanced_mode]
+    end
+
+    def http_client
+      wrap_errors { backend.as_http_client }
+    end
+
+    def download(_url)
+      Pincers::Core::Download.from_http_response http_client.get url(_url)
     end
 
   private

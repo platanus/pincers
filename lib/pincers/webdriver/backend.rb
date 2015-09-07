@@ -1,6 +1,5 @@
 require "selenium-webdriver"
 require "pincers/core/base_backend"
-require "pincers/core/download"
 require "pincers/support/http_client"
 
 module Pincers::Webdriver
@@ -152,10 +151,14 @@ module Pincers::Webdriver
       driver.switch_to.default_content
     end
 
-    def fetch_resource(_url)
-      url = URI::join(driver.current_url, _url)
-      response = as_http_client.get url
-      Pincers::Core::Download.from_http_response response
+    def as_http_client
+      Pincers::Support::HttpClient.new({
+        proxy: proxy_address,
+        cookies: cookie_jar,
+        headers: {
+          'User-Agent' => user_agent
+        }
+      })
     end
 
   private
@@ -199,16 +202,6 @@ module Pincers::Webdriver
       _element = ensure_element _element
       Selenium::WebDriver::Wait.new.until { _element.displayed? }
       _element
-    end
-
-    def as_http_client
-      Pincers::Support::HttpClient.new({
-        proxy: proxy_address,
-        cookies: cookie_jar,
-        headers: {
-          'User-Agent' => user_agent
-        }
-      })
     end
 
     def user_agent
