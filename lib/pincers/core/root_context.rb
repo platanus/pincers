@@ -8,7 +8,7 @@ module Pincers::Core
     attr_reader :config
 
     def initialize(_backend, _config={})
-      super _backend.document_root, nil, nil
+      super nil, nil, nil
       @backend = _backend
       @config = Pincers.config.values.merge _config
     end
@@ -19,6 +19,14 @@ module Pincers::Core
 
     def root?
       true
+    end
+
+    def elements
+      @backend.document_root
+    end
+
+    def element
+      @backend.document_root.first
     end
 
     def document
