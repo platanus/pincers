@@ -34,6 +34,12 @@ module Pincers::Chenso
       set_document history.refresh
     end
 
+    def click_on_element(_element, _modifiers)
+      if _element.name == 'a' and _element[:href]
+        navigate_link _element[:href]
+      end
+    end
+
     def as_http_client
       @client.copy
     end
@@ -47,6 +53,10 @@ module Pincers::Chenso
           'Cache-Control' => 'no-cache'
         }
       }
+    end
+
+    def navigate_link(_url)
+      navigate_to URI.join(document_url, _url)
     end
 
   end
