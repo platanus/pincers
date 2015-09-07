@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'Pincers::Core::RootContext' do
 
   let!(:backend) do
-    be = double('Pincers::Backend::Base')
+    be = double('Pincers::Core::BaseBackend')
     allow(be).to receive(:javascript_enabled?)        { true }
     allow(be).to receive(:document)                   { 'not a real document' }
     allow(be).to receive(:document_root)              { ['root_element'] }

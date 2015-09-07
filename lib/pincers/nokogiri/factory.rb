@@ -1,8 +1,8 @@
-require 'pincers/factories/base'
-require 'pincers/backend/nokogiri'
+require "pincers/core/base_factory"
+require "pincers/nokogiri/backend"
 
-module Pincers::Factories
-  class Nokogiri < Base
+module Pincers::Nokogiri
+  class Factory < Pincers::Core::BaseFactory
 
     def load_backend(_options)
       document = _options.delete(:document)
@@ -11,7 +11,7 @@ module Pincers::Factories
         document = ::Nokogiri::HTML document, _options[:url], _options[:encoding], _options[:flags]
       end
 
-      ::Pincers::Backend::Nokogiri.new document
+      Pincers::Nokogiri::Backend.new document
     end
 
   end

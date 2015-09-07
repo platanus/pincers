@@ -1,18 +1,19 @@
 require "selenium-webdriver"
-require "pincers/backend/base"
-require "pincers/support/http_client"
+require "pincers/core/base_backend"
 require "pincers/core/download"
+require "pincers/support/http_client"
 
-module Pincers::Backend
-
-  class Webdriver < Base
+module Pincers::Webdriver
+  class Backend < Pincers::Core::BaseBackend
 
     DOM_PROPERTIES = [:selected, :disabled, :checked, :value, :required]
 
-    alias :driver :document
+    attr_reader :driver
+
+    alias :document :driver
 
     def initialize(_driver)
-      super _driver
+      @driver = _driver
     end
 
     def javascript_enabled?

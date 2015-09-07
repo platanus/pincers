@@ -1,6 +1,6 @@
-module Pincers::Factories
+module Pincers::Core
 
-  class Base
+  class BaseFactory
 
     def self.new_context(_options)
       self.new(_options).new_context

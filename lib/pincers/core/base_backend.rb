@@ -1,15 +1,13 @@
-module Pincers::Backend
+module Pincers::Core
 
-  class Base
-
-    attr_reader :document
-
-    def initialize(_document)
-      @document = _document
-    end
+  class BaseBackend
 
     def javascript_enabled?
       false
+    end
+
+    def document
+      ensure_implementation :document
     end
 
     def document_root

@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'selenium-webdriver'
 
-describe 'Pincers::Backend::Webdriver' do
+describe 'Pincers::Webdriver::Backend' do
 
   before(:context) {
     @driver = Pincers.for_webdriver(:phantomjs, wait_timeout: 2.0).document

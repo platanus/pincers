@@ -1,10 +1,15 @@
-require 'pincers/backend/base'
+require 'pincers/core/base_backend'
 
-module Pincers::Backend
-
-  class Nokogiri < Base
+module Pincers::Nokogiri
+  class Backend < Pincers::Core::BaseBackend
 
     BOOL_PROPERTIES = [:selected, :disabled, :checked, :required]
+
+    attr_reader :document
+
+    def initialize(_document)
+      @document = _document
+    end
 
     def document_root
       [document]
