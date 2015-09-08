@@ -11,9 +11,9 @@ module Macros
       it { expect(pincers.search('.bikes li:contains(\'Kona\')').count).to eq 1 }
       it { expect(pincers.search('input:text')[:id]).to eq 'name'}
       it { expect(pincers.search('input:checkbox')[:id]).to eq 'option'}
-      it { expect(pincers.search('input:radio')[:id]).to eq 'radio-1'}
+      it { expect(pincers.search('input:radio')[:id]).to eq 'first-radio'}
       it { expect(pincers.search('option:selected')[:id]).to eq 'option-2'}
-      it { expect(pincers.search('#tags input:checked')[:id]).to eq 'radio-2'}
+      it { expect(pincers.search('#tags input:checked')[:id]).to eq 'second-radio'}
       it { expect(pincers.search('ul:has(li:contains(\'Trek\'))')[:class]).to eq 'bikes-2'}
     end
 
