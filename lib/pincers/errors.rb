@@ -69,7 +69,10 @@ module Pincers
       @original = _exc
     end
 
-    # IDEA: join backtraces?
+    def backtrace
+      # IDEA: join backtraces?
+      @original.backtrace
+    end
 
   end
 
