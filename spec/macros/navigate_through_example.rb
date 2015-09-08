@@ -11,7 +11,7 @@ module Macros
     describe 'click' do
 
       it "should navigate to the desired page if applied to a link" do
-        pincers.css('#reference').click
+        pincers.search('#reference').click
         expect(pincers.text).to include('This page is referenced from index')
       end
 

@@ -47,15 +47,21 @@ module Pincers::Nokogiri
 
     def extract_element_attribute(_element, _name)
       _name = _name.to_sym
-      value = _element[_name]
 
-      if BOOL_PROPERTIES.include? _name
-        value = !value.nil?
-      elsif _name == :value
-        value = checkbox_value_fix _element, value
+      if _name == :value
+        case classify _element
+        when :input_checkbox, :input_radio
+          extract_checkable_value _element
+        when :select
+          extract_select_value _element
+        else
+          _element[:value]
+        end
+      elsif BOOL_PROPERTIES.include? _name
+        !_element[_name].nil?
+      else
+        _element[_name]
       end
-
-      value
     end
 
   private
@@ -64,10 +70,31 @@ module Pincers::Nokogiri
       @document = _document unless _document.nil?
     end
 
-    def checkbox_value_fix(_element, _value)
-      if _value.nil? and _element.name.downcase == 'input' and ['checkbox', 'radio'].include? _element[:type].downcase
-        'on'
-      else _value end
+    def classify(_element)
+      name = _element.name
+      name = "input_#{(_element[:type] || 'text')}" if name == 'input'
+      name = "button_#{(_element[:type] || 'submit')}" if name == 'button'
+      name.to_sym
+    end
+
+    def extract_checkable_value(_element)
+      value = _element[:value]
+      value || 'on'
+    end
+
+    def extract_select_value(_element)
+      multiple = !_element[:multiple].nil?
+      selected = _element.css('option[selected]')
+      if multiple
+        selected.map { |o| option_value(o) }
+      else
+        option_value(selected.first)
+      end
+    end
+
+    def option_value(_element)
+      return nil if _element.nil?
+      _element[:value] || _element.content
     end
 
   end
