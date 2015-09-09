@@ -25,7 +25,7 @@ module Pincers::Chenso
     end
 
     def navigate_to(_url)
-      set_document history.push new_page_request _url
+      push_request new_page_request _url
     end
 
     def navigate_forward(_steps)
@@ -84,15 +84,19 @@ module Pincers::Chenso
       _request
     end
 
+    def push_request(_request)
+      set_document history.push _request
+    end
+
     def navigate_link(_url)
       navigate_to URI.join(document_url, _url) unless _url.nil?
     end
 
     def select_option(_element)
-      select_element = _element.element.at_xpath('ancestor::select')
+      select_element = _element.at_xpath('ancestor::select')
 
-      unless wrap(select_element).get(:multiple)
-        select_element.xpath('.//option[@selected]').each { |o| wrap(o).set(:selected, false) }
+      unless select_element[:multiple]
+        select_element.xpath('.//option[@selected]').each { |o| o[:selected] = false }
         _element[:selected] = true
       else
         _element.toggle(:selected)
@@ -104,26 +108,26 @@ module Pincers::Chenso
     end
 
     def set_radio_button(_element)
-      form = _element.element.at_xpath('ancestor::form')
+      form = _element.at_xpath('ancestor::form')
       if form
         siblings = form.xpath(".//input[@type='radio' and @name='#{_element[:name]}']")
-        siblings.each { |r| wrap(r).set(:checked, false) }
+        siblings.each { |r| r[:checked] = false }
       end
       _element[:checked] = true
     end
 
     def submit_parent_form(_element)
-      # TODO: formaction, formenctype, formmethod, formtarget
-      form_element = _element.element.at_xpath('ancestor::form')
-      submit_form form_element unless form_element.nil?
+      form_element = _element.at_xpath('ancestor::form')
+      if form_element
+        form = FormHelper.new(document_url, form_element)
+        push_request form.submit _element
+      end
     end
 
     def submit_form(_form)
       # TODO: consider form target when implementing frames support
-      form = FormHelper.new(_form)
-      request = form.as_request(document_url)
-      request = prepare_page_request request
-      set_document history.push request
+      form = FormHelper.new(document_url, _form)
+      push_request form.submit
     end
 
   end
