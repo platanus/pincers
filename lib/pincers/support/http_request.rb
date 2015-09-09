@@ -1,7 +1,7 @@
 module Pincers::Support
   class HttpRequest
 
-    attr_reader :url, :method
+    attr_reader :url, :method, :headers, :data
 
     def initialize(_url, _options={})
       @url = _url
@@ -13,7 +13,7 @@ module Pincers::Support
     def execute(_client)
       case @method
       when :get
-        _client.get(@url, {}, @headers)
+        _client.get(@url, @headers)
       when :post
         _client.post(@url, @data, @headers)
       when :put

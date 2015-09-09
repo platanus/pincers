@@ -41,20 +41,19 @@ module Pincers::Support
       })
     end
 
-    def get(_url, _query={}, _headers={})
-      # TODO: append query string?
+    def get(_url, _headers={})
       perform_request Net::HTTP::Get, URI(_url), _headers
     end
 
     def post(_url, _data, _headers={})
       perform_request Net::HTTP::Post, URI(_url), _headers do |req|
-        req.body = prepare_data(_data)
+        req.body = _data
       end
     end
 
     def put(_url, _data, _headers={})
       perform_request Net::HTTP::Put, URI(_url), _headers do |req|
-        req.body = prepare_data(_data)
+        req.body = _data
       end
     end
 
@@ -96,12 +95,6 @@ module Pincers::Support
 
     def handle_error_response(_response)
       raise HttpRequestError.new _response
-    end
-
-    def prepare_data(_data)
-      if _data.is_a? Hash
-        _data.keys.map { |k| "#{k}=#{_data[k]}" }.join '&'
-      else _data end
     end
 
     def build_headers(_request, _headers)
