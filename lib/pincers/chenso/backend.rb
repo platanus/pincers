@@ -6,6 +6,11 @@ require "pincers/chenso/html_doc_cache"
 module Pincers::Chenso
   class Backend < Pincers::Nokogiri::Backend
 
+    DEFAULT_HEADERS = {
+      'Accept' => 'text/html,application/xhtml+xml,application/xml',
+      'Cache-Control' => 'no-cache'
+    }
+
     attr_reader :client, :history
 
     def initialize(_http_client)
@@ -19,7 +24,7 @@ module Pincers::Chenso
     end
 
     def navigate_to(_url)
-      set_document history.push prepare_page_request _url
+      set_document history.push new_page_request _url
     end
 
     def navigate_forward(_steps)
@@ -35,37 +40,31 @@ module Pincers::Chenso
     end
 
     def set_element_attribute(_element, _name, _value)
-      if BOOL_PROPERTIES.include? _name.to_sym
-        if _value
-          _element.set_attribute(_name, _name)
-        else
-          _element.remove_attribute(_name)
-        end
-      else
-        _element.set_attribute(_name, _value)
-      end
+      wrap(_element).set(_name, _value)
     end
 
     def set_element_text(_element, _value)
-      case classify(_element)
+      element = wrap(_element)
+      case element.classify
       when :input_text, :input_email, :input_number, :textarea
         # TODO: validations?
-        set_element_value _element, _value
+        element[:value] = _value
       end
     end
 
     def click_on_element(_element, _modifiers)
-      case classify(_element)
+      element = wrap(_element)
+      case element.classify
       when :a
-        navigate_link _element[:href]
+        navigate_link element[:href]
       when :option
-        select_option _element
+        select_option element
       when :input_checkbox
-        toggle_checkbox _element
+        toggle_checkbox element
       when :input_radio
-        set_radio_button _element
-      when :input_submit, :button_submit
-        submit_parent_form _element
+        set_radio_button element
+      when :input_submit, :button_submit, :button
+        submit_parent_form element
       end
     end
 
@@ -75,17 +74,13 @@ module Pincers::Chenso
 
   private
 
-    def prepare_page_request(_url)
-      HtmlDocRequest.new _url, {
-        headers: {
-          'Accept' => 'text/html,application/xhtml+xml,application/xml',
-          'Cache-Control' => 'no-cache'
-        }
-      }
+    def new_page_request(_url)
+      prepare_page_request HtmlDocRequest.new _url
     end
 
-    def set_element_value(_element, _value)
-      _element[:value] = _value
+    def prepare_page_request(_request)
+      _request.headers.merge! DEFAULT_HEADERS
+      _request
     end
 
     def navigate_link(_url)
@@ -93,37 +88,32 @@ module Pincers::Chenso
     end
 
     def select_option(_element)
-      select_element = _element.at_xpath('ancestor::select')
+      select_element = _element.element.at_xpath('ancestor::select')
 
-      if select_element[:multiple].nil?
-        select_element.xpath('.//option[@selected]').each { |o| o.remove_attribute 'selected' }
-        _element[:selected] = 'selected'
-      elsif _element[:selected]
-        _element.remove_attribute 'selected'
+      unless wrap(select_element).get(:multiple)
+        select_element.xpath('.//option[@selected]').each { |o| wrap(o).set(:selected, false) }
+        _element[:selected] = true
       else
-        _element[:selected] = 'selected'
+        _element.toggle(:selected)
       end
     end
 
     def toggle_checkbox(_element)
-      if _element[:checked].nil?
-        _element[:checked] = 'checked'
-      else
-        _element.remove_attribute 'checked'
-      end
+      _element.toggle(:checked)
     end
 
     def set_radio_button(_element)
-      form = _element.at_xpath('ancestor::form')
+      form = _element.element.at_xpath('ancestor::form')
       if form
         siblings = form.xpath(".//input[@type='radio' and @name='#{_element[:name]}']")
-        siblings.each { |r| r.remove_attribute 'checked' }
+        siblings.each { |r| wrap(r).set(:checked, false) }
       end
-      _element[:checked] = 'checked'
+      _element[:checked] = true
     end
 
     def submit_parent_form(_element)
-      form_element = _element.at_xpath('ancestor::form')
+      # TODO: formaction, formenctype, formmethod, formtarget
+      form_element = _element.element.at_xpath('ancestor::form')
       submit_form form_element unless form_element.nil?
     end
 
