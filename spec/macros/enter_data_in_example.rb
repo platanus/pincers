@@ -55,7 +55,7 @@ module Macros
 
       it "should properly submit a form if submit is clicked" do
         submit.click
-        expect(pincers.text).to eq('category=private&tag=private')
+        expect(pincers.text).to eq('category=private&tag=private&button=Send+message')
       end
 
     end
