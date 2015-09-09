@@ -31,6 +31,15 @@ module Pincers
         ]
       end
 
+      def submit(_req, _params)
+        [
+          200, {
+            "Content-Type" => "text/html"
+          },
+          "<html><body>#{_req.body.read}</body></html>"
+        ]
+      end
+
       def setcookie(_req, _params)
         [
           200, {

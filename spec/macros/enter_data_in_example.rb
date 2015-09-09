@@ -9,6 +9,7 @@ module Macros
     let(:first_radio) { pincers.search('#first-radio') }
     let(:second_radio) { pincers.search('#second-radio') }
     let(:third_radio) { pincers.search('#third-radio') }
+    let(:submit) { pincers.search('#submit') }
 
     describe "set" do
       it "should properly set text type inputs" do
@@ -48,6 +49,15 @@ module Macros
         expect(first_radio.set true).to be true
         expect(second_radio.checked?).to be false
       end
+    end
+
+    describe "click" do
+
+      it "should properly submit a form if submit is clicked" do
+        submit.click
+        expect(pincers.text).to eq('category=private&tag=private')
+      end
+
     end
 
     describe "attribute" do
