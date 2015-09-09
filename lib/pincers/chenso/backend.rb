@@ -2,6 +2,7 @@ require "pincers/nokogiri/backend"
 require "pincers/support/http_navigator"
 require "pincers/chenso/html_doc_request"
 require "pincers/chenso/html_doc_cache"
+require "pincers/chenso/form_helper"
 
 module Pincers::Chenso
   class Backend < Pincers::Nokogiri::Backend
@@ -118,7 +119,11 @@ module Pincers::Chenso
     end
 
     def submit_form(_form)
-      # big todo!
+      # TODO: consider form target when implementing frames support
+      form = FormHelper.new(_form)
+      request = form.as_request(document_url)
+      request = prepare_page_request request
+      set_document history.push request
     end
 
   end
