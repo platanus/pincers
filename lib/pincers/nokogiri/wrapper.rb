@@ -1,6 +1,6 @@
 module Pincers::Nokogiri
 
-  class PropertyHelper
+  class Wrapper
 
     # This is a small bool properties subset, I believe its enough for scrapping.
     # For information of where to find the full list: http://stackoverflow.com/questions/706384/boolean-html-attributes
@@ -26,6 +26,15 @@ module Pincers::Nokogiri
         name = "button_#{(element[:type] || 'submit')}" if name == 'button'
         name.to_sym
       end
+    end
+
+    def xpath(_query)
+      element.xpath(_query).map { |e| Wrapper.new e }
+    end
+
+    def at_xpath(_query)
+      r = element.at_xpath(_query)
+      r.nil? ? nil : Wrapper.new(r)
     end
 
     def toggle(_name)

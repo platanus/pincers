@@ -1,8 +1,8 @@
 require "spec_helper"
 require "nokogiri"
-require "pincers/nokogiri/property_helper"
+require "pincers/nokogiri/wrapper"
 
-describe 'Pincers::Nokogiri::PropertyHelper' do
+describe 'Pincers::Nokogiri::Wrapper' do
 
   let(:form) {
     ::Nokogiri::HTML(%{
@@ -35,18 +35,18 @@ describe 'Pincers::Nokogiri::PropertyHelper' do
     }).at_xpath('//form')
   }
 
-  let(:text_input) { helper.new form.at_css('#text') }
-  let(:checkbox) { helper.new form.at_css('#checkbox') }
-  let(:checkbox_nv) { helper.new form.at_css('#checkbox-nv') }
-  let(:select) { helper.new form.at_css('#select') }
-  let(:select_nv) { helper.new form.at_css('#select-nv') }
-  let(:select_ns) { helper.new form.at_css('#select-ns') }
-  let(:textarea) { helper.new form.at_css('#textarea') }
-  let(:radio_1) { helper.new form.at_css('#radio-1') }
-  let(:radio_2) { helper.new form.at_css('#radio-2') }
-  let(:radio_3) { helper.new form.at_css('#radio-3') }
+  let(:text_input) { wrapper.new form.at_css('#text') }
+  let(:checkbox) { wrapper.new form.at_css('#checkbox') }
+  let(:checkbox_nv) { wrapper.new form.at_css('#checkbox-nv') }
+  let(:select) { wrapper.new form.at_css('#select') }
+  let(:select_nv) { wrapper.new form.at_css('#select-nv') }
+  let(:select_ns) { wrapper.new form.at_css('#select-ns') }
+  let(:textarea) { wrapper.new form.at_css('#textarea') }
+  let(:radio_1) { wrapper.new form.at_css('#radio-1') }
+  let(:radio_2) { wrapper.new form.at_css('#radio-2') }
+  let(:radio_3) { wrapper.new form.at_css('#radio-3') }
 
-  let(:helper) { Pincers::Nokogiri::PropertyHelper }
+  let(:wrapper) { Pincers::Nokogiri::Wrapper }
 
   describe "get :value" do
     it { expect(text_input.get(:value)).to eq 'text value' }

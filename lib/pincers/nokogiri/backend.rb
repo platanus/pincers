@@ -1,5 +1,5 @@
 require 'pincers/core/base_backend'
-require 'pincers/nokogiri/property_helper'
+require 'pincers/nokogiri/wrapper'
 
 module Pincers::Nokogiri
   class Backend < Pincers::Core::BaseBackend
@@ -51,7 +51,7 @@ module Pincers::Nokogiri
   private
 
     def wrap(_element)
-      PropertyHelper.new _element
+      Wrapper.new _element
     end
 
     def set_document(_document)
