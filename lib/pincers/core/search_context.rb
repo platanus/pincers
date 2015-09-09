@@ -164,6 +164,12 @@ module Pincers::Core
       self
     end
 
+    def submit
+      wrap_errors do
+        backend.submit_form element!
+      end
+    end
+
     # context related
 
     def goto

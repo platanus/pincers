@@ -69,6 +69,11 @@ module Pincers::Chenso
       end
     end
 
+    def submit_form(_element)
+      form = FormHelper.new document_url, wrap(_element)
+      push_request form.submit
+    end
+
     def as_http_client
       @client.copy
     end
@@ -122,12 +127,6 @@ module Pincers::Chenso
         form = FormHelper.new(document_url, form_element)
         push_request form.submit _element
       end
-    end
-
-    def submit_form(_form)
-      # TODO: consider form target when implementing frames support
-      form = FormHelper.new(document_url, _form)
-      push_request form.submit
     end
 
   end

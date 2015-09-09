@@ -60,6 +60,15 @@ module Macros
 
     end
 
+    describe 'submit' do
+
+      it "should properly submit a form" do
+        pincers.css('form').submit
+        expect(pincers.text).to eq('category=private&tag=private')
+      end
+
+    end
+
     describe "attribute" do
 
       it "should set the attribute if a value is given" do

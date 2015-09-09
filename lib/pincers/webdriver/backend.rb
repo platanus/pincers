@@ -143,6 +143,11 @@ module Pincers::Webdriver
       actions.drag_and_drop(_element, _on).perform
     end
 
+    def submit_form(_element)
+      _element = ensure_element _element
+      _element.submit
+    end
+
     def switch_to_frame(_element)
       driver.switch_to.frame _element
     end

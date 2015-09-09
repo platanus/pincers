@@ -208,6 +208,12 @@ Click on a button (or any other element)
 pincers.search('a#some-link').click
 ```
 
+Submit a form directly
+
+```ruby
+pincers.css('form').submit
+```
+
 Hover over an element
 
 ```ruby

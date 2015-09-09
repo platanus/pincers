@@ -106,6 +106,10 @@ module Pincers::Core
       ensure_implementation :drag_and_drop
     end
 
+    def submit_form(_element)
+      ensure_implementation :submit_form
+    end
+
     def switch_to_frame(_element)
       ensure_implementation :switch_to_frame
     end
