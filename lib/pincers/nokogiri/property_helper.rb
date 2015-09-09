@@ -28,6 +28,10 @@ module Pincers::Nokogiri
       end
     end
 
+    def toggle(_name)
+      set(_name, !get(_name))
+    end
+
     def get(_name)
       _name = _name.to_sym
 
@@ -69,6 +73,9 @@ module Pincers::Nokogiri
         _element.set_attribute(_name, _value)
       end
     end
+
+    alias :[] :get
+    alias :[]= :set
 
   private
 
