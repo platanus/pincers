@@ -1,11 +1,12 @@
 require "spec_helper"
 require "nokogiri"
+require "pincers/nokogiri/wrapper"
 require "pincers/chenso/form_helper"
 
 describe 'Pincers::Chenso::FormHelper' do
 
   let(:simple_form) {
-    Pincers::Chenso::FormHelper.new Nokogiri::HTML(%{
+    Pincers::Chenso::FormHelper.new 'http://crabfarm.io', Pincers::Nokogiri::Wrapper.new(Nokogiri::HTML(%{
       <form method="post" action="/submit">
         <input name="text" type="text" value="text value">
         <input name="checked" type="checkbox" checked>
@@ -33,14 +34,14 @@ describe 'Pincers::Chenso::FormHelper' do
         </fieldset>
         <input type="submit" name="button" value="button value">Submit</textarea>
       </form>
-    }).at_css('form')
+    })).at_xpath('.//form')
   }
 
   describe "as_request" do
 
       context "when parsing a siple form" do
 
-        let(:request) { simple_form.as_request('http://crabfarm.io') }
+        let(:request) { simple_form.submit }
 
         it { expect(request.url).to eq('http://crabfarm.io/submit') }
         it { expect(request.method).to eq :post }

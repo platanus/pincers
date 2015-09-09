@@ -1,4 +1,3 @@
-require "pincers/nokogiri/property_helper"
 require "pincers/chenso/html_doc_request"
 
 module Pincers::Chenso
@@ -7,33 +6,39 @@ module Pincers::Chenso
 
     attr_reader :form
 
-    def initialize(_form)
+    def initialize(_base_url, _form)
+      @base_url = _base_url
       @form = _form
     end
 
-    def action(_base_url)
-      URI.join(_base_url, @form[:action]).to_s
+    def action
+      @action ||= URI.join(@base_url, form[:action]).to_s
     end
 
-    def as_request(_base_url, _enctype=nil)
-      encoding = detect_enctype(_enctype)
-
-      data = case encoding
-      when 'application/x-www-form-urlencoded'
-        encode_urlencoded
-      when 'multipart/form-data'
-        encode_multipart
-      else
-        nil
+    def method
+      @method ||= begin
+        form[:method] ? form[:method].downcase.to_sym : :get
       end
-
-      build_request action(_base_url), encoding, data
     end
 
-    def pairs
+    def submit(_trigger=nil)
+      _trigger = _trigger || {}
+
+      pairs = extract_pairs
+      pairs << [_trigger[:name], _trigger[:value]] if _trigger[:name] && _trigger[:value]
+
+      form_action = _trigger[:formaction] ? URI.join(@base_url, _trigger[:formaction]) : action
+      form_method = _trigger[:formmethod] ? _trigger[:formmethod].downcase.to_sym : method
+      form_encoding = detect_enctype(form_method, _trigger[:formenctype])
+
+      build_request(pairs, form_action, form_method, form_encoding)
+    end
+
+  private
+
+    def extract_pairs
       inputs = form.xpath('.//*[@name]')
       inputs.map do |input|
-        input = Pincers::Nokogiri::PropertyHelper.new input
 
         case input.classify
         when :input_submit, :button, :button_submit
@@ -49,44 +54,47 @@ module Pincers::Chenso
       end.reject(&:nil?)
     end
 
-    def encode_urlencoded
-      pairs.map { |p| "#{CGI.escape(p[0])}=#{CGI.escape(p[1])}" }.join '&'
+    def encode_urlencoded(_pairs)
+      _pairs.map { |p| "#{CGI.escape(p[0])}=#{CGI.escape(p[1])}" }.join '&'
     end
 
-    def encode_multipart
+    def encode_multipart(_pairs)
       raise Pincers::MissingFeatureError.new :encode_multipart
     end
 
-  private
-
-    def wrap
-      Pincers::Nokogiri::Helpers
-    end
-
-    def method
-      @method ||= begin
-        form[:method].downcase.to_sym rescue :get
-      end
-    end
-
-    def detect_enctype(_requested)
-      return 'application/x-www-form-urlencoded' if method == :get
+    def detect_enctype(_method, _override=nil)
+      return 'application/x-www-form-urlencoded' if _method == :get
       return 'multipart/form-data' if form_has_files?
-      _requested || form[:enctype] || 'application/x-www-form-urlencoded'
+      _override || form[:enctype] || 'application/x-www-form-urlencoded'
     end
 
     def form_has_files?
       !form.at_xpath(".//input[@type='file' and @name]").nil?
     end
 
-    def build_request(_url, _encoding, _data)
-      HtmlDocRequest.new _url, {
-        method: method,
-        headers: {
-          'Content-Type' => _encoding
-        },
-        data: _data
+    def build_request(_pairs, _action, _method, _encoding)
+      encoding = detect_enctype(_method || method, _encoding)
+
+      data = case _encoding
+      when 'application/x-www-form-urlencoded'
+        encode_urlencoded _pairs
+      when 'multipart/form-data'
+        encode_multipart _pairs
+      else
+        nil
+      end
+
+      headers = { 'Content-Type' => encoding }
+
+      HtmlDocRequest.new _action, {
+        method: _method,
+        headers: headers,
+        data: data
       }
+    end
+
+    def do(_str)
+      _str.downcase.to_sym
     end
 
   end
