@@ -1,3 +1,4 @@
+require "nokogiri"
 require "forwardable"
 require "pincers/version"
 require "pincers/errors"
