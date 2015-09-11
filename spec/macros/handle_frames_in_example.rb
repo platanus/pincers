@@ -3,7 +3,7 @@ module Macros
 
     describe "goto" do
       it "should switch to selected frame when called on a search context" do
-        pincers.css('#the-frame').goto
+        pincers.search('#the-frame').goto
         expect(pincers.text).to include('This is the frame content')
       end
 
@@ -13,7 +13,7 @@ module Macros
       end
 
       context "when inside a child frame" do
-        before { pincers.css('#the-frame').goto }
+        before { pincers.search('#the-frame').goto }
 
         it "should switch to top frame when called with frame: :top" do
           pincers.goto frame: :top

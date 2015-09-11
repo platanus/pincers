@@ -116,7 +116,7 @@ module Pincers::Core
       when :parent
         backend.switch_to_parent_frame
       when String
-        backend.switch_to_frame css(_frame).element!
+        backend.switch_to_frame search(_frame).element!
       when SearchContext
         backend.switch_to_frame _frame.element!
       else

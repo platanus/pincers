@@ -1,4 +1,5 @@
 module Pincers::Core
+
   class Download < Struct.new(:mime, :data)
 
     def self.from_http_response(_response)

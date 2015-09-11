@@ -1,20 +1,7 @@
-require 'pincers/support/xpath_builder'
-
 module Pincers::Extension
   module Queries
 
     TEXT_INPUTS = ['text', 'email', 'number', 'email', 'color', 'password', 'search', 'tel', 'url']
-
-    def search(_options={}, &_block)
-      query_options = {
-        limit: _options.delete(:limit)
-      }
-
-      builder = Pincers::Support::XPathBuilder.new _options
-      _block.call builder unless _block.nil?
-
-      xpath builder.expression, query_options
-    end
 
     def id
       self[:id]
@@ -40,11 +27,11 @@ module Pincers::Extension
     end
 
     def selected(_options={})
-      first!.css('option', _options).select { |opt| opt.selected? }
+      first!.search('option', _options).select(&:selected?)
     end
 
     def checked(_options={})
-      first!.css('input', _options).select { |opt| opt.checked? }
+      first!.search('input', _options).select(&:checked?)
     end
 
     def input_mode

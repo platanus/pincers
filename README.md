@@ -84,32 +84,32 @@ Consider the following HTML structure for the examples below:
 </body>
 ```
 
-Search for elements matching a given selector using `css`:
+Most element traversing in pincers is done via [jQuery extended selectors](https://api.jquery.com/category/selectors/) using the `search` method:
 
 ```ruby
-pincers.css('.my-class') # will select both first-parent and second-parent
+# Select the second parent by jumping through loops:
+pincers.search(".my-class:has(p:contains('Imateapo'))")
 ```
 
 This call will return another **context** contaning all elements matching the given selector. The **context** object is an enumerable that yields single element **contexts**, so you can use pincers methods on separate elements too:
 
 ```ruby
-pincers.css('.my-class').map do |div|
-  div.css('.child-class') # div is also a contex!
+pincers.search('.my-class').map do |div|
+  div.search('.child-class') # div is also a contex!
 end
 ```
 
 Pincers **contexts** also have `first` and `last` methods that return the first and last element wrapped on a separate **context**.
 
 ```ruby
-pincers.css('.my-class').first # first is also a context!
+pincers.search('.my-class').first # first is also a context!
 ```
 
 Searching over a **context** will search among all contained elements children:
 
 ```ruby
-parents = pincers.css('.my-class')
-parents.css('.child-class') # will select all childs except fourth-child
-parents.search name: content: 'crabfarm'
+parents = pincers.search('.my-class')
+parents.search('.child-class') # will select all childs except fourth-child
 ```
 
 If you don't feel confortable using **css**, pincers also provides a more idiomatic `search` method, it allows you to search by `tag`, `contents`, `class` or any attribute:
@@ -120,29 +120,18 @@ pincers.search(tag: 'input', value: 'email@crabfarm.io')
 pincers.search(content: 'Title')
 ```
 
-For more complex situations, you can call `search` with a block and invoke the builder methods directly:
-
-```ruby
-pincers.search do |builder|
-  builder.by_tag 'p'
-  builder.by_class 'some-class other-class'
-  builder.by_content 'Some content'
-  builder.by_attribute :value, ends_with: 'suffix'
-end
-```
-
 ### Context properties
 
 Retrieve the concatenated text contents for all matched elements.
 
 ```ruby
-pincers.css('#first-parent').css('.child-class').text # = 'FooBar'
+pincers.search('#first-parent').search('.child-class').text # = 'FooBar'
 ```
 
 Retrieve the concatenated html contents for all matched elements.
 
 ```ruby
-pincers.css('.child-class').to_html # will dump all p elements in our example.
+pincers.search('.child-class').to_html # will dump all p elements in our example.
 ```
 
 #### First element properties
@@ -152,20 +141,20 @@ There are several methods that when called on a **context** will only apply to t
 Retrieve an attribute from the first matching element:
 
 ```ruby
-pincers.css('.child-class')[:id] # = 'first-child'
-pincers.css('.child-class').attribute('id') # same as above
+pincers.search('.child-class')[:id] # = 'first-child'
+pincers.search('.child-class').attribute('id') # same as above
 ```
 
 Retrieve the tag name from an element:
 
 ```ruby
-pincers.css('.child-class').tag # = 'p'
+pincers.search('.child-class').tag # = 'p'
 ```
 
 Retrieve an array with all classes from the first matching element:
 
 ```ruby
-pincers.css('.child-class').classes # = ['child-class', 'other-class']
+pincers.search('.child-class').classes # = ['child-class', 'other-class']
 ```
 
 ### Element interaction
@@ -175,44 +164,44 @@ The following methods change the element or document state and are only availabl
 To set the text on a text input
 
 ```ruby
-pincers.css('input#some-input').set 'sometext'
+pincers.search('input#some-input').set 'sometext'
 ```
 
 Choose a select box option by it's label
 
 ```ruby
-pincers.css('select#some-select').set 'Some Label'
+pincers.search('select#some-select').set 'Some Label'
 ```
 
 Choose a select box option by the option text
 
 ```ruby
-pincers.css('select#some-select').set 'Option text'
+pincers.search('select#some-select').set 'Option text'
 ```
 
 Or by the option value
 
 ```ruby
-pincers.css('select#some-select').set by_value: 'option-value'
+pincers.search('select#some-select').set by_value: 'option-value'
 ```
 
 Change a checkbox or radio button state
 
 ```ruby
-pincers.css('input#some-checkbox').set # check
-pincers.css('input#some-checkbox').set false # uncheck
+pincers.search('input#some-checkbox').set # check
+pincers.search('input#some-checkbox').set false # uncheck
 ```
 
 Click on a button (or any other element)
 
 ```ruby
-pincers.css('a#some-link').click
+pincers.search('a#some-link').click
 ```
 
 Hover over an element
 
 ```ruby
-pincers.css('div#some-menu').hover
+pincers.search('div#some-menu').hover
 ```
 
 ### Root properties
@@ -245,9 +234,9 @@ pincers.document
 Using webdriver to extract data that requires iterating over **big lists or lots of table rows** can be painfully slow. To process big datasets pincers provides the `readonly` method, that transforms the webdriver backed result into a nokogiri backed one.
 
 ```ruby
-list_contents = pincers.css('#long-list').readonly do |list|
+list_contents = pincers.search('#long-list').readonly do |list|
   # operating over list is very fast
-  list.css('li').map &:text
+  list.search('li').map &:text
 end
 ```
 
@@ -257,7 +246,7 @@ Pincers operations can only target one frame at a time. By default, the top fram
 
 ```ruby
 pincers.goto 'http://www.someurlwithfram.es'
-pincers.goto frame: pincers.css('#my-frame')
+pincers.goto frame: pincers.search('#my-frame')
 pincers.text # this will return the '#my-frame' frame contents
 ```
 
@@ -279,7 +268,7 @@ In javascript enabled backends like webdriver, even though pincers will do it's 
 special condition before interacting with an element:
 
 ```ruby
-pincers.css('#my-async-stuff').wait(:enabled)
+pincers.search('#my-async-stuff').wait(:enabled)
 ```
 
 It's posible to wait on the following states:
@@ -292,19 +281,19 @@ It's posible to wait on the following states:
 Its also possible to wait for custom conditions by passing a block, the process will wait until the block stops returning `false` (only `false`, not `nil`).
 
 ```ruby
-pincers.css('#my-async-stuff').wait { |r| r.count > 10 }
+pincers.search('#my-async-stuff').wait { |r| r.count > 10 }
 ```
 
 When using a custom condition, you can also wait for the block not to raise a navigation error.
 
 ```ruby
-pincers.css('#async-button').wait { |r| r.click } # wait until click succeeds
+pincers.search('#async-button').wait { |r| r.click } # wait until click succeeds
 ```
 
 By default, the waiting process times out in 10 seconds. This can be changed by setting the `Pincers.config.wait_timeout` property or by calling the search function with the `timeout:` option:
 
 ```ruby
-pincers.css('#my-async-stuff').wait(:enabled, timeout: 5.0)
+pincers.search('#my-async-stuff').wait(:enabled, timeout: 5.0)
 ```
 
 #### Downloading a resource
@@ -312,7 +301,7 @@ pincers.css('#my-async-stuff').wait(:enabled, timeout: 5.0)
 You can download resources from the currently loaded document using the `download` method on a **link**, **image** or any other element that has a `src` attribute. **Javascript triggered downloads are not supported by this method**
 
 ```ruby
-dl = pincers.css('#a-download-link').download
+dl = pincers.search('#a-download-link').download
 dl.data # the resource data as string
 dl.mime # the resource content type
 dl.store('/some-file.txt') # store resource in file
@@ -348,7 +337,7 @@ pincers.document # webdriver driver or nokogiri root node
 To get the contained nodes on a pincers **context** use `elements`
 
 ```ruby
-pincers.css('.foo').elements # array of webdriver elements or nokogiri nodes.
+pincers.search('foo').elements # array of webdriver elements or nokogiri nodes.
 ```
 
 ## Contributing

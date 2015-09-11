@@ -1,11 +1,11 @@
 module Macros
   def it_should_properly_enter_data_in_example
 
-    let(:text_input) { pincers.css('#name') }
-    let(:textarea_input) { pincers.css('#message') }
-    let(:select_input) { pincers.css('#category') }
-    let(:checkbox_input) { pincers.css('#option') }
-    let(:checkbox_input_checked) { pincers.css('#other-option') }
+    let(:text_input) { pincers.search('#name') }
+    let(:textarea_input) { pincers.search('#message') }
+    let(:select_input) { pincers.search('#category') }
+    let(:checkbox_input) { pincers.search('#option') }
+    let(:checkbox_input_checked) { pincers.search('#other-option') }
 
     describe "set" do
       it "should properly set text type inputs" do

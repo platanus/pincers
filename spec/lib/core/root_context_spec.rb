@@ -61,7 +61,7 @@ describe 'Pincers::Core::RootContext' do
     end
 
     it "should call switch_to_frame with proper element if called with frame: context" do
-      pincers.goto frame: pincers.css('#frame')
+      pincers.goto frame: pincers.search('#frame')
       expect(backend).to have_received(:switch_to_frame).with('child_element_1')
     end
 
@@ -87,7 +87,7 @@ describe 'Pincers::Core::RootContext' do
     end
 
     it "when called on a frame element context it should call goto frame: context on the root context" do
-      pincers.css('#frame').goto
+      pincers.search('#frame').goto
       expect(backend).to have_received(:switch_to_frame).with('child_element_1')
     end
   end
@@ -131,15 +131,25 @@ describe 'Pincers::Core::RootContext' do
     end
   end
 
-  describe "css" do
+  describe "search" do
     it "should load a new child context that applies the given query" do
-      childs = pincers.css('selector')
+      childs = pincers.search('selector')
       expect(childs.query.lang).to eq :css
       expect(childs.query.query).to eq 'selector'
       expect(childs.query.limit).to be nil
 
-      childs = pincers.css('selector', limit: 1)
+      childs = pincers.search('selector', limit: 1)
       expect(childs.query.limit).to be 1
+    end
+
+    it "should use xpath for pseudo classes or explicit xpath" do
+      childs = pincers.search(xpath: 'selector')
+      expect(childs.query.lang).to eq :xpath
+      expect(childs.query.query).to eq 'selector'
+
+      childs = pincers.search('li:eq(1)')
+      expect(childs.query.lang).to eq :xpath
+      expect(childs.query.query).to eq './/li[(position()-1)=1]'
     end
 
     context "when in advanced mode" do
@@ -147,7 +157,7 @@ describe 'Pincers::Core::RootContext' do
       before { allow(pincers).to receive(:advanced_mode?) { true } }
 
       it "should automatically invoke the backend.search_by_css method" do
-        childs = pincers.css('selector')
+        pincers.search('selector')
         expect(backend).to have_received(:search_by_css).exactly(1).times
       end
     end
@@ -155,20 +165,20 @@ describe 'Pincers::Core::RootContext' do
 
   describe "reload" do
     it "should repeat the search result's query" do
-      pincers.css('selector').reload.reload
+      pincers.search('selector').reload.reload
       expect(backend).to have_received(:search_by_css).exactly(2).times
     end
 
     it "should fail for frozen sets" do
-      expect { pincers.css('selector')[1].reload }.to raise_error Pincers::FrozenSetError
+      expect { pincers.search('selector')[1].reload }.to raise_error Pincers::FrozenSetError
     end
 
     context "when parent hasnt been loaded yet" do
 
-      let!(:parents) { pincers.css('selector') }
+      let!(:parents) { pincers.search('selector') }
 
       it "should trigger reload on parent" do
-        parents.css('other').reload
+        parents.search('other').reload
         expect(backend).to have_received(:search_by_css).exactly(3).times # 1 for parent and 1 for each of the 2 childs
       end
     end
@@ -198,7 +208,7 @@ describe 'Pincers::Core::RootContext' do
 
   describe "readonly" do
     it "should return a new context with access to the provided elements" do
-      original = pincers.css('selector')
+      original = pincers.search('selector')
       original.readonly do |context|
         expect(context.count).to eq original.count
         expect(context.tag).to eq 'div'
@@ -229,14 +239,14 @@ describe 'Pincers::Core::RootContext' do
 
   describe "drag_to" do
     it "should map to backend.drag_and_drop" do
-      pincers.css('sel').first.drag_to pincers.css('sel').last
+      pincers.search('sel').first.drag_to pincers.search('sel').last
       expect(backend).to have_received(:drag_and_drop).with('child_element_1', 'child_element_2')
     end
   end
 
   context "given an unloaded search result" do
 
-    let(:search) { pincers.css('selector') }
+    let(:search) { pincers.search('selector') }
 
     describe "element" do
       it "should trigger elements to be loaded with limit: 1 and return first element" do
