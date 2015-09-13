@@ -63,7 +63,7 @@ module Macros
     describe 'submit' do
 
       it "should properly submit a form" do
-        pincers.css('form').submit
+        pincers.search('form').submit
         expect(pincers.text).to eq('category=private&tag=private')
       end
 
