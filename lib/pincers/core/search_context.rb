@@ -1,7 +1,7 @@
 require 'pincers/extension/queries'
 require 'pincers/extension/actions'
 require 'pincers/extension/labs'
-require 'pincers/support/query'
+require 'pincers/core/query'
 
 module Pincers::Core
   class SearchContext
@@ -91,18 +91,15 @@ module Pincers::Core
       if elements.last.nil? then nil else wrap_siblings [elements.last] end
     end
 
-    def css(_selector, _options={})
-      wrap_errors do
-        query = Pincers::Support::Query.new backend, :css, _selector, _options[:limit]
-        wrap_childs query
+    def search(_selector=nil, _options={}, &_block)
+      if _selector.is_a? Hash
+        _options = _selector
+        _selector = nil
       end
-    end
 
-    def xpath(_selector, _options={})
-      wrap_errors do
-        query = Pincers::Support::Query.new backend, :xpath, _selector, _options[:limit]
-        wrap_childs query
-      end
+      query = Query.build_from_options(backend, _selector, _options, &_block)
+
+      wrap_errors { wrap_childs query }
     end
 
     def attribute(_name, _value=nil)

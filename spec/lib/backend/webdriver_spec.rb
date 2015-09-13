@@ -18,6 +18,7 @@ describe 'Pincers::Backend::Webdriver' do
 
   it_should_properly_navigate_through_example
   it_should_properly_read_the_example
+  it_should_support_jquery_selectors
   it_should_properly_enter_data_in_example
   it_should_properly_handle_frames_in_example
   it_should_properly_handle_dynamic_markup
@@ -34,7 +35,7 @@ describe 'Pincers::Backend::Webdriver' do
   describe 'wait' do
     context "when wait :present option is used" do
       it "should fail with timeout error if wait times out" do
-        expect { pincers.css('.non-existant').wait(:present, timeout: 0.1) }.to raise_error(Pincers::ConditionTimeoutError)
+        expect { pincers.search('.non-existant').wait(:present, timeout: 0.1) }.to raise_error(Pincers::ConditionTimeoutError)
       end
     end
   end

@@ -5,7 +5,7 @@ module Pincers::Extension
       nk_root = Pincers.for_nokogiri to_html
 
       unless root?
-        nk_root = nk_root.css('body > *') # nokogiri will inject valid html structure around contents
+        nk_root = nk_root.search('body > *') # nokogiri will inject valid html structure around contents
       end
 
       if _block.nil?

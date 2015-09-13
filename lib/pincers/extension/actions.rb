@@ -49,11 +49,11 @@ module Pincers::Extension
     end
 
     def find_option_by_label(_label, _options)
-      css("option", _options).find { |o| o.text == _label }
+      search(_options.merge(xpath: ".//option[contains(.,'#{_label}')]")).first
     end
 
     def find_option_by_value(_value, _options)
-      css("option", _options).find { |o| o[:value] == _value.to_s }
+      search(_options.merge(xpath: ".//option[@value='#{_value}']")).first
     end
 
   end
