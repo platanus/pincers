@@ -1,6 +1,6 @@
 # Pincers [![Build Status](https://travis-ci.org/platanus/pincers.svg)](https://travis-ci.org/platanus/pincers)
 
-Pincers is a jQuery inspired Ruby DSL on top of webdriver. In other words: an easy to use set of functions that allow you to scrape, automate navigation or test a Javascript intensive webpage.
+Pincers is a jQuery inspired Ruby DSL on top of webdriver. In other words: an easy to use set of functions that allow you to scrape or automate navigation on a Javascript intensive webpage.
 
 ![pincers diagram](https://cloud.githubusercontent.com/assets/313750/9365154/5ec7213c-4686-11e5-9fbd-7e9b22dae25d.png)
 
@@ -19,18 +19,28 @@ end
 
 ##### Great! But I already know ( selenium | watir | mechanize | nokogiri ) ... why do I need this?
 
-The jQuery interface solves DOM element selection in a very practical way that most programmers feel comfortable with. When using any of the options listed above, we found ourselves missing jQuery's ease of use.
+The jQuery interface solves DOM element traversal in a very practical way that most programmers feel comfortable with. When using any of the options listed above, we found ourselves missing jQuery's ease of use.
 
 Also, by harnessing the power of nokogiri, pincers lets you extract complex data like tables or lists in a fraction of the time required by using pure webdriver. Take a look at [Read-only Results](#read-only-results).
+
+### Features:
+
+* Full support for jQuery selectors.
+* Simple interface, also like jQuery, you will only interact with one pincers-object type.
+* Sensible waiting conventions, built for dynamic webpages.
+* Ability to switch to nokogiri for parsing (keeping the same DSL) for heavy duty data extraction. Take a look at [Read-only Results](#read-only-results).
+* Ability to preform random http requests impersonating the current browser (cookies and headers).
 
 ## Install
 
 To install just run:
+
 ```
 gem install pincers
 ```
 
 Or add to your Gemfile and run `bundle install`:
+
 ```ruby
 gem 'pincers'
 ```
