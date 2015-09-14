@@ -11,5 +11,6 @@ describe 'Pincers::Chenso::Backend' do
   it_should_properly_read_the_example
   it_should_properly_navigate_through_example
   it_should_properly_enter_data_in_example
+  it_should_properly_handle_frames_in_example
 
 end

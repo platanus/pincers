@@ -4,10 +4,12 @@ require 'pincers/nokogiri/wrapper'
 module Pincers::Nokogiri
   class Backend < Pincers::Core::BaseBackend
 
-    attr_reader :document
-
     def initialize(_document)
       @document = _document
+    end
+
+    def document
+      @document
     end
 
     def document_root
@@ -52,10 +54,6 @@ module Pincers::Nokogiri
 
     def wrap(_element)
       Wrapper.new _element
-    end
-
-    def set_document(_document)
-      @document = _document unless _document.nil?
     end
 
   end

@@ -1,5 +1,5 @@
 require "pincers/nokogiri/backend"
-require "pincers/support/http_navigator"
+require "pincers/chenso/context_manager"
 require "pincers/chenso/html_doc_request"
 require "pincers/chenso/html_doc_cache"
 require "pincers/chenso/form_helper"
@@ -12,32 +12,36 @@ module Pincers::Chenso
       'Cache-Control' => 'no-cache'
     }
 
-    attr_reader :client, :history
+    attr_reader :client, :browser
 
     def initialize(_http_client)
       super nil
       @client = _http_client
-      @history = Pincers::Support::HttpNavigator.new _http_client
+      @browser = ContextManager.new @client
+    end
+
+    def document
+      browser.context.document
     end
 
     def document_url
-      history.current_url
+      browser.context.navigator.current_url
     end
 
     def navigate_to(_url)
-      push_request new_page_request _url
+      browser.push new_page_request _url
     end
 
     def navigate_forward(_steps)
-      set_document history.forward _steps
+      browser.forward _steps
     end
 
     def navigate_back(_steps)
-      set_document history.back _steps
+      browser.back _steps
     end
 
     def refresh_document
-      set_document history.refresh
+      browser.refresh
     end
 
     def set_element_attribute(_element, _name, _value)
@@ -57,7 +61,7 @@ module Pincers::Chenso
       element = wrap(_element)
       case element.classify
       when :a
-        navigate_link element[:href]
+        navigate_link element
       when :option
         select_option element
       when :input_checkbox
@@ -70,17 +74,29 @@ module Pincers::Chenso
     end
 
     def submit_form(_element)
-      form = FormHelper.new document_url, wrap(_element)
-      push_request form.submit
+      _element = wrap(_element)
+      form = FormHelper.new document_url, _element
+      load_in_target form.submit, _element[:target]
     end
 
     def as_http_client
       @client.copy
     end
 
+    def switch_to_frame(_element)
+      if _element[:src] && !browser.switch_frame(_element[:src])
+        browser.load_frame(_element[:src], new_page_request(_element[:src]))
+      end
+    end
+
+    def switch_to_top_frame
+      browser.switch_top_frame
+    end
+
   private
 
     def new_page_request(_url)
+      _url = URI.join(document_url, _url) if document_url
       prepare_page_request HtmlDocRequest.new _url
     end
 
@@ -89,12 +105,10 @@ module Pincers::Chenso
       _request
     end
 
-    def push_request(_request)
-      set_document history.push _request
-    end
-
-    def navigate_link(_url)
-      navigate_to URI.join(document_url, _url) unless _url.nil?
+    def navigate_link(_element)
+      if _element[:href]
+        load_in_target new_page_request(_element[:href]), _element[:target]
+      end
     end
 
     def select_option(_element)
@@ -125,7 +139,28 @@ module Pincers::Chenso
       form_element = _element.at_xpath('ancestor::form')
       if form_element
         form = FormHelper.new(document_url, form_element)
-        push_request form.submit _element
+        target = _element[:formtarget] || form_element[:target]
+        load_in_target form.submit(_element), target
+      end
+    end
+
+    def load_in_target(_request, _target)
+      case _target
+      when nil, '_self'
+        browser.push _request
+      when '_top'
+        browser.switch_top_frame
+        browser.push _request
+      when '_parent'
+        browser.switch_parent_frame
+        browser.push _request
+      when '_blank'
+        # Should be: browser.load_window _request
+        browser.switch_top_frame
+        browser.push _request
+      else
+        frame = document.at_xpath("//iframe[@name='#{_target}']")
+        switch_to_frame frame
       end
     end
 

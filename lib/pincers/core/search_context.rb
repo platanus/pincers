@@ -164,8 +164,9 @@ module Pincers::Core
       self
     end
 
-    def submit
+    def submit(&_block)
       wrap_errors do
+        # _block.call(FormSetter.new _element) if _block
         backend.submit_form element!
       end
     end
