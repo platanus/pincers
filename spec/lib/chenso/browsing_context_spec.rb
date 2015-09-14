@@ -1,10 +1,10 @@
 require "spec_helper"
-require "pincers/support/http_navigator"
+require "pincers/chenso/browsing_context"
 
-describe "Pincers::Support::HttpNavigator" do
+describe "Pincers::Chenso::BrowsingContext" do
 
   let(:client) { :dummy }
-  let(:service) { Pincers::Support::HttpNavigator.new client }
+  let(:service) { Pincers::Chenso::BrowsingContext.new client }
 
   6.times do |i|
     let("fake_request_#{i}") do

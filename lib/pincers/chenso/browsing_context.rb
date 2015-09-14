@@ -1,11 +1,25 @@
-module Pincers::Support
+module Pincers::Chenso
 
-  class HttpNavigator
+  class BrowsingContext
+
+    attr_reader :document
 
     def initialize(_http_client)
       @client = _http_client
       @history = []
       @pointer = -1
+      @childs = {}
+      @document = nil
+    end
+
+    def get_child(_id)
+      @childs[_id]
+    end
+
+    def load_child(_id, _request)
+      nav = self.class.new @client
+      nav.push _request
+      @childs[_id] = nav
     end
 
     def current_url
@@ -57,7 +71,9 @@ module Pincers::Support
     end
 
     def navigate(_request)
-      _request.execute @client
+      @document = _request.execute @client
+      @childs.clear
+      @document
     end
 
   end

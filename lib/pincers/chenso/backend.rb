@@ -1,5 +1,5 @@
 require "pincers/nokogiri/backend"
-require "pincers/chenso/context_manager"
+require "pincers/chenso/browsing_manager"
 require "pincers/chenso/html_doc_request"
 require "pincers/chenso/html_doc_cache"
 require "pincers/chenso/form_helper"
@@ -17,15 +17,15 @@ module Pincers::Chenso
     def initialize(_http_client)
       super nil
       @client = _http_client
-      @browser = ContextManager.new @client
+      @browser = BrowsingManager.new @client
     end
 
     def document
-      browser.context.document
+      browser.document
     end
 
     def document_url
-      browser.context.navigator.current_url
+      browser.current_url
     end
 
     def navigate_to(_url)
