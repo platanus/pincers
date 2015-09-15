@@ -88,7 +88,7 @@ module Pincers::Core
     end
 
     def refresh
-      wrap_errors { backend.refresh_document _steps }
+      wrap_errors { backend.refresh_document }
       self
     end
 
