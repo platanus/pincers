@@ -16,10 +16,8 @@ module Pincers::Chenso
       @childs[_id]
     end
 
-    def load_child(_id, _request)
-      nav = self.class.new @client
-      nav.push _request
-      @childs[_id] = nav
+    def load_child(_id)
+      @childs[_id] = self.class.new @client
     end
 
     def current_url

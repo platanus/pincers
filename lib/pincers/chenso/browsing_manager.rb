@@ -10,7 +10,7 @@ module Pincers::Chenso
       @client = _client
       @index = 0
       @windows = [
-        [load_new_context]
+        [build_root_context]
       ]
     end
 
@@ -35,11 +35,15 @@ module Pincers::Chenso
     end
 
     def load_frame(_id, _request)
-      window << context.load_child(_id, _request)
+      child_context = context.load_child _id
+      child_context.push _request
+      window << child_context
     end
 
     def load_window(_request)
-      windows << [load_new_context(_request)]
+      context = build_root_context
+      context.push _request
+      windows << [context]
       @index = windows.length - 1
     end
 
@@ -55,10 +59,8 @@ module Pincers::Chenso
       window.last
     end
 
-    def load_new_context(_request=nil)
-      ctx = BrowsingContext.new @client
-      ctx.push _request if _request
-      ctx
+    def build_root_context
+      BrowsingContext.new @client
     end
 
   end
