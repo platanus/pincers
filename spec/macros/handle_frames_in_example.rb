@@ -19,6 +19,21 @@ module Macros
           pincers.goto frame: :top
           expect(pincers.text).to include('This is the main page')
         end
+
+        it "should load frames with no target in same frame" do
+          pincers.search('#self').click
+          expect(pincers.text).to include('This page is referenced from index')
+          pincers.goto frame: :top
+          expect(pincers.text).to include('This is the main page')
+        end
+
+        it "should load frames with target: _top in top frame" do
+          pincers.search('#top').click
+          expect(pincers.text).to include('This page is referenced from index')
+          pincers.goto frame: :top
+          expect(pincers.text).to include('This page is referenced from index')
+        end
+
       end
     end
   end
