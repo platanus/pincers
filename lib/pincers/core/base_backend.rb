@@ -122,6 +122,22 @@ module Pincers::Core
       ensure_implementation :switch_to_parent_frame
     end
 
+    def current_window_handler
+      ensure_implementation :current_window_handler
+    end
+
+    def list_window_handlers
+      ensure_implementation :list_window_handlers
+    end
+
+    def switch_to_window(_handler)
+      ensure_implementation :switch_to_window
+    end
+
+    def close_current_window
+      ensure_implementation :close_current_window
+    end
+
     def as_http_client
       ensure_implementation :as_http_client
     end

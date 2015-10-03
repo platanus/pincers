@@ -174,7 +174,7 @@ module Pincers::Core
     # context related
 
     def goto
-      root.goto frame: self
+      wrap_errors { backend.switch_to_frame element! }
     end
 
     # waiting

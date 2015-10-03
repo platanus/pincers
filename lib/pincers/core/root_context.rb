@@ -1,3 +1,4 @@
+require "pincers/core/window"
 require "pincers/core/cookies"
 require "pincers/core/download"
 require "pincers/core/search_context"
@@ -97,6 +98,32 @@ module Pincers::Core
       self
     end
 
+    def windows
+      wrap_errors do
+        backend.list_window_handlers.map { |id| Window.new(self, id) }
+      end
+    end
+
+    def window(_window=:self)
+      wrap_errors do
+        current_hnd = backend.current_window_handler
+
+        handler = case _window
+        when :self
+          current_hnd
+        when :next, :previous
+          all_hnd = backend.list_window_handlers
+          hnd_idx = all_hnd.index current_handler
+          hnd_idx += _window == :next ? 1 : -1
+          all_hnd[hnd_idx]
+        else
+          raise ArgumentError.new "Invalid :frame option #{_frame.inspect}"
+        end
+
+        Window.new self, handler
+      end
+    end
+
     def default_timeout
       @config[:wait_timeout]
     end
@@ -136,12 +163,25 @@ module Pincers::Core
       when :parent
         backend.switch_to_parent_frame
       when String
-        backend.switch_to_frame search(_frame).element!
-      when SearchContext
-        backend.switch_to_frame _frame.element!
+        search(_frame, limit: 1).goto
       else
         raise ArgumentError.new "Invalid :frame option #{_frame.inspect}"
       end
+    end
+
+    def goto_window(_window)
+      target = case _window
+      when :first
+        windows.first
+      when :last
+        windows.last
+      when :next, :previous
+        window _window
+      else
+        raise ArgumentError.new "Invalid :window option #{_window.inspect}"
+      end
+
+      target.goto if target
     end
 
   end
