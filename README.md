@@ -122,7 +122,7 @@ parents = pincers.search('.my-class')
 parents.search('.child-class') # will select all childs except fourth-child
 ```
 
-If you don't feel confortable using **css**, pincers also provides a more idiomatic `search` method, it allows you to search by `tag`, `contents`, `class` or any attribute:
+If you don't feel comfortable using **css**, pincers also provides a more idiomatic `search` method, it allows you to search by `tag`, `contents`, `class` or any attribute:
 
 ```ruby
 pincers.search(tag: 'p', class: 'some-class other-class')
