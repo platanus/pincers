@@ -57,7 +57,7 @@ module Pincers::Support
       end
     end
 
-    def delete(_url)
+    def delete(_url, _headers={})
       perform_request Net::HTTP::Delete, URI(_url), _headers
     end
 
