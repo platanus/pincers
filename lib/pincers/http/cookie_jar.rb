@@ -1,6 +1,7 @@
-require "pincers/support/cookie"
+require 'pincers/http/cookie'
+require 'pincers/http/utils'
 
-module Pincers::Support
+module Pincers::Http
   class CookieJar
 
     BAD_VALUE_CHARS = /([\x00-\x20\x7F",;\\])/ # RFC 6265 - 4.1.1
@@ -16,7 +17,7 @@ module Pincers::Support
     end
 
     def get(_url, _name)
-      for_origin(URI.parse(_url)).find { |c| c.name == _name }
+      for_origin(Utils.parse_uri(_url)).find { |c| c.name == _name }
     end
 
     def set(_parts)

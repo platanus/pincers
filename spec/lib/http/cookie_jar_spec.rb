@@ -1,9 +1,9 @@
-require "spec_helper"
-require "pincers/support/cookie_jar"
+require 'spec_helper'
+require 'pincers/http/cookie_jar'
 
-describe "Pincers::Support::CookieJar" do
+describe Pincers::Http::CookieJar do
 
-  let(:jar) { Pincers::Support::CookieJar.new }
+  let(:jar) { described_class.new }
   let(:base_uri) { URI.parse "http://crabfarm.io" }
   let(:internal_uri) { URI.parse "http://crabfarm.io/demo/" }
   let(:subdomain_uri) { URI.parse "http://blog.crabfarm.io" }
