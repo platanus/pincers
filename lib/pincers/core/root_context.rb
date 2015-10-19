@@ -1,6 +1,5 @@
-require "pincers/core/cookies"
-require "pincers/core/download"
-require "pincers/core/search_context"
+require 'pincers/core/cookies'
+require 'pincers/core/search_context'
 
 module Pincers::Core
   class RootContext < SearchContext
@@ -37,19 +36,12 @@ module Pincers::Core
       @backend
     end
 
-    def url(_partial=nil)
-      wrap_errors {
-        current_url = backend.document_url
-        if _partial
-          current_url ? URI.join(current_url, _partial).to_s : _partial
-        else
-          current_url
-        end
-      }
+    def url
+      wrap_errors { backend.document_url }
     end
 
-    def uri(_partial=nil)
-      URI.parse url(_partial)
+    def uri
+      URI.parse url
     end
 
     def title
@@ -109,12 +101,19 @@ module Pincers::Core
       @config[:advanced_mode]
     end
 
-    def http_client
-      wrap_errors { backend.as_http_client }
+    def download(_url)
+      as_http_client.get(_url)
     end
 
-    def download(_url)
-      Pincers::Core::Download.from_http_response http_client.get url(_url)
+    def as_http_client(&_block)
+      http_client = backend.as_http_client
+      unless _block.nil?
+        r = _block.call http_client
+        # sync_with http_client # TODO :copy cookies and maybe url?
+        r
+      else
+        http_client
+      end
     end
 
   private

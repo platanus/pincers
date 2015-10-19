@@ -22,6 +22,7 @@ describe 'Pincers::Webdriver::Backend' do
   it_should_properly_enter_data_in_example
   it_should_properly_handle_frames_in_example
   it_should_properly_handle_dynamic_markup
+  it_should_perform_raw_requests
 
   describe 'close' do
     it "should properly close the driver connection" do

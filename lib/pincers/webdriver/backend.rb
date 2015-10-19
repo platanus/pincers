@@ -1,6 +1,7 @@
-require "selenium-webdriver"
-require "pincers/core/base_backend"
-require "pincers/support/http_client"
+require 'selenium-webdriver'
+require 'pincers/core/base_backend'
+require 'pincers/http/client'
+require 'pincers/webdriver/http_document'
 
 module Pincers::Webdriver
   class Backend < Pincers::Core::BaseBackend
@@ -157,13 +158,12 @@ module Pincers::Webdriver
     end
 
     def as_http_client
-      Pincers::Support::HttpClient.new({
-        proxy: proxy_address,
-        cookies: cookie_jar,
-        headers: {
-          'User-Agent' => user_agent
-        }
-      })
+      session = Pincers::Http::Session.new
+      session.headers['User-Agent'] = user_agent
+      session.proxy = proxy_address
+      driver.manage.all_cookies.each { |c| session.cookie_jar.set c }
+
+      Pincers::Http::Client.new session, HttpDocument.new(self)
     end
 
   private
@@ -217,13 +217,5 @@ module Pincers::Webdriver
       proxy = driver.capabilities.proxy
       proxy.nil? ? nil : (proxy.http || proxy.ssl)
     end
-
-    def cookie_jar
-      jar = Pincers::Support::CookieJar.new
-      driver.manage.all_cookies.each { |c| jar.set c }
-      jar
-    end
-
   end
-
 end
