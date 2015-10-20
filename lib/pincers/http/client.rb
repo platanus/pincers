@@ -15,15 +15,26 @@ module Pincers::Http
       session.headers.merge! _options[:headers] if _options.key? :headers
       session.redirect_limit = _options[:redirect_limit] if _options.key? :redirect_limit
 
-      self.new session, _options[:document]
+      client = self.new session, _options[:document]
+      client.freeze if _options[:freeze]
+      client
     end
 
-    attr_reader :session, :document
+    attr_reader :session, :document, :frozen
     def_delegators :@document, :content_type, :content, :uri
 
-    def initialize(_session, _document = nil)
+    def initialize(_session, _document={})
       @session = _session
       @document = _document
+      @frozen = false
+    end
+
+    def freeze
+      @frozen = true
+    end
+
+    def unfreeze
+      @frozen = false
     end
 
     def cookies
@@ -35,28 +46,28 @@ module Pincers::Http
     end
 
     def get(_url, _query = nil, &_block)
-      _url += '?' + Utils.encode_urlencoded(_query) unless _query.nil?
-      request = build_request Net::HTTP::Get, _url
+      request = build_request :get, _url
+      request.set_query _query unless _query.nil?
       _block.call request unless _block.nil?
       perform_in_session request
     end
 
     def post(_url, _data = nil, &_block)
-      request = build_request Net::HTTP::Post, _url
+      request = build_request :post, _url
       load_data_in_request request, _data unless _data.nil?
       _block.call request unless _block.nil?
       perform_in_session request
     end
 
     def put(_url, _data = nil, &_block)
-      request = build_request Net::HTTP::Put, _url
+      request = build_request :put, _url
       load_data_in_request request, _data unless _data.nil?
       _block.call request unless _block.nil?
       perform_in_session request
     end
 
     def delete(_url, &_block)
-      request = build_request Net::HTTP::Delete, _url
+      request = build_request :delete, _url
       _block.call request unless _block.nil?
       perform_in_session request
     end
@@ -66,22 +77,21 @@ module Pincers::Http
       self.class.new fork_session, @document
     end
 
-  private
-
-    SUPPORTED_MODES = [:form, :urlencoded, :multipart]
-
-    def build_request(_type, _url)
-      # uri = Utils.prepare_url(_url, @url).to_s
-      Request.new _type, prepare_uri(_url)
-    end
-
-    def prepare_uri(_url)
+    def absolute_uri_for(_url)
       uri = Utils.parse_uri(_url)
       if uri.relative?
         raise ArgumentError, 'Absolute url was required' if @document.nil?
         uri = URI.join(@document.uri, uri)
       end
       uri
+    end
+
+  private
+
+    SUPPORTED_MODES = [:form, :urlencoded, :multipart]
+
+    def build_request(_type, _url)
+      Request.new _type, absolute_uri_for(_url)
     end
 
     def load_data_in_request(_request, _data)
@@ -94,11 +104,11 @@ module Pincers::Http
 
         case mode
         when :form
-          _request.load_form_data _data
+          _request.set_form_data _data
         when :urlencoded
-          _request.load_form_data _data, Utils::FORM_URLENCODED
+          _request.set_form_data _data, Utils::FORM_URLENCODED
         when :multipart
-          _request.load_form_data _data, Utils::FORM_MULTIPART
+          _request.set_form_data _data, Utils::FORM_MULTIPART
         end
       else
         _request.data = _data.to_s
@@ -107,12 +117,18 @@ module Pincers::Http
 
     def perform_in_session(_request)
       begin
-        @document = ResponseDocument.new @session.perform _request
+        new_document = ResponseDocument.new @session.perform _request
       rescue
-        @document = nil
+        @document = nil unless frozen
         raise
       end
-      self
+
+      if frozen
+        self.class.new @session, @document
+      else
+        @document = new_document
+        self
+      end
     end
   end
 end

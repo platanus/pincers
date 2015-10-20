@@ -12,6 +12,12 @@ module Pincers::Http
     end
   end
 
+  class EncodingNotSupported < StandardError
+    def initialize(_encoding)
+      super "#{_encoding} is not supported by this operation"
+    end
+  end
+
   class MaximumRedirectsError < StandardError
     def initialize
       super 'Redirection loop detected!'

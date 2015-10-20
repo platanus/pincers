@@ -13,7 +13,6 @@ describe Pincers::Http::Client do
   let(:client) { described_class.build_from_options }
 
   describe "get" do
-
     it "should send a get request to the provided url and set the current document" do
       client.get("http://foo.bar")
       expect(a_request(:get, "foo.bar")).to have_been_made
@@ -47,7 +46,6 @@ describe Pincers::Http::Client do
     before { client.get("http://foo.bar") }
 
     describe "get" do
-
       it "should support relative urls" do
         client.get("/relative")
         expect(a_request(:get, "foo.bar/relative")).to have_been_made
@@ -56,7 +54,6 @@ describe Pincers::Http::Client do
   end
 
   describe "post" do
-
     it "should send a post request to the provided url" do
       client.post('http://foo.bar', 'somedata')
       expect(a_request(:post, "foo.bar").with(body: 'somedata')).to have_been_made
@@ -98,11 +95,26 @@ describe Pincers::Http::Client do
   end
 
   describe "fork" do
-
     it "should create a new http client bound to the same session" do
       forked = client.fork
       expect(forked).not_to be client
       expect(forked.session).to be client.session
     end
   end
+
+  describe "absolute_uri_for" do
+    it "should return an absolute uri using the last request as reference" do
+      client.get('http://foo.bar')
+      expect(client.absolute_uri_for('/relative').to_s).to eq 'http://foo.bar/relative'
+    end
+  end
+
+  describe "freeze" do
+    it "should make following requests return a new forked client" do
+      expect(client.get('http://foo.bar')).to be client
+      client.freeze
+      expect(client.get('http://foo.bar')).not_to be client
+    end
+  end
+
 end
