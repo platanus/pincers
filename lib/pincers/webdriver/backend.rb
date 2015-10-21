@@ -1,18 +1,19 @@
-require "selenium-webdriver"
-require "pincers/backend/base"
-require "pincers/support/http_client"
-require "pincers/core/download"
+require 'selenium-webdriver'
+require 'pincers/core/base_backend'
+require 'pincers/http/client'
+require 'pincers/webdriver/http_document'
 
-module Pincers::Backend
-
-  class Webdriver < Base
+module Pincers::Webdriver
+  class Backend < Pincers::Core::BaseBackend
 
     DOM_PROPERTIES = [:selected, :disabled, :checked, :value, :required]
 
-    alias :driver :document
+    attr_reader :driver
+
+    alias :document :driver
 
     def initialize(_driver)
-      super _driver
+      @driver = _driver
     end
 
     def javascript_enabled?
@@ -143,6 +144,11 @@ module Pincers::Backend
       actions.drag_and_drop(_element, _on).perform
     end
 
+    def submit_form(_element)
+      _element = ensure_element _element
+      _element.submit
+    end
+
     def switch_to_frame(_element)
       driver.switch_to.frame _element
     end
@@ -151,10 +157,13 @@ module Pincers::Backend
       driver.switch_to.default_content
     end
 
-    def fetch_resource(_url)
-      url = URI::join(driver.current_url, _url)
-      response = as_http_client.get url
-      Pincers::Core::Download.from_http_response response
+    def as_http_client
+      session = Pincers::Http::Session.new
+      session.headers['User-Agent'] = user_agent
+      session.proxy = proxy_address
+      driver.manage.all_cookies.each { |c| session.cookie_jar.set c }
+
+      Pincers::Http::Client.new session, HttpDocument.new(self)
     end
 
   private
@@ -200,16 +209,6 @@ module Pincers::Backend
       _element
     end
 
-    def as_http_client
-      Pincers::Support::HttpClient.new({
-        proxy: proxy_address,
-        cookies: cookie_jar,
-        headers: {
-          'User-Agent' => user_agent
-        }
-      })
-    end
-
     def user_agent
       driver.execute_script("return navigator.userAgent;")
     end
@@ -218,13 +217,5 @@ module Pincers::Backend
       proxy = driver.capabilities.proxy
       proxy.nil? ? nil : (proxy.http || proxy.ssl)
     end
-
-    def cookie_jar
-      jar = Pincers::Support::CookieJar.new
-      driver.manage.all_cookies.each { |c| jar.set c }
-      jar
-    end
-
   end
-
 end

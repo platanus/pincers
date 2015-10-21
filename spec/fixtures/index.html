@@ -29,7 +29,7 @@ montes, nascetur ridiculus mus. Donec quam felis,
 ultricies nec, pellentesque eu, pretium quis, sem.</p>
 
 
-<form action="#" method="post">
+<form action="/submit" method="POST">
   <fieldset>
     <label for="name">Name:</label>
     <input type="text" id="name" placeholder="Enter your
@@ -49,19 +49,20 @@ mind?"></textarea>
     <label for="other-option">Other Option:</label>
     <input type="checkbox" id="other-option" checked></input>
 
-    <select id="category">
+    <select id="category" name="category">
       <option id="option-1" value="default">None</option>
       <option id="option-2" value="private" selected>Direct</option>
       <option id="option-3" value="broadcast">All</option>
     </select>
 
     <div id="tags">
-      <input type="radio" id="radio-1" value="default">Default</option>
-      <input type="radio" id="radio-2" value="private" checked>Direct</option>
-      <input type="radio" id="radio-3" value="broadcast">All</option>
+      <input name="tag" id="first-radio" type="radio" value="default">Default</option>
+      <input name="tag" id="second-radio" type="radio" value="private" checked>Direct</option>
+      <input name="tag" id="third-radio" type="radio" value="broadcast">All</option>
     </div>
 
-    <input type="submit" value="Send message" />
+    <input id="submit" name="button" type="submit" value="Send message" />
+    <input name="button" type="submit" value="Other button that submits" />
 
   </fieldset>
 </form>
@@ -108,5 +109,7 @@ elit. Aenean commodo ligula eget dolor. Aenean massa.
 Cum sociis natoque penatibus et magnis dis parturient
 montes, nascetur ridiculus mus. Donec quam felis,
 ultricies nec, pellentesque eu, pretium quis, sem.</p>
+
+<a id="reference" href="/referenced.html">Navigate Out Of Here</a>
 
 <a id="download" href="/resource.txt">Download text</a>

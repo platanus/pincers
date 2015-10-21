@@ -36,6 +36,7 @@ module Macros
     describe "value" do
       it { expect(pincers.search('#option').value).to be nil }
       it { expect(pincers.search('#other-option').value).to eq 'on' }
+      it { expect(pincers.search('#category').value).to eq 'private' }
     end
 
     describe "selected" do

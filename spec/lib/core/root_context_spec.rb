@@ -3,11 +3,11 @@ require 'spec_helper'
 describe 'Pincers::Core::RootContext' do
 
   let!(:backend) do
-    be = double('Pincers::Backend::Base')
+    be = double('Pincers::Core::BaseBackend')
     allow(be).to receive(:javascript_enabled?)        { true }
     allow(be).to receive(:document)                   { 'not a real document' }
     allow(be).to receive(:document_root)              { ['root_element'] }
-    allow(be).to receive(:document_url)               { 'the.page.url' }
+    allow(be).to receive(:document_url)               { 'http://the.page.url' }
     allow(be).to receive(:document_title)             { 'The page title' }
     allow(be).to receive(:fetch_cookies)              { [{ name: 'FakeCookie' }] }
     allow(be).to receive(:navigate_to)
@@ -39,7 +39,7 @@ describe 'Pincers::Core::RootContext' do
 
   describe "url" do
     it "should return the current url" do
-      expect(pincers.url).to eq('the.page.url')
+      expect(pincers.url).to eq('http://the.page.url')
     end
   end
 

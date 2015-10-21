@@ -1,6 +1,6 @@
 # Pincers [![Build Status](https://travis-ci.org/platanus/pincers.svg)](https://travis-ci.org/platanus/pincers)
 
-Pincers is a jQuery inspired Ruby DSL on top of webdriver. In other words: an easy to use set of functions that allow you to scrape or automate navigation on a Javascript intensive webpage.
+Pincers is a jQuery inspired Ruby DSL on top of webdriver or plain net/http. In other words: an easy to use set of functions that allow you to scrape or automate navigation on a Javascript intensive webpage.
 
 ![pincers diagram](https://cloud.githubusercontent.com/assets/313750/9365154/5ec7213c-4686-11e5-9fbd-7e9b22dae25d.png)
 
@@ -28,6 +28,7 @@ Also, by harnessing the power of nokogiri, pincers lets you extract complex data
 * Full support for jQuery selectors.
 * Simple interface, also like jQuery, you will only interact with one pincers-object type.
 * Sensible waiting conventions, built for dynamic webpages.
+* Support for both webdriver and net/http + nokogiri backends using the same DSL.
 * Ability to switch to nokogiri for parsing (keeping the same DSL) for heavy duty data extraction. Take a look at [Read-only Results](#read-only-results).
 * Ability to preform random http requests impersonating the current browser (cookies and headers).
 
@@ -56,6 +57,8 @@ end
 ```
 
 You can also pass a webdriver object, or another symbol like `:firefox` or `:phantomjs`.
+
+**NOTE**: You can also use the pincers DSL on top of our [non-webdriver backend](#chenso-backend).
 
 #### Cleaning up
 
@@ -208,6 +211,12 @@ Click on a button (or any other element)
 pincers.search('a#some-link').click
 ```
 
+Submit a form directly
+
+```ruby
+pincers.css('form').submit
+```
+
 Hover over an element
 
 ```ruby
@@ -247,6 +256,20 @@ Using webdriver to extract data that requires iterating over **big lists or lots
 list_contents = pincers.search('#long-list').readonly do |list|
   # operating over list is very fast
   list.search('li').map &:text
+end
+```
+
+### Chenso backend
+
+The chenso backend provides a performant way of navigating simple pages (similar to mechanize). It uses net/http + nokogiri instead of webdriver and provides support for most pincers features.
+
+**Chenso doesn't do javascript** so waiting is disabled on chenso backed pincer objects.
+
+To use the chenso backend just use the `for_chenso` factory method to generate a new pincers context:
+
+```ruby
+Pincers.for_chenso do |pincers|
+  # same DSL as the webdriver backed context.
 end
 ```
 
@@ -312,9 +335,9 @@ You can download resources from the currently loaded document using the `downloa
 
 ```ruby
 dl = pincers.search('#a-download-link').download
-dl.data # the resource data as string
-dl.mime # the resource content type
-dl.store('/some-file.txt') # store resource in file
+dl.content # the resource data as string
+dl.content_type # the resource content type
+dl.save('/some-file.txt') # store resource in file
 ```
 
 #### Driver options

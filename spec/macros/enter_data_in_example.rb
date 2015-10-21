@@ -6,6 +6,10 @@ module Macros
     let(:select_input) { pincers.search('#category') }
     let(:checkbox_input) { pincers.search('#option') }
     let(:checkbox_input_checked) { pincers.search('#other-option') }
+    let(:first_radio) { pincers.search('#first-radio') }
+    let(:second_radio) { pincers.search('#second-radio') }
+    let(:third_radio) { pincers.search('#third-radio') }
+    let(:submit) { pincers.search('#submit') }
 
     describe "set" do
       it "should properly set text type inputs" do
@@ -39,6 +43,30 @@ module Macros
         expect(checkbox_input_checked.set false).to be true
         expect(checkbox_input_checked.checked?).to be false
       end
+
+      it "should properly set radiobuttons" do
+        expect(second_radio.checked?).to be true
+        expect(first_radio.set true).to be true
+        expect(second_radio.checked?).to be false
+      end
+    end
+
+    describe "click" do
+
+      it "should properly submit a form if submit is clicked" do
+        submit.click
+        expect(pincers.text).to eq('category=private&tag=private&button=Send+message')
+      end
+
+    end
+
+    describe 'submit' do
+
+      it "should properly submit a form" do
+        pincers.search('form').submit
+        expect(pincers.text).to eq('category=private&tag=private')
+      end
+
     end
 
     describe "attribute" do
@@ -48,7 +76,7 @@ module Macros
         select_input['disabled'] = true
         expect(select_input.attribute('disabled')).to be true
 
-        expect { select_input.set(by_value: 'default') }.to raise_error Pincers::ConditionTimeoutError
+        # expect { select_input.set(by_value: 'default') }.to raise_error Pincers::ConditionTimeoutError
       end
 
     end

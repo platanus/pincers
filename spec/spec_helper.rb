@@ -1,5 +1,6 @@
 require 'pry'
 require 'pincers'
+require 'webmock/rspec'
 
 Dir[File.expand_path("../support/*.rb", __FILE__)].each { |f| require f }
 Dir[File.expand_path("../macros/*.rb", __FILE__)].each { |f| require f }
@@ -21,5 +22,7 @@ Dir["./spec/support/**/*.rb"].each {|f| require f}
 end
 
 sleep(1) # wait a sec for the server to be booted
+
+WebMock.disable_net_connect!(allow_localhost: true)
 
 include Macros

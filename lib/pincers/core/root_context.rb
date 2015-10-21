@@ -7,7 +7,7 @@ module Pincers::Core
     attr_reader :config
 
     def initialize(_backend, _config={})
-      super _backend.document_root, nil, nil
+      super nil, nil, nil
       @backend = _backend
       @config = Pincers.config.values.merge _config
     end
@@ -18,6 +18,14 @@ module Pincers::Core
 
     def root?
       true
+    end
+
+    def elements
+      @backend.document_root
+    end
+
+    def element
+      @backend.document_root.first
     end
 
     def document
@@ -61,10 +69,6 @@ module Pincers::Core
       self
     end
 
-    def download(_url)
-      wrap_errors { backend.fetch_resource _url }
-    end
-
     def forward(_steps=1)
       wrap_errors { backend.navigate_forward _steps }
       self
@@ -76,7 +80,7 @@ module Pincers::Core
     end
 
     def refresh
-      wrap_errors { backend.refresh_document _steps }
+      wrap_errors { backend.refresh_document }
       self
     end
 
@@ -95,6 +99,21 @@ module Pincers::Core
 
     def advanced_mode?
       @config[:advanced_mode]
+    end
+
+    def download(_url)
+      as_http_client.get(_url).document
+    end
+
+    def as_http_client(&_block)
+      http_client = backend.as_http_client
+      unless _block.nil?
+        r = _block.call http_client
+        # sync_with http_client # TODO :copy cookies and maybe url?
+        r
+      else
+        http_client
+      end
     end
 
   private

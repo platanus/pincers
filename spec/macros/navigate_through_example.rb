@@ -8,13 +8,10 @@ module Macros
       end
     end
 
-    describe 'download' do
-      it "should retrieve the resouce pointed by the element" do
-        expect(pincers.search('#download').download.data).to eq 'Some text'
-      end
-
-      it "should fail if element does not point to a resource" do
-        expect { pincers.search('label').download }.to raise_error Pincers::NavigationError
+    describe 'click' do
+      it "should navigate to the desired page if applied to a link" do
+        pincers.search('#reference').click
+        expect(pincers.text).to include('This page is referenced from index')
       end
     end
 

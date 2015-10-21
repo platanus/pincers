@@ -32,4 +32,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pry-nav", '~> 0.2'
   spec.add_development_dependency "rack", '~> 1.6'
   spec.add_development_dependency "thin", '~> 1.6'
+  spec.add_development_dependency "webmock", '~> 1.22'
 end

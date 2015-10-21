@@ -1,8 +1,8 @@
-require 'pincers/factories/base'
-require 'pincers/backend/webdriver'
+require 'pincers/core/base_factory'
+require 'pincers/webdriver/backend'
 
-module Pincers::Factories
-  class Webdriver < Base
+module Pincers::Webdriver
+  class Factory < Pincers::Core::BaseFactory
 
     DEFAULT_SETUP = {
       page_timeout: 60000
@@ -17,7 +17,7 @@ module Pincers::Factories
         setup_driver driver, _options
       end
 
-      ::Pincers::Backend::Webdriver.new driver
+      Pincers::Webdriver::Backend.new driver
     end
 
   private

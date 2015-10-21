@@ -1,7 +1,9 @@
+require 'pincers/core/helpers/query'
+require 'pincers/core/replicas/link'
+require 'pincers/core/replicas/form'
 require 'pincers/extension/queries'
 require 'pincers/extension/actions'
 require 'pincers/extension/labs'
-require 'pincers/core/query'
 
 module Pincers::Core
   class SearchContext
@@ -97,7 +99,7 @@ module Pincers::Core
         _selector = nil
       end
 
-      query = Query.build_from_options(backend, _selector, _options, &_block)
+      query = Helpers::Query.build_from_options(backend, _selector, _options, &_block)
 
       wrap_errors { wrap_childs query }
     end
@@ -162,6 +164,26 @@ module Pincers::Core
         backend.drag_and_drop element!, _element.element!
       end
       self
+    end
+
+    def submit(&_block)
+      wrap_errors do
+        # _block.call(FormSetter.new _element) if _block
+        backend.submit_form element!
+      end
+    end
+
+    def replicate
+      wrap_errors do
+        case tag
+        when 'form'
+          Replicas::Form.new backend, element!
+        when 'a'
+          Replicas::Link.new backend, element!
+        else
+          raise Pincers::MissingFeatureError, "No replica avaliable for #{tag}"
+        end
+      end
     end
 
     # context related
@@ -297,6 +319,5 @@ module Pincers::Core
 
       return false
     end
-
   end
 end

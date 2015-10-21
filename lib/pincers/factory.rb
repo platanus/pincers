@@ -2,7 +2,7 @@ module Pincers
   module Factory
 
     def for_webdriver(_driver=nil, _options={}, &_block)
-      require 'pincers/factories/webdriver'
+      require 'pincers/webdriver/factory'
 
       if _driver.is_a? Hash
         _options = _driver
@@ -11,7 +11,7 @@ module Pincers
 
       _options[:driver] = _driver || config.webdriver_bridge
 
-      context = Factories::Webdriver.new_context _options
+      context = Webdriver::Factory.new_context _options
 
       if _block
         begin
@@ -23,11 +23,16 @@ module Pincers
     end
 
     def for_nokogiri(_document, _options={})
-      require 'pincers/factories/nokogiri'
+      require 'pincers/nokogiri/factory'
 
       _options[:document] = _document
 
-      Factories::Nokogiri.new_context _options
+      Nokogiri::Factory.new_context _options
+    end
+
+    def for_chenso(_options={})
+      require 'pincers/chenso/factory'
+      Chenso::Factory.new_context _options
     end
 
   end

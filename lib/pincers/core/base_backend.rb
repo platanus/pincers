@@ -1,15 +1,13 @@
-module Pincers::Backend
+module Pincers::Core
 
-  class Base
-
-    attr_reader :document
-
-    def initialize(_document)
-      @document = _document
-    end
+  class BaseBackend
 
     def javascript_enabled?
       false
+    end
+
+    def document
+      ensure_implementation :document
     end
 
     def document_root
@@ -54,6 +52,10 @@ module Pincers::Backend
 
     def search_by_xpath(_element, _selector, _limit)
       ensure_implementation :search_by_xpath
+    end
+
+    def elements_equal(_element_a, _element_b)
+      _element_a == _element_b
     end
 
     def extract_element_tag(_element)
@@ -108,6 +110,10 @@ module Pincers::Backend
       ensure_implementation :drag_and_drop
     end
 
+    def submit_form(_element)
+      ensure_implementation :submit_form
+    end
+
     def switch_to_frame(_element)
       ensure_implementation :switch_to_frame
     end
@@ -118,6 +124,10 @@ module Pincers::Backend
 
     def switch_to_parent_frame
       ensure_implementation :switch_to_parent_frame
+    end
+
+    def as_http_client
+      ensure_implementation :as_http_client
     end
 
     def fetch_resource

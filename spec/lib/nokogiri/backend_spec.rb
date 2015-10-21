@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Pincers::Backend::Nokogiri' do
+describe 'Pincers::Nokogiri::Backend' do
 
   let!(:example) { ::Nokogiri::HTML File.read "#{FIXTURE_PATH}/index.html" }
   let(:pincers) { Pincers.for_nokogiri example }
