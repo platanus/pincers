@@ -1,7 +1,7 @@
+require 'pincers/core/helpers/query'
 require 'pincers/extension/queries'
 require 'pincers/extension/actions'
 require 'pincers/extension/labs'
-require 'pincers/core/query'
 
 module Pincers::Core
   class SearchContext
@@ -97,7 +97,7 @@ module Pincers::Core
         _selector = nil
       end
 
-      query = Query.build_from_options(backend, _selector, _options, &_block)
+      query = Helpers::Query.build_from_options(backend, _selector, _options, &_block)
 
       wrap_errors { wrap_childs query }
     end
@@ -304,6 +304,5 @@ module Pincers::Core
 
       return false
     end
-
   end
 end

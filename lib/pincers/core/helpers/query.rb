@@ -1,10 +1,10 @@
 require 'pincers/css/parser'
 require 'pincers/support/xpath_builder'
 
-module Pincers::Core
+module Pincers::Core::Helpers
   class Query
 
-    def self.build_from_options(_backend, _selector, _options={}, &_block)
+    def self.build_from_options(_backend, _selector, _options = {}, &_block)
       limit = _options.delete(:limit)
       lang = :xpath
       exp = nil
@@ -38,7 +38,7 @@ module Pincers::Core
       @limit = _limit
     end
 
-    def execute(_elements, _force_limit=nil)
+    def execute(_elements, _force_limit = nil)
       fun = case @lang
       when :xpath then :search_by_xpath
       else :search_by_css end
@@ -67,6 +67,5 @@ module Pincers::Core
         end
       end
     end
-
   end
 end
