@@ -46,6 +46,5 @@ module Macros
       end
 
     end
-
   end
 end

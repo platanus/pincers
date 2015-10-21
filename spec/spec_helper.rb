@@ -23,6 +23,6 @@ end
 
 sleep(1) # wait a sec for the server to be booted
 
-WebMock.disable_net_connect!(:allow_localhost => true)
+WebMock.disable_net_connect!(allow_localhost: true)
 
 include Macros
