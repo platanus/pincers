@@ -54,6 +54,10 @@ module Pincers::Core
       ensure_implementation :search_by_xpath
     end
 
+    def elements_equal(_element_a, _element_b)
+      _element_a == _element_b
+    end
+
     def extract_element_tag(_element)
       ensure_implementation :extract_element_tag
     end
