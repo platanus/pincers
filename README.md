@@ -335,9 +335,9 @@ You can download resources from the currently loaded document using the `downloa
 
 ```ruby
 dl = pincers.search('#a-download-link').download
-dl.data # the resource data as string
-dl.mime # the resource content type
-dl.store('/some-file.txt') # store resource in file
+dl.content # the resource data as string
+dl.content_type # the resource content type
+dl.save('/some-file.txt') # store resource in file
 ```
 
 #### Driver options

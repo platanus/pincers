@@ -102,7 +102,7 @@ module Pincers::Core
     end
 
     def download(_url)
-      as_http_client.get(_url)
+      as_http_client.get(_url).document
     end
 
     def as_http_client(&_block)
