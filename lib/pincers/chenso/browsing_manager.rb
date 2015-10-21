@@ -1,4 +1,4 @@
-require "pincers/chenso/browsing_context"
+require 'pincers/chenso/browsing_context'
 
 module Pincers::Chenso
   class BrowsingManager

@@ -1,15 +1,13 @@
-require "pincers/core/base_factory"
-require "pincers/chenso/backend"
-require "pincers/support/http_client"
+require 'pincers/core/base_factory'
+require 'pincers/chenso/backend'
+require 'pincers/http/client'
 
 module Pincers::Chenso
   class Factory < Pincers::Core::BaseFactory
 
     def load_backend(_options)
       _options[:headers] = default_headers.merge! _options.fetch(:headers, {})
-
-      client = Pincers::Support::HttpClient.new _options
-
+      client = Pincers::Http::Client.build_from_options _options
       Pincers::Chenso::Backend.new client
     end
 

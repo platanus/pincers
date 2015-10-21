@@ -15,14 +15,6 @@ describe "Pincers::Chenso::BrowsingContext" do
     end
   end
 
-  describe "current_url" do
-
-    it "should return nil by default" do
-      expect(service.current_url).to be nil
-    end
-
-  end
-
   describe "document" do
 
     it "should return nil by default" do
@@ -93,12 +85,6 @@ describe "Pincers::Chenso::BrowsingContext" do
 
     end
 
-    describe "current_url" do
-
-      it { expect(service.current_url).to eq('crabfarm.io/fake/3') }
-
-    end
-
     describe "back" do
 
       it "should navigate to previous requests" do
@@ -128,12 +114,6 @@ describe "Pincers::Chenso::BrowsingContext" do
         service.push(fake_request_5)
         service.back(2)
       }
-
-      describe "current_url" do
-
-        it { expect(service.current_url).to eq('crabfarm.io/fake/3') }
-
-      end
 
       describe "forward" do
 

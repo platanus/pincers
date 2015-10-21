@@ -21,9 +21,7 @@ module Pincers::Chenso
     end
 
     def current_url
-      if @pointer >= 0
-        @history[@pointer].url
-      else nil end
+      @client.uri.to_s
     end
 
     def refresh
