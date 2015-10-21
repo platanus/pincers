@@ -41,10 +41,6 @@ describe 'Pincers::Core::RootContext' do
     it "should return the current url" do
       expect(pincers.url).to eq('http://the.page.url')
     end
-
-    it "should return the absolute path of the given url" do
-      expect(pincers.url('test')).to eq('http://the.page.url/test')
-    end
   end
 
   describe "title" do
