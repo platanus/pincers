@@ -1,4 +1,6 @@
 require 'pincers/core/helpers/query'
+require 'pincers/core/replicas/link'
+require 'pincers/core/replicas/form'
 require 'pincers/extension/queries'
 require 'pincers/extension/actions'
 require 'pincers/extension/labs'
@@ -168,6 +170,19 @@ module Pincers::Core
       wrap_errors do
         # _block.call(FormSetter.new _element) if _block
         backend.submit_form element!
+      end
+    end
+
+    def replicate
+      wrap_errors do
+        case tag
+        when 'form'
+          Replicas::Form.new backend, element!
+        when 'a'
+          Replicas::Link.new backend, element!
+        else
+          raise Pincers::MissingFeatureError, "No replica avaliable for #{tag}"
+        end
       end
     end
 

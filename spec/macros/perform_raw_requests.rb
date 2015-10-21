@@ -28,5 +28,24 @@ module Macros
       end
     end
 
+    describe 'replicate' do
+
+      before { pincers.goto("http://localhost:#{SERVER_PORT}/index.html") }
+
+      it "should properly handle links" do
+        response = pincers.search('#reference').replicate.fetch
+        expect(response.content).to include 'This page is referenced from index'
+      end
+
+      it "should properly handle forms" do
+        form = pincers.search('form').replicate
+        form[:extra] = 'foo'
+        response = form.submit
+
+        expect(response.content).to include 'category=private&tag=private&extra=foo'
+      end
+
+    end
+
   end
 end
