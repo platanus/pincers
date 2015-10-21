@@ -18,8 +18,8 @@ module Pincers::Http
       pair_recursive [], _hash
     end
 
-    def parse_uri(_uri)
-      URI.parse _uri
+    def parse_uri(_url)
+      URI.parse _url
     end
 
   private

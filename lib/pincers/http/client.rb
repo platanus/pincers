@@ -78,7 +78,7 @@ module Pincers::Http
     end
 
     def absolute_uri_for(_url)
-      uri = Utils.parse_uri(_url)
+      uri = _url.is_a?(URI) ? _url : Utils.parse_uri(_url)
       if uri.relative?
         raise ArgumentError, 'Absolute url was required' if @document.nil?
         uri = URI.join(@document.uri, uri)
