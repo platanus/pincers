@@ -66,7 +66,7 @@ module Pincers::Http
         http_response
       when Net::HTTPRedirection then
         location = Utils.parse_uri(http_response['location'])
-        perform(_request, _limit - 1, location)
+        perform_recursive(_request, _limit - 1, location)
       else
         handle_error_response http_response
       end
