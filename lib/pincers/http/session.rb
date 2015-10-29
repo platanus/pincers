@@ -92,8 +92,8 @@ module Pincers::Http
     end
 
     def update_cookies(_uri, _response)
-      cookies = _response.get_fields('set-cookie')
-      cookies.each { |raw| @cookie_jar.set_raw _uri, raw } if cookies
+      fields = _response.get_fields('set-cookie')
+      fields.each { |field| cookie_jar.set_from_header _uri, field } if fields
     end
   end
 end
