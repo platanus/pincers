@@ -57,11 +57,11 @@ module Pincers::Http
       copy_headers http_request, _request.headers
       set_cookies http_request, uri
 
-      http_response = connect(uri).request http_request
+      http_response = connect(uri).request(http_request)
+      update_cookies(uri, http_response)
 
       case http_response
       when Net::HTTPSuccess then
-        update_cookies(uri, http_response)
         http_response.uri = uri # uri is not always set by net/http
         http_response
       when Net::HTTPRedirection then
