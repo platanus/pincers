@@ -20,38 +20,38 @@ module Pincers::Http
       for_origin(Utils.parse_uri(_url)).find { |c| c.name == _name }
     end
 
-    def set(_parts)
-      return nil unless _parts[:domain]
-      return nil unless _parts[:name]
-      return nil unless _parts[:value]
+    def set(_cookie)
+      if _cookie.name.nil? or _cookie.value.nil? or _cookie.domain.nil? or _cookie.path.nil?
+        raise ArgumentError, 'Invalid cookie'
+      end
 
-      cookie = Cookie.new(
-        _parts[:name],
-        _parts[:value],
-        _parts[:domain].gsub(/^\./,''),
-        _parts[:path] || '/',
-        _parts[:expires],
-        _parts[:secure]
-      )
+      @cookies.each_with_index do |cookie, i|
+        if equivalent(cookie, _cookie)
+          @cookies[i] = _cookie
+          return _cookie
+        end
+      end
 
-      replace_cookie cookie
+      @cookies << _cookie
+      _cookie
+    end
+
+    def set_raw(_request_uri, _raw)
+      cookie = decode_cookie _request_uri, _raw
+      set cookie unless cookie.nil?
       cookie
     end
 
-    def set_raw(_uri, _raw)
-      cookie = decode_cookie _raw
-
-      cookie.domain = compute_domain cookie.domain, _uri.host
-      cookie.path = compute_path cookie.path, _uri.path
-
-      return nil if cookie.domain.nil? or cookie.path.nil?
-
-      replace_cookie(cookie)
-      cookie
+    def set_from_header(_uri, _header)
+      _header.split(/, (?=\w+=)/).map do |raw_cookie|
+        set_raw _uri, raw_cookie.strip
+      end
     end
 
     def for_origin(_uri)
+      # RFC 6265 5.4.1
       @cookies.select do |c|
+        # TODO: add scheme and host only checks
         domains_match c.domain, _uri.host and paths_match c.path, _uri.path
       end
     end
@@ -62,38 +62,56 @@ module Pincers::Http
 
   private
 
-    def decode_cookie(_raw)
+    def decode_cookie(_request, _raw)
       # taken from WEBrick implementation
       cookie_elem = _raw.split(/;/)
       first_elem = cookie_elem.shift
       first_elem.strip!
-      key, value = first_elem.split(/\=/, 2)
 
-      cookie = Cookie.new(key, dequote(value))
+      name, value = first_elem.split(/\=/, 2)
+      domain = nil
+      path = nil
+      expires = nil
+      secure = nil
+      # TODO: host_only = true
+
       cookie_elem.each do |pair|
         pair.strip!
-        key, value = pair.split(/\=/, 2)
-        value = dequote(value.strip) if value
+        opt_key, opt_value = pair.split(/\=/, 2)
+        opt_value = dequote(opt_value.strip) if opt_value
 
-        case key.downcase
-        when "domain"  then cookie.domain  = value.downcase
-        when "path"    then cookie.path    = value.downcase
-        when "expires" then cookie.expires = value
-        # when "max-age" then cookie.max_age = Integer(value)
-        # when "comment" then cookie.comment = value
-        # when "version" then cookie.version = Integer(value)
-        when "secure"  then cookie.secure = true
+        case opt_key.downcase
+        when "domain"
+          domain = opt_value.downcase
+          # TODO: host_only = false
+          return nil unless domains_match(domain, _request.host) # RFC 6265 5.3.6
+        when "path"
+          path = opt_value.downcase if opt_value[0] == '/' # RFC 6265 5.2.4
+        when "expires" then expires = opt_value
+        # when "max-age" then max_age = Integer(value)
+        # when "comment" then comment = value
+        # when "version" then version = Integer(value)
+        when "secure"  then secure = true
         end
       end
 
-      cookie
+      Cookie.new(
+        name,
+        dequote(value),
+        domain || _request.host,
+        path || default_path(_request.path),
+        expires,
+        secure
+      )
     end
 
     def domains_match(_cookie_domain, _request_domain)
       # RFC 6265 - 5.1.3
       # TODO: ensure request domain is not an IP
       return true if _cookie_domain == _request_domain
-      return true if _request_domain.end_with? ".#{_cookie_domain}"
+      if _request_domain.end_with? "#{_cookie_domain}"
+        return true if _cookie_domain[0] == '.' or _request_domain.end_with? ".#{_cookie_domain}"
+      end
       return false
     end
 
@@ -101,42 +119,18 @@ module Pincers::Http
       # RFC 6265 - 5.1.4
       _request_path = '/' if _request_path.empty?
       return true if _cookie_path == _request_path
-      return true if _cookie_path[-1] == '/' and _request_path.start_with? _cookie_path
-      return true if _request_path.start_with? "#{_cookie_path}/"
+      if _request_path.start_with? _cookie_path
+        return true if _cookie_path[-1] == '/' or _request_path.start_with? "#{_cookie_path}/"
+      end
       return false
     end
 
-    def compute_domain(_cookie_domain, _request_domain)
-      return _request_domain if _cookie_domain.nil?
-      # cookies with different domain are discarded
-      return nil unless _cookie_domain.end_with? _request_domain
-      return _cookie_domain.gsub(/^\./,'') # remove leading dot
-    end
-
-    def compute_path(_cookie_path, _request_path)
-      default_path = compute_default_path(_request_path)
-      return default_path if _cookie_path.nil?
-      return nil unless _cookie_path.start_with? default_path
-      return _cookie_path
-    end
-
-    def compute_default_path(_request_path)
+    def default_path(_request_path)
       # RFC 6265 - 5.1.4
       return '/' unless _request_path[0] === '/'
       ls_idx = _request_path.rindex('/')
       return '/' unless ls_idx > 0
       _request_path[0..ls_idx]
-    end
-
-    def replace_cookie(_cookie)
-      @cookies.each_with_index do |cookie, i|
-        if equivalent(cookie, _cookie)
-          @cookies[i] = _cookie
-          return
-        end
-      end
-
-      @cookies << _cookie
     end
 
     def dequote(_str)
