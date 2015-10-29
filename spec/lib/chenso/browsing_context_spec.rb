@@ -1,5 +1,6 @@
 require "spec_helper"
 require "pincers/chenso/browsing_context"
+require "pincers/chenso/browsing_state"
 
 describe "Pincers::Chenso::BrowsingContext" do
 
@@ -8,9 +9,9 @@ describe "Pincers::Chenso::BrowsingContext" do
 
   6.times do |i|
     let("fake_request_#{i}") do
-      double('Pincers::Support::HttpRequest', {
-        url: "crabfarm.io/fake/#{i}",
-        execute: "fake_content_#{i}"
+      double('Request', {
+        fix_uri: nil,
+        execute: Pincers::Chenso::BrowsingState.new(URI.parse("crabfarm.io/fake/#{i}"), "fake_content_#{i}")
       })
     end
   end
@@ -26,7 +27,7 @@ describe "Pincers::Chenso::BrowsingContext" do
   describe "push" do
 
     it "should execute the given request passing the managed client and return result" do
-      expect(service.push(fake_request_1)).to eq('fake_content_1')
+      expect(service.push(fake_request_1).document).to eq('fake_content_1')
       expect(fake_request_1).to have_received(:execute).with(client)
     end
 
@@ -35,7 +36,7 @@ describe "Pincers::Chenso::BrowsingContext" do
   describe "forward" do
 
     it "should return nil by default" do
-      expect(service.forward).to be nil
+      expect(service.forward.document).to be nil
     end
 
   end
@@ -43,7 +44,7 @@ describe "Pincers::Chenso::BrowsingContext" do
   describe "back" do
 
     it "should return nil by default" do
-      expect(service.back).to be nil
+      expect(service.back.document).to be nil
     end
 
   end
@@ -88,20 +89,18 @@ describe "Pincers::Chenso::BrowsingContext" do
     describe "back" do
 
       it "should navigate to previous requests" do
-        expect(service.back(1)).to eq('fake_content_2')
-        expect(service.document).to eq('fake_content_2')
+        expect(service.back(1).document).to eq('fake_content_2')
         expect(fake_request_2).to have_received(:execute).exactly(2).times
       end
 
       it "should jump over the given number of steps" do
-        expect(service.back(2)).to eq('fake_content_1')
-        expect(service.document).to eq('fake_content_1')
+        expect(service.back(2).document).to eq('fake_content_1')
         expect(fake_request_1).to have_received(:execute).exactly(2).times
         expect(fake_request_2).to have_received(:execute).exactly(1).times
       end
 
       it "if the number of steps to jump is more than the previous steps, it should jump to the first step" do
-        expect(service.back(10)).to eq('fake_content_1')
+        expect(service.back(10).document).to eq('fake_content_1')
         expect(fake_request_1).to have_received(:execute).exactly(2).times
       end
 
@@ -119,13 +118,12 @@ describe "Pincers::Chenso::BrowsingContext" do
 
         it "should execute the next step" do
           expect(fake_request_1).to have_received(:execute).exactly(1).times
-          expect(service.forward).to eq('fake_content_4')
-          expect(service.document).to eq('fake_content_4')
+          expect(service.forward.document).to eq('fake_content_4')
           expect(fake_request_4).to have_received(:execute).exactly(2).times
         end
 
         it "should execute the last step if number of steps to jump is bigger to the number of remaining steps" do
-          expect(service.forward(10)).to eq('fake_content_5')
+          expect(service.forward(10).document).to eq('fake_content_5')
           expect(fake_request_5).to have_received(:execute).exactly(2).times
         end
 
