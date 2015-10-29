@@ -2,14 +2,12 @@ module Pincers::Chenso
 
   class BrowsingContext
 
-    attr_reader :document
-
-    def initialize(_http_client)
+    def initialize(_http_client, _state=nil)
       @client = _http_client
       @history = []
       @pointer = -1
       @childs = {}
-      @document = nil
+      @state = _state
     end
 
     def get_child(_id)
@@ -17,24 +15,32 @@ module Pincers::Chenso
     end
 
     def load_child(_id)
-      @childs[_id] = self.class.new @client
+      @childs[_id] = self.class.new(@client, @state)
     end
 
     def current_url
-      @client.uri.to_s
+      @state ? @state.uri.to_s : nil
+    end
+
+    def document
+      @state ? @state.document : nil
     end
 
     def refresh
       if @pointer >= 0
         navigate @history[@pointer]
-      else nil end
+      end
+      self
     end
 
     def push(_request)
+      _request.fix_uri @state
+
       @history.slice!(@pointer+1..-1)
       @history.push _request
       @pointer += 1
       navigate _request
+      self
     end
 
     def back(_times=1)
@@ -46,6 +52,7 @@ module Pincers::Chenso
       else
         change_pointer @pointer - _times
       end
+      self
     end
 
     def forward(_times=1)
@@ -55,6 +62,7 @@ module Pincers::Chenso
       else
         change_pointer @pointer + _times
       end
+      self
     end
 
   private
@@ -67,9 +75,9 @@ module Pincers::Chenso
     end
 
     def navigate(_request)
-      @document = _request.execute @client
+      @state = _request.execute @client
       @childs.clear
-      @document
+      nil
     end
 
   end
