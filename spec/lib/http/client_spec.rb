@@ -96,9 +96,21 @@ describe Pincers::Http::Client do
 
   describe "fork" do
     it "should create a new http client bound to the same session" do
-      forked = client.fork
+      forked = client.fork(true)
       expect(forked).not_to be client
       expect(forked.session).to be client.session
+    end
+  end
+
+  context "after fork" do
+
+    let!(:fork) { client.fork }
+
+    describe "join" do
+      it "should merge other client cookies" do
+        fork.set_cookie domain: 'foo.bar', name: 'hello', value: 'world'
+        expect { client.join fork }.to change { client.cookies.count }.by 1
+      end
     end
   end
 
