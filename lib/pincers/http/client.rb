@@ -42,6 +42,10 @@ module Pincers::Http
     end
 
     def set_cookie(_cookie)
+      if _cookie.is_a? Hash
+        _cookie = Cookie.new(_cookie[:name], _cookie[:value], _cookie[:domain], _cookie[:path])
+      end
+
       @session.cookie_jar.set _cookie
     end
 
