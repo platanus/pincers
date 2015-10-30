@@ -17,4 +17,8 @@ describe Pincers::Http::Utils do
 
   describe 'encode_multipart', skip: true do
   end
+
+  describe 'parse_uri' do
+    it { expect { srv.parse_uri('http://foo.bar/home?query=hello|world|pipe') }.not_to raise_error }
+  end
 end

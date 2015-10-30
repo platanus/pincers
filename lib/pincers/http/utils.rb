@@ -1,9 +1,12 @@
+require 'uri'
+
 module Pincers::Http
   module Utils
     extend self
 
     FORM_URLENCODED = 'application/x-www-form-urlencoded'
     FORM_MULTIPART = 'multipart/form-data'
+    URI_PARSER = URI::Parser.new(:UNRESERVED => URI::REGEXP::PATTERN::UNRESERVED + '|')
 
     def encode_urlencoded(_pairs)
       _pairs = hash_to_pairs _pairs if _pairs.is_a? Hash
@@ -19,7 +22,7 @@ module Pincers::Http
     end
 
     def parse_uri(_url)
-      URI.parse _url
+      URI_PARSER.parse _url
     end
 
   private
