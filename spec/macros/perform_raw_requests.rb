@@ -26,6 +26,19 @@ module Macros
           pincers.as_http_client.get("/resource.txt")
         }.not_to raise_error
       end
+
+      it "should update the original context content and cookies" do
+        pincers.goto("http://localhost:#{SERVER_PORT}/index.html")
+
+        pincers.as_http_client do |client|
+          client.get("http://localhost:#{SERVER_PORT}/setcookie?name=sessionid&value=helloworld")
+        end
+
+        expect(pincers.text).to eq('Cookie set')
+        expect {
+          pincers.goto("http://localhost:#{SERVER_PORT}/checkcookie?name=sessionid&value=helloworld")
+        }.not_to raise_error
+      end
     end
 
     describe 'replicate' do

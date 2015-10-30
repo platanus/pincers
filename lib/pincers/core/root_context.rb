@@ -109,7 +109,7 @@ module Pincers::Core
       http_client = backend.as_http_client
       unless _block.nil?
         r = _block.call http_client
-        # sync_with http_client # TODO :copy cookies and maybe url?
+        backend.merge_http_client http_client
         r
       else
         http_client
