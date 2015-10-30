@@ -43,6 +43,12 @@ describe 'Pincers::Core::RootContext' do
     end
   end
 
+  describe "uri" do
+    it "should return the current url as an uri" do
+      expect(pincers.uri).to be_a(URI)
+    end
+  end
+
   describe "title" do
     it "should return the current page title" do
       expect(pincers.title).to eq('The page title')

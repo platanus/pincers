@@ -1,5 +1,6 @@
 require 'pincers/core/cookies'
 require 'pincers/core/search_context'
+require 'pincers/http/utils'
 
 module Pincers::Core
   class RootContext < SearchContext
@@ -41,7 +42,7 @@ module Pincers::Core
     end
 
     def uri
-      URI.parse url
+      Pincers::Http::Utils.parse_uri url
     end
 
     def title
