@@ -76,9 +76,13 @@ module Pincers::Http
       perform_in_session request
     end
 
-    def fork(_keep_session = true)
+    def fork(_keep_session = false)
       fork_session = _keep_session ? @session : @session.clone
       self.class.new fork_session, @document
+    end
+
+    def join(_other_client)
+      @session.sync _other_client.session
     end
 
     def absolute_uri_for(_url)

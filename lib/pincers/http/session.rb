@@ -38,6 +38,11 @@ module Pincers::Http
       self.class.new self
     end
 
+    def sync(_other)
+      @headers.merge! _other.headers
+      _other.cookie_jar.cookies.each { |c| cookie_jar.set c }
+    end
+
     def perform(_request)
       perform_recursive _request, @redirect_limit, nil
     end
