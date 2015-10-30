@@ -130,6 +130,10 @@ module Pincers::Core
       ensure_implementation :as_http_client
     end
 
+    def merge_http_client(_client)
+      # nothing
+    end
+
     def fetch_resource
       ensure_implementation :fetch_resource
     end
