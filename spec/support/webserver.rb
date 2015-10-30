@@ -43,10 +43,10 @@ module Pincers
       def setcookie(_req, _params)
         [
           200, {
-            "Content-Type" => "text/plain",
+            "Content-Type" => "text/html",
             "Set-Cookie" => "#{_params['name']}=#{_params['value']}"
           },
-          'Logged in!'
+          "<html><body>Cookie set</body></html>"
         ]
       end
 
