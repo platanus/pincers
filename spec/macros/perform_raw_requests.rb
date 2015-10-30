@@ -1,5 +1,5 @@
 module Macros
-  def it_should_perform_raw_requests
+  def it_should_perform_raw_requests(_merge_support=true)
 
     describe 'download' do
       it "should retrieve the resouce pointed by the element" do
@@ -27,7 +27,7 @@ module Macros
         }.not_to raise_error
       end
 
-      it "should update the original context content and cookies" do
+      it "should update the original context content and cookies", skip: !_merge_support do
         pincers.goto("http://localhost:#{SERVER_PORT}/index.html")
 
         pincers.as_http_client do |client|
