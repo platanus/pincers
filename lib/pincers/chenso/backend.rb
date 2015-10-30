@@ -2,6 +2,7 @@ require 'pincers/nokogiri/backend'
 require 'pincers/chenso/browsing_manager'
 require 'pincers/chenso/html_page_request'
 require 'pincers/chenso/html_form_request'
+require 'pincers/chenso/html_page_cache'
 require 'pincers/core/helpers/form'
 
 module Pincers::Chenso
@@ -68,7 +69,14 @@ module Pincers::Chenso
     end
 
     def as_http_client
-      @client.fork(false)
+      @client.fork(true)
+    end
+
+    def merge_http_client(_client)
+      @client.join _client
+      if _client.content and /text\/html/ === _client.content_type
+        @browser.push HtmlPageCache.new(_client.uri, _client.content)
+      end
     end
 
     def switch_to_frame(_element)
