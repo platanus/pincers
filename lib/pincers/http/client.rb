@@ -1,4 +1,6 @@
 require 'forwardable'
+require 'net/http'
+
 require 'pincers/http/utils'
 require 'pincers/http/session'
 require 'pincers/http/request'
