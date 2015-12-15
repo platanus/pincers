@@ -42,7 +42,7 @@ module Pincers::Chenso
 
     def set_element_text(_element, _value)
       case classify _element
-      when :input_text, :input_email, :input_number, :textarea
+      when :input_text, :input_password, :input_email, :input_number, :textarea
         # TODO: validations?
         set_att _element, :value, _value
       end
