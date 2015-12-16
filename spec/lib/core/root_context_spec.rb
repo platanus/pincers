@@ -61,11 +61,6 @@ describe 'Pincers::Core::RootContext' do
       expect(backend).to have_received(:navigate_to).with('http://foo.bar')
     end
 
-    it "should validate url and add protocoll information if missing" do
-      expect(pincers.goto 'foo.bar').to eq(pincers)
-      expect(backend).to have_received(:navigate_to).with('http://foo.bar')
-    end
-
     it "should call switch_to_frame with proper element if called with frame: context" do
       pincers.goto frame: pincers.search('#frame')
       expect(backend).to have_received(:switch_to_frame).with('child_element_1')

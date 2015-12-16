@@ -125,7 +125,6 @@ module Pincers::Core
     end
 
     def goto_url(_url)
-      _url = "http://#{_url}" unless /^(https?|file|ftp):\/\// === _url
       backend.navigate_to _url
     end
 
