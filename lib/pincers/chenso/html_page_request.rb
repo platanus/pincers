@@ -19,7 +19,14 @@ module Pincers::Chenso
     def fix_uri(_current_state)
       @uri = Pincers::Http::Utils.parse_uri @url
       if _current_state
-        @uri = URI.join(_current_state.uri, @uri)
+        base = _current_state.document.at_css 'base'
+        base = if base and base[:href]
+          URI.join _current_state.uri, base[:href]
+        else
+          _current_state.uri
+        end
+
+        @uri = URI.join(base, @uri)
       elsif @uri.relative?
         raise ArgumentError, 'Absolute uri required'
       end

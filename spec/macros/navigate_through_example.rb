@@ -13,6 +13,12 @@ module Macros
         pincers.search('#reference').click
         expect(pincers.text).to include('This page is referenced from index')
       end
+
+      it "should consider a 'base' element href if present" do
+        pincers.goto("http://localhost:#{SERVER_PORT}/base.html")
+        pincers.search('#nested').click
+        expect(pincers.text).to include('This is a nested document')
+      end
     end
 
   end
