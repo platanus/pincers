@@ -33,12 +33,18 @@ module Pincers::Chenso
     end
 
     def execute(_client)
-      _client.send(@method, @uri) do |request|
-        request.headers.merge DEFAULT_HEADERS
-        request.set_form_data(@data, @encoding) unless @data.nil?
+      response = begin
+        _client.send(@method, @uri) do |request|
+          request.headers.merge DEFAULT_HEADERS
+          request.set_form_data(@data, @encoding) unless @data.nil?
+        end
+
+        _client
+      rescue Pincers::Http::RequestError => exc
+        exc
       end
 
-      BrowsingState.new _client.uri, ::Nokogiri::HTML(_client.content)
+      BrowsingState.new response.uri, ::Nokogiri::HTML(response.content)
     end
   end
 end

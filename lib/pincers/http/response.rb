@@ -1,16 +1,19 @@
-require 'pincers/http/base_document'
-
 module Pincers::Http
-  class ResponseDocument < BaseDocument
+  class Response
 
-    attr_reader :response
+    attr_reader :uri, :response
 
-    def initialize(_response)
+    def initialize(_uri, _response)
       @response = _response
+      @uri = _uri
     end
 
-    def uri
-      @response.uri
+    def code
+      @response.code
+    end
+
+    def message
+      @response.message
     end
 
     def content_type

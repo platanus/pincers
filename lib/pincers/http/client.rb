@@ -4,7 +4,6 @@ require 'net/http'
 require 'pincers/http/utils'
 require 'pincers/http/session'
 require 'pincers/http/request'
-require 'pincers/http/response_document'
 require 'pincers/http/errors'
 
 module Pincers::Http
@@ -127,7 +126,7 @@ module Pincers::Http
 
     def perform_in_session(_request)
       begin
-        new_document = ResponseDocument.new @session.perform _request
+        new_document = @session.perform _request
       rescue
         @document = nil unless frozen
         raise

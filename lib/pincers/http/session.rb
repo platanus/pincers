@@ -1,5 +1,6 @@
 require 'pincers/http/errors'
 require 'pincers/http/cookie_jar'
+require 'pincers/http/response'
 
 module Pincers::Http
   class Session
@@ -66,15 +67,14 @@ module Pincers::Http
       update_cookies(uri, http_response)
 
       case http_response
-      when Net::HTTPSuccess then
-        http_response.uri = uri # uri is not always set by net/http
-        http_response
-      when Net::HTTPRedirection then
+      when Net::HTTPSuccess
+        Response.new(uri, http_response)
+      when Net::HTTPRedirection
         location = Utils.parse_uri(http_response['location'])
         location = URI.join(uri, location) if location.relative?
         perform_recursive(_request, _limit - 1, location)
       else
-        handle_error_response http_response
+        handle_error_response Response.new(uri, http_response)
       end
     end
 

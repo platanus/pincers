@@ -2,7 +2,7 @@ module Pincers::Http
   class RequestError < StandardError
     extend Forwardable
 
-    def_delegators :@response, :code, :body
+    def_delegators :@response, :code, :uri, :content
 
     attr_reader :response
 
