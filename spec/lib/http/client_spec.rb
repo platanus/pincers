@@ -7,6 +7,8 @@ describe Pincers::Http::Client do
     stub_request(:any, "foo.bar").to_return(:body => "helloworld", headers: { 'Set-Cookie' => 'foo=bar' })
     stub_request(:get, "foo.bar").with(:query => {"foo" => "bar"})
     stub_request(:get, "foo.bar/relative")
+    stub_request(:post, "foo.bar/redirect").to_return(:status => 302, headers: { 'location' => 'http://foo.bar' })
+    stub_request(:post, "foo.bar/redirect_307").to_return(:status => 307, headers: { 'location' => 'http://foo.bar' })
   }
 
   let(:host) { "http://localhost:#{SERVER_PORT}" }
@@ -91,6 +93,18 @@ describe Pincers::Http::Client do
       expect(
         a_request(:post, "foo.bar").with(body: 'foo=bar', headers: { 'Content-Type' => 'text/plain' })
       ).to have_been_made
+    end
+  end
+
+  describe "redirection" do
+    it "should redirect using get even if the preceding method is post and the status different from 307" do
+      client.post('http://foo.bar/redirect', 'somedata')
+      expect(a_request(:get, "foo.bar")).to have_been_made
+    end
+
+    it "should redirect using post when redirect status is 307" do
+      client.post('http://foo.bar/redirect_307', 'somedata')
+      expect(a_request(:post, "foo.bar").with(body: 'somedata')).to have_been_made
     end
   end
 

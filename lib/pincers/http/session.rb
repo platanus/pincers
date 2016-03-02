@@ -45,15 +45,15 @@ module Pincers::Http
     end
 
     def perform(_request)
-      perform_recursive _request, @redirect_limit, nil
+      perform_recursive _request, @redirect_limit
     end
 
   private
 
-    def perform_recursive(_request, _limit, _redirect)
+    def perform_recursive(_request, _limit)
       raise MaximumRedirectsError.new if _limit == 0
 
-      uri = _redirect || _request.uri
+      uri = _request.uri
       path = uri.request_uri.empty? ? '/' : uri.request_uri
 
       http_request = _request.native_type.new path
@@ -72,10 +72,15 @@ module Pincers::Http
       when Net::HTTPRedirection
         location = Utils.parse_uri(http_response['location'])
         location = URI.join(uri, location) if location.relative?
-        perform_recursive(_request, _limit - 1, location)
+        new_request = _request.clone_for_redirect(location, repeating_redirect?(http_response))
+        perform_recursive(new_request, _limit - 1)
       else
         handle_error_response Response.new(uri, http_response)
       end
+    end
+
+    def repeating_redirect?(_req)
+      ["307", "308"].include?(_req.code)
     end
 
     def connect(_uri)
