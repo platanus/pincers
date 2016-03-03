@@ -1,8 +1,7 @@
 module Pincers::Http
   class Request
 
-    attr_reader :method, :uri, :headers
-    attr_accessor :data
+    attr_accessor :method, :uri, :data, :headers
 
     def initialize(_method, _uri)
       @method = _method
@@ -49,6 +48,17 @@ module Pincers::Http
           raise Pincers::MissingFeatureError.new "form encoding: #{_encoding}"
         end
       end
+    end
+
+    def clone_for_redirect(_location, _repeat = true)
+      clone = self.class.new(_repeat ? method : :get, _location)
+
+      if _repeat
+        clone.headers = clone.headers.clone
+        clone.data = data
+      end
+
+      clone
     end
 
   private
