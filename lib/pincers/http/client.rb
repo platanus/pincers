@@ -13,6 +13,7 @@ module Pincers::Http
     def self.build_from_options(_options = {})
       session = Session.new
       session.proxy = _options[:proxy] if _options.key? :proxy
+      session.proxy_auth = _options[:proxy_auth] if _options.key? :proxy_auth
       session.headers.merge! _options[:headers] if _options.key? :headers
       session.redirect_limit = _options[:redirect_limit] if _options.key? :redirect_limit
 

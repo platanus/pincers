@@ -11,7 +11,7 @@ module Pincers::Http
     }
 
     attr_reader :cookie_jar, :headers
-    attr_accessor :proxy_addr, :proxy_port, :redirect_limit
+    attr_accessor :proxy_addr, :proxy_port, :proxy_user, :proxy_password, :redirect_limit
 
     def initialize(_other = nil)
       if _other
@@ -32,6 +32,14 @@ module Pincers::Http
         @proxy_addr, @proxy_port = _value.split ':'
       else
         @proxy_addr, @proxy_port = [nil, nil]
+      end
+    end
+
+    def proxy_auth=(_value)
+      if _value
+        @proxy_user, @proxy_password = _value.split ':'
+      else
+        @proxy_user, @proxy_password = [nil, nil]
       end
     end
 
@@ -84,7 +92,15 @@ module Pincers::Http
     end
 
     def connect(_uri)
-      conn = Net::HTTP.new _uri.host, _uri.port || 80, @proxy_addr, @proxy_port
+      conn = Net::HTTP.new(
+        _uri.host,
+        _uri.port || 80,
+        proxy_addr,
+        proxy_port,
+        proxy_user,
+        proxy_password
+      )
+
       conn.use_ssl = true if _uri.scheme == 'https'
       conn.verify_mode = OpenSSL::SSL::VERIFY_NONE
       conn
