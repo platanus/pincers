@@ -15,7 +15,7 @@ module Pincers::Chenso
 
     def default_headers(_options)
       {
-        'User-Agent' => _options.fetch(:user_agent, default_user_agent)
+        'User-Agent' => (_options[:user_agent] || default_user_agent)
       }
     end
 
