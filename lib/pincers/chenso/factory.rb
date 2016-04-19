@@ -6,22 +6,21 @@ module Pincers::Chenso
   class Factory < Pincers::Core::BaseFactory
 
     def load_backend(_options)
-      _options[:headers] = default_headers.merge! _options.fetch(:headers, {})
+      _options[:headers] = default_headers(_options).merge! _options.fetch(:headers, {})
       client = Pincers::Http::Client.build_from_options _options
       Pincers::Chenso::Backend.new client
     end
 
   private
 
-    def default_headers
+    def default_headers(_options)
       {
-        'User-Agent' => user_agent
+        'User-Agent' => _options.fetch(:user_agent, default_user_agent)
       }
     end
 
-    def user_agent
+    def default_user_agent
       "Pincers/#{Pincers::VERSION}"
     end
-
   end
 end
