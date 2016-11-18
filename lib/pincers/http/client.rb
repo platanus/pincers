@@ -17,6 +17,11 @@ module Pincers::Http
       session.headers.merge! _options[:headers] if _options.key? :headers
       session.redirect_limit = _options[:redirect_limit] if _options.key? :redirect_limit
 
+      if _options.key? :ssl_cert
+        session.ssl_cert = _options[:ssl_cert]
+        session.ssl_key = _options[:ssl_key]
+      end
+
       client = self.new session, _options[:document]
       client.freeze if _options[:freeze]
       client

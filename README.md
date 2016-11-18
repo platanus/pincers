@@ -273,6 +273,15 @@ Pincers.for_chenso do |pincers|
 end
 ```
 
+Chenso also supports **client SSL certificate**, to use a client certificate use the `ssl_cert` and `ssl_key` options:
+
+```ruby
+Pincers.for_chenso(
+  ssl_cert: OpenSSL::X509::Certificate.new(File.read('./client.cert.pem')),
+  ssl_key: OpenSSL::PKey::RSA.new(File.read('./client.key.pem'))
+)
+```
+
 #### Navigating frames
 
 Pincers operations can only target one frame at a time. By default, the top frame is selected when location is changed. To switch to a diferent frame use the `goto` method with the `frame:` option:
