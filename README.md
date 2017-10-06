@@ -10,7 +10,7 @@ Pincers is a jQuery inspired Ruby DSL on top of webdriver or plain net/http. In 
 require 'pincers'
 
 Pincers.for_webdriver :firefox do |pincers|
-  pincers.goto "google.com"
+  pincers.goto "https://google.com"
   pincers.search(tag: 'input', title: 'Search').set("Crabfarm rocks!")
   pincers.search(tag: 'button', type: 'submit').click
   puts pincers.url
