@@ -9,11 +9,16 @@ Pincers is a jQuery inspired Ruby DSL on top of webdriver or plain net/http. In 
 ```ruby
 require 'pincers'
 
-Pincers.for_webdriver :firefox do |pincers|
-  pincers.goto "https://google.com"
-  pincers.search(tag: 'input', title: 'Search').set("Crabfarm rocks!")
-  pincers.search(tag: 'button', type: 'submit').click
-  puts pincers.url
+Pincers.for_webdriver :chrome do |pincers|
+  pincers.goto "https://github.com"
+  pincers.search("input[name=q]").set("pincers")
+  pincers.search("form[action='/search']").submit
+
+  pincers_repo = pincers.search(".repo-list-item").first
+  name = pincers_repo.search("h3 a").text
+  stars = pincers_repo.search("a[href$=stargazers]").text
+
+  puts "The repo #{name} has #{stars} stars"
 end
 ```
 
