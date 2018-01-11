@@ -12,7 +12,7 @@ module Pincers::Http
 
     attr_reader :cookie_jar, :headers
     attr_accessor :proxy_addr, :proxy_port, :proxy_user, :proxy_password, :redirect_limit,
-      :ssl_cert, :ssl_key
+      :ssl_cert, :ssl_key, :read_timeout
 
     def initialize(_other = nil)
       if _other
@@ -23,6 +23,7 @@ module Pincers::Http
         @redirect_limit = _other.redirect_limit
         @ssl_cert = _other.ssl_cert
         @ssl_key = _other.ssl_key
+        @read_timeout = _other.read_timeout || 60
       else
         @headers = DEFAULT_HEADERS
         @cookie_jar = CookieJar.new
@@ -103,6 +104,8 @@ module Pincers::Http
         proxy_user,
         proxy_password
       )
+
+      conn.read_timeout = read_timeout
 
       conn.use_ssl = true if _uri.scheme == 'https'
 

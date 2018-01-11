@@ -16,6 +16,7 @@ module Pincers::Http
       session.proxy_auth = _options[:proxy_auth] if _options.key? :proxy_auth
       session.headers.merge! _options[:headers] if _options.key? :headers
       session.redirect_limit = _options[:redirect_limit] if _options.key? :redirect_limit
+      session.read_timeout = _options[:read_timeout] if _options.key? :read_timeout
 
       if _options.key? :ssl_cert
         session.ssl_cert = _options[:ssl_cert]
