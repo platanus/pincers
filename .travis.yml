@@ -1,6 +1,13 @@
----
 language: ruby
 script: bundle exec rspec spec
 rvm:
-  - 2.0.0
+- 2.0.0
 sudo: false
+deploy:
+  provider: rubygems
+  api_key:
+    secure: B7PyTDaqoPxtO4niJ9lp3eV6pX+tUBcit+sBnmib0ZgDKAERcP111VYrrrOuQ9Rp5f7q7OzxudrM0icDisr6ayszU6QpfVEfNCku+HuwLEYddXyESFvQE2PkLEOGZIolq43BjRTJ/rCe0BJtY8q+IAkT4+sm2TzCPjsT6guP/+xW0ClXkPgssomATf9CzoYmLFogU8aZ7ErCYeA9Lnz1e2p5eUO53JGhEa2fRFMCByk9XnFsdDs0Vp94njFMIFJalN5NjDgOY1vtFonVm46Qb9H8pqDequFNhiyt4lc/IlxGZdErJ4feIiZ6g/bXG5DAx8XaN1R5vxHNCwHteT6zWdIxnJ4RA4r4KhgByfGhseafaMrLQD9DcrVlZZP695H8SOn8iUIsb28D7w6x2vRzK/wmDZyrjbSDDw+dMQOyRnzyfb0XHp5aJUcqYyaIzIE8AhFjQ52Xc7yL2s2o6JJ9FPhrP1rUkJsnblNS408O4sJ9f3dRa0gfxKz8NWpJHGS82zrQfKp6GvNEbzldNgLzlZTYdG1cNJiA2o7IGPindpIVJWndkpu4v7rAEHngg/kHqXYd98U1n36lKcP5akDGD2EQdXuorBvhyuAdsmpb/uK9Rq5MEEyGYXpBwC2cz2N4/tVXhHCwYlMJfWwZz3NBR5rCOTKT3pchJDksFOtj6kg=
+  gem: pincers
+  on:
+    tags: true
+    repo: platanus/pincers
