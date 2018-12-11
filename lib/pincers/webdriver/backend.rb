@@ -122,25 +122,21 @@ module Pincers::Webdriver
     end
 
     def right_click_on_element(_element)
-      assert_has_input_devices_for :right_click_on_element
       _element = ensure_ready_for_input _element
       actions.context_click(_element).perform
     end
 
     def double_click_on_element(_element)
-      assert_has_input_devices_for :double_click_on_element
       _element = ensure_ready_for_input _element
       actions.double_click(_element).perform
     end
 
     def hover_over_element(_element)
-      assert_has_input_devices_for :hover_over_element
       _element = ensure_ready_for_input _element
       actions.move_to(_element).perform
     end
 
     def drag_and_drop(_element, _on)
-      assert_has_input_devices_for :drag_and_drop
       _element = ensure_input_element _element
       actions.drag_and_drop(_element, _on).perform
     end
@@ -186,17 +182,10 @@ module Pincers::Webdriver
     end
 
     def click_with_modifiers(_element, _modifiers)
-      assert_has_input_devices_for :click_with_modifiers
       _modifiers.each { |m| actions.key_down m }
       actions.click _element
       _modifiers.each { |m| actions.key_up m }
       actions.perform
-    end
-
-    def assert_has_input_devices_for(_name)
-      unless driver.kind_of? Selenium::WebDriver::DriverExtensions::HasInputDevices
-        raise MissingFeatureError, _name
-      end
     end
 
     def ensure_element(_element)
