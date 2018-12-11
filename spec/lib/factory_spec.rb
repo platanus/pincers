@@ -10,7 +10,7 @@ describe 'Pincers::Factory' do
         pincers
       end
 
-      expect { temp.url }.to raise_error
+      expect { temp.url }.to raise_error(Pincers::BackendError)
     end
 
     it "shouldn't close connection if no block is given" do
