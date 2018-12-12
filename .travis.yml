@@ -1,7 +1,7 @@
 language: ruby
 script: bundle exec rspec spec
 rvm:
-- 2.0.0
+- 2.3
 sudo: false
 deploy:
   provider: rubygems
@@ -11,3 +11,9 @@ deploy:
   on:
     tags: true
     repo: platanus/pincers
+addons:
+  chrome: stable
+before_script:
+  - wget http://chromedriver.storage.googleapis.com/2.45/chromedriver_linux64.zip
+  - sudo unzip chromedriver_linux64.zip -d /usr/local/sbin
+  - export GOOGLE_CHROME_BIN=/usr/bin/google-chrome

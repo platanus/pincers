@@ -82,9 +82,9 @@ describe 'Pincers::Core::RootContext' do
     end
 
     it "should fail when called with invalid options" do
-      expect { pincers.goto }.to raise_error
-      expect { pincers.goto frame: :disneyland }.to raise_error
-      expect { pincers.goto cuadro: 'cangrejo' }.to raise_error
+      expect { pincers.goto }.to raise_error(ArgumentError)
+      expect { pincers.goto frame: :disneyland }.to raise_error(Pincers::BackendError)
+      expect { pincers.goto cuadro: 'cangrejo' }.to raise_error(Pincers::BackendError)
     end
 
     it "when called on a frame element context it should call goto frame: context on the root context" do

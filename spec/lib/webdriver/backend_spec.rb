@@ -4,7 +4,7 @@ require 'selenium-webdriver'
 describe 'Pincers::Webdriver::Backend' do
 
   before(:context) {
-    @driver = Pincers.for_webdriver(:phantomjs, wait_timeout: 2.0).document
+    @driver = Pincers.for_webdriver(build_chrome_headless_driver, wait_timeout: 2.0).document
   }
 
   before {
@@ -26,7 +26,7 @@ describe 'Pincers::Webdriver::Backend' do
 
   describe 'close' do
     it "should properly close the driver connection" do
-      pincers = Pincers.for_webdriver(:phantomjs)
+      pincers = Pincers.for_webdriver(build_chrome_headless_driver)
       expect { pincers.document.current_url }.not_to raise_error
       pincers.close
       expect { pincers.document.current_url }.to raise_error(Errno::ECONNREFUSED)
