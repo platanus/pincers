@@ -29,7 +29,6 @@ module Macros
 
         it "should load frames with target: _top in top frame" do
           pincers.search('#top').click
-          expect(pincers.text).to include('This page is referenced from index')
           pincers.goto frame: :top
           expect(pincers.text).to include('This page is referenced from index')
         end

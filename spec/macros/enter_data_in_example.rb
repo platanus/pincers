@@ -9,7 +9,7 @@ module Macros
     let(:first_radio) { pincers.search('#first-radio') }
     let(:second_radio) { pincers.search('#second-radio') }
     let(:third_radio) { pincers.search('#third-radio') }
-    let(:submit) { pincers.search('#submit') }
+    let(:submit) { pincers.search('#submit_button') }
 
     describe "set" do
       it "should properly set text type inputs" do

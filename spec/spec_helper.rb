@@ -9,6 +9,8 @@ FIXTURE_PATH = File.expand_path('../fixtures', __FILE__)
 SERVER_PORT = 9292
 
 RSpec.configure do |config|
+  config.filter_run focus: true
+  config.run_all_when_everything_filtered = true
   config.before(:context) { Pincers.config.reset }
   config.before(:example) { Pincers.config.reset }
 end

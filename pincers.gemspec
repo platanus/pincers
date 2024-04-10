@@ -17,10 +17,10 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "nokogiri", '~> 1.6'
-  spec.add_dependency "selenium-webdriver", "~> 3.141"
+  spec.add_dependency "nokogiri", '~> 1.13'
+  spec.add_dependency "selenium-webdriver", "~> 4.0.0"
 
-  spec.add_development_dependency "bundler", "~> 1.6"
+  spec.add_development_dependency "bundler", "~> 2.3.26"
   spec.add_development_dependency "rake", '~> 10.4'
   spec.add_development_dependency "rspec", '~> 3.1'
   spec.add_development_dependency "rspec-nc", '~> 0.2'
@@ -32,5 +32,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pry-nav", '~> 0.2'
   spec.add_development_dependency "rack", '~> 1.6'
   spec.add_development_dependency "thin", '~> 1.6'
-  spec.add_development_dependency "webmock", '~> 1.22'
+  spec.add_development_dependency "webmock", '~> 3.18.1'
 end
